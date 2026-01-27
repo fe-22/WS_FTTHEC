@@ -1,10 +1,10 @@
-# app.py - COLOCAR AO LADO DO manage.py
+# app.py - VERSÃO CORRIGIDA
 import os
 import sys
 from django.core.wsgi import get_wsgi_application
 
-# Configura o Django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
+# Configura o Django CORRETAMENTE
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'erp_site.settings')
 
 # Adiciona o diretório atual ao path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
