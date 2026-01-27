@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ERP Solutions - Gestão Inteligente{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Fthec<span class="logo-highlight">Solutions</span></span>
+            </div>
+            <div class="nav-links">
+                <a href="#home">Início</a>
+                <a href="#problems">Problemas</a>
+                <a href="#solutions">Soluções</a>
+                <a href="#products">Produtos</a>
+                <a href="#results">Resultados</a>
+                <a href="#contact">Contato</a>
+                <button class="btn-demo" onclick="openDemoModal()">Demonstração Gratuita</button>
+            </div>
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <img src="{% static 'images/logo.jpeg' %}" alt="FTHEC Sistemas" class="footer-logo">
+                <h3>Fthec - Sistemas & Automação</h3>
+                <p>Sua empresa com gestão inteligente e resultados reais.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Contato</h3>
+                <p><i class="fas fa-phone"></i> (11) 4354-8186</p>
+                <p><i class="fas fa-whatsapp"></i> WhatsApp: (11) 98217-0425</p>
+                <p><i class="fas fa-envelope"></i> fernandoalexthec@gmail.com</p>
+            </div>
+            <div class="footer-section">
+                <h3>Parceiras</h3>
+                <div class="partner-logos">
+                    <div class="partner-logo-placeholder">LC - Sistemas</div>
+                    <div class="partner-logo-placeholder">Moderniza</div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Fthec ERP Solutions. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Chatbot Widget -->
+    {% include 'partials/chatbot_widget.html' %}
+
+    <!-- Demo Modal -->
+    <div id="demoModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeDemoModal()">&times;</span>
+            <h2>Agende sua Demonstração Gratuita</h2>
+            <form id="demoForm">
+                <input type="text" placeholder="Seu Nome" required>
+                <input type="email" placeholder="Seu E-mail" required>
+                <input type="tel" placeholder="Telefone/WhatsApp" required>
+                <select required>
+                    <option value="">Selecione o produto de interesse</option>
+                    <option value="erp">ERP Completo</option>
+                    <option value="moderloja">ModerLoja</option>
+                </select>
+                <button type="submit" class="btn-submit">Solicitar Demonstração</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="{% static 'js/chatbot.js' %}"></script>
+    <script>
+        // Menu mobile toggle
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+
+        // Modal functions
+        function openDemoModal() {
+            document.getElementById('demoModal').style.display = 'block';
+        }
+        
+        function closeDemoModal() {
+            document.getElementById('demoModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('demoModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

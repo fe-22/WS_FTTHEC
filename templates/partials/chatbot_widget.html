@@ -1,0 +1,34 @@
+<div class="chatbot-widget">
+    <button class="chatbot-toggle" onclick="toggleChatbot()">
+        <i class="fas fa-robot"></i>
+    </button>
+    <div class="chatbot-container" id="chatbotContainer">
+        <div class="chatbot-header">
+            <div>
+                <h3>Assistente ERP</h3>
+                <p>Como posso ajudar sua empresa hoje?</p>
+            </div>
+            <button onclick="toggleChatbot()" style="background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="chatbot-messages" id="chatMessages">
+            <div class="message bot">
+                Olá! Sou o assistente virtual da ERP Solutions. Posso ajudar com:
+                <br><br>
+                1️⃣ Informações sobre nossos produtos<br>
+                2️⃣ Dúvidas sobre ERP e ModerLoja<br>
+                3️⃣ Agendamento de demonstração<br>
+                4️⃣ Problemas comuns do varejo<br>
+                <br>
+                Como posso te ajudar hoje?
+            </div>
+        </div>
+        <div class="chatbot-input">
+            <input type="text" id="chatInput" placeholder="Digite sua mensagem..." onkeypress="handleChatInputKey(event)">
+            <button onclick="sendMessage()">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</div>
