@@ -1,207 +1,262 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
+
+{% block title %}WS_FTTHEC - Sistema ERP Inteligente{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
-<section class="hero" id="home">
-    <div class="hero-content">
-        <h1>Gestão Completa para sua Empresa</h1>
-        <p>Centralize toda a gestão da sua empresa em um único sistema moderno, rápido e seguro. Reduza erros, economize tempo e tome decisões baseadas em dados.</p>
-        <a href="#contact" class="cta-button">Solicitar Demonstração</a>
-    </div>
-</section>
-
-<!-- Problems Section -->
-<section class="problems-section" id="problems">
-    <div class="section-title">
-        <h2>Sua empresa enfrenta algum desses problemas?</h2>
-        <p>Esses problemas custam dinheiro todos os dias. Identifique e resolva com nossa solução completa.</p>
-    </div>
-    <div class="problems-grid">
-        <div class="problem-card">
-            <i class="fas fa-boxes"></i>
-            <h3>Falta de controle de estoque</h3>
-            <p>Mercadorias perdidas, excesso ou falta de produtos.</p>
-        </div>
-        <div class="problem-card">
-            <i class="fas fa-cash-register"></i>
-            <h3>Vendas desorganizadas</h3>
-            <p>Processos manuais, erros no caixa, falta de integração.</p>
-        </div>
-        <div class="problem-card">
-            <i class="fas fa-calculator"></i>
-            <h3>Erros no financeiro</h3>
-            <p>Contas desatualizadas, fluxo de caixa impreciso.</p>
-        </div>
-        <div class="problem-card">
-            <i class="fas fa-file-excel"></i>
-            <h3>Planilhas espalhadas</h3>
-            <p>Dados fragmentados, versões desencontradas.</p>
-        </div>
-        <div class="problem-card">
-            <i class="fas fa-clock"></i>
-            <h3>Processos manuais</h3>
-            <p>Perda de tempo com tarefas repetitivas.</p>
-        </div>
-        <div class="problem-card">
-            <i class="fas fa-chart-line"></i>
-            <h3>Decisões sem dados</h3>
-            <p>Falta de informações confiáveis para planejamento.</p>
+<section class="hero bg-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold">Transforme seu Negócio com Nosso ERP Inteligente</h1>
+                <p class="lead">Automatize processos, tome decisões melhores e cresça com um sistema completo integrado com IA.</p>
+                <div class="mt-4">
+                    <a href="#contato" class="btn btn-light btn-lg me-3">
+                        <i class="fas fa-calendar-check"></i> Agendar Demonstração
+                    </a>
+                    <a href="#vantagens" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-chart-line"></i> Conhecer Vantagens
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <img src="https://cdn.pixabay.com/photo/2017/08/01/00/38/man-2562325_1280.jpg" 
+                     class="img-fluid rounded shadow" 
+                     alt="ERP Moderno" 
+                     style="max-height: 400px;">
+            </div>
         </div>
     </div>
 </section>
 
-<!-- Solutions Section -->
-<section class="solutions-section" id="solutions">
-    <div class="section-title">
-        <h2>A solução: um ERP completo e simples</h2>
-        <p>Tudo que sua empresa precisa em um único sistema integrado</p>
-    </div>
-    <div class="features-grid">
-        <div class="feature-card">
-            <div class="feature-icon">
-                <i class="fas fa-warehouse"></i>
+<!-- Vantagens -->
+<section id="vantagens" class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Por que escolher nosso ERP?</h2>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="fas fa-robot fa-3x text-primary"></i>
+                        </div>
+                        <h4>Chatbot Inteligente</h4>
+                        <p>Assistente 24/7 que responde dúvidas, gera relatórios e ajuda na tomada de decisões.</p>
+                    </div>
+                </div>
             </div>
-            <h3>Estoque</h3>
-            <p>Controle total de entrada, saída e inventário</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">
-                <i class="fas fa-shopping-cart"></i>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="fas fa-bolt fa-3x text-success"></i>
+                        </div>
+                        <h4>Automação Total</h4>
+                        <p>Automatize processos repetitivos e ganhe tempo para focar no que realmente importa.</p>
+                    </div>
+                </div>
             </div>
-            <h3>Vendas / PDV</h3>
-            <p>Sistema de ponto de venda completo e integrado</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">
-                <i class="fas fa-file-invoice-dollar"></i>
-            </div>
-            <h3>Financeiro</h3>
-            <p>Gestão de contas, fluxo de caixa e relatórios</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">
-                <i class="fas fa-users"></i>
-            </div>
-            <h3>Clientes</h3>
-            <p>CRM integrado para relacionamento e fidelização</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">
-                <i class="fas fa-chart-bar"></i>
-            </div>
-            <h3>Relatórios</h3>
-            <p>Dashboards e análises em tempo real</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">
-                <i class="fas fa-receipt"></i>
-            </div>
-            <h3>Fiscal</h3>
-            <p>Emissão de notas e obrigações fiscais</p>
-        </div>
-    </div>
-</section>
-
-<!-- Products Section -->
-<section class="products-section" id="products" style="padding: 5rem 5%; max-width: 1400px; margin: 0 auto;">
-    <div class="section-title">
-        <h2>Nossos Produtos</h2>
-        <p>Soluções específicas para diferentes necessidades do varejo</p>
-    </div>
-    <div class="products-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 3rem;">
-        <div class="product-card" style="background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
-            <div style="background: linear-gradient(135deg, #1e40af, #2563eb); padding: 2rem; color: white;">
-                <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem;">ERP Completo</h3>
-                <p>Sistema integrado para gestão empresarial</p>
-            </div>
-            <div style="padding: 2rem;">
-                <ul style="list-style: none; margin-bottom: 2rem;">
-                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;"><i class="fas fa-check" style="color: #10b981; margin-right: 0.5rem;"></i> Gestão completa</li>
-                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;"><i class="fas fa-check" style="color: #10b981; margin-right: 0.5rem;"></i> Multi-usuários</li>
-                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;"><i class="fas fa-check" style="color: #10b981; margin-right: 0.5rem;"></i> Suporte especializado</li>
-                </ul>
-                <button class="btn-demo" style="width: 100%;" onclick="openDemoModal()">Solicitar Demonstração</button>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="fas fa-chart-bar fa-3x text-info"></i>
+                        </div>
+                        <h4>Relatórios em Tempo Real</h4>
+                        <p>Dashboards interativos com dados atualizados para decisões ágeis e precisas.</p>
+                    </div>
+                </div>
             </div>
         </div>
         
-        <div class="product-card" style="background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
-            <div style="background: linear-gradient(135deg, #059669, #10b981); padding: 2rem; color: white;">
-                <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem;">ModerLoja</h3>
-                <p>Sistema específico para varejo</p>
+        <div class="row mt-4">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="fas fa-mobile-alt fa-3x text-warning"></i>
+                        </div>
+                        <h4>Acesso em Qualquer Lugar</h4>
+                        <p>Acesse o sistema de qualquer dispositivo, a qualquer hora.</p>
+                    </div>
+                </div>
             </div>
-            <div style="padding: 2rem;">
-                <ul style="list-style: none; margin-bottom: 2rem;">
-                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;"><i class="fas fa-check" style="color: #10b981; margin-right: 0.5rem;"></i> PDV Avançado</li>
-                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;"><i class="fas fa-check" style="color: #10b981; margin-right: 0.5rem;"></i> Loja Virtual</li>
-                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;"><i class="fas fa-check" style="color: #10b981; margin-right: 0.5rem;"></i> Marketplaces</li>
-                </ul>
-                <button class="btn-demo" style="width: 100%; background: linear-gradient(135deg, #059669, #10b981);" onclick="openDemoModal()">Solicitar Demonstração</button>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="fas fa-shield-alt fa-3x text-danger"></i>
+                        </div>
+                        <h4>Segurança Máxima</h4>
+                        <p>Seus dados protegidos com criptografia de ponta e backups automáticos.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="fas fa-headset fa-3x text-secondary"></i>
+                        </div>
+                        <h4>Suporte Dedicado</h4>
+                        <p>Equipe especializada para ajudar na implantação e no dia a dia.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Results Section -->
-<section class="results-section" id="results" style="background: #f1f5f9; padding: 5rem 5%;">
-    <div class="section-title">
-        <h2>Resultados reais para sua empresa</h2>
-        <p>Transforme a gestão da sua empresa e alcance resultados mensuráveis</p>
-    </div>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; max-width: 1400px; margin: 0 auto;">
-        <div style="text-align: center; padding: 2rem; background: white; border-radius: 12px;">
-            <i class="fas fa-check-circle" style="font-size: 3rem; color: #10b981; margin-bottom: 1rem;"></i>
-            <h3 style="margin-bottom: 1rem;">Redução de erros</h3>
-            <p>Até 90% menos erros operacionais</p>
-        </div>
-        <div style="text-align: center; padding: 2rem; background: white; border-radius: 12px;">
-            <i class="fas fa-piggy-bank" style="font-size: 3rem; color: #10b981; margin-bottom: 1rem;"></i>
-            <h3 style="margin-bottom: 1rem;">Economia</h3>
-            <p>Economia de tempo e dinheiro comprovada</p>
-        </div>
-        <div style="text-align: center; padding: 2rem; background: white; border-radius: 12px;">
-            <i class="fas fa-chart-line" style="font-size: 3rem; color: #10b981; margin-bottom: 1rem;"></i>
-            <h3 style="margin-bottom: 1rem;">Produtividade</h3>
-            <p>Aumento médio de 40% na produtividade</p>
-        </div>
-        <div style="text-align: center; padding: 2rem; background: white; border-radius: 12px;">
-            <i class="fas fa-seedling" style="font-size: 3rem; color: #10b981; margin-bottom: 1rem;"></i>
-            <h3 style="margin-bottom: 1rem;">Crescimento</h3>
-            <p>Crescimento organizado e sustentável</p>
+<!-- Formulário de Contato -->
+<section id="contato" class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <h2>Agende uma Demonstração Gratuita</h2>
+                <p class="lead">Descubra como nosso ERP pode transformar sua empresa.</p>
+                
+                <div class="mt-4">
+                    <h5><i class="fas fa-check text-success"></i> Sem compromisso</h5>
+                    <h5><i class="fas fa-check text-success"></i> Personalizado para seu negócio</h5>
+                    <h5><i class="fas fa-check text-success"></i> 30 minutos que valem ouro</h5>
+                </div>
+                
+                <!-- Chatbot Preview -->
+                <div class="mt-5">
+                    <h4>Experimente nosso Chatbot</h4>
+                    <p>Converse agora com nossa IA e veja como ela pode ajudar:</p>
+                    <a href="{% url 'chatbot_page' %}" class="btn btn-success">
+                        <i class="fas fa-robot"></i> Testar Chatbot Agora
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="card shadow">
+                    <div class="card-body p-4">
+                        <h4 class="card-title mb-4">Preencha para Agendar</h4>
+                        
+                        <form method="POST" action="{% url 'inscricao' %}">
+                            {% csrf_token %}
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Nome Completo *</label>
+                                <input type="text" name="nome" class="form-control" placeholder="Seu nome" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">E-mail *</label>
+                                <input type="email" name="email" class="form-control" placeholder="seu@email.com" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Telefone/WhatsApp</label>
+                                <input type="tel" name="telefone" class="form-control" placeholder="(11) 99999-9999">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Empresa</label>
+                                <input type="text" name="empresa" class="form-control" placeholder="Nome da empresa">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Cargo</label>
+                                <input type="text" name="cargo" class="form-control" placeholder="Seu cargo">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Mensagem (Opcional)</label>
+                                <textarea name="mensagem" class="form-control" rows="3" placeholder="Alguma dúvida ou informação adicional?"></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                <i class="fas fa-paper-plane"></i> Solicitar Demonstração
+                            </button>
+                            
+                            <p class="text-muted small mt-3">
+                                * Campos obrigatórios. Entraremos em contato em até 24h.
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
-<!-- Contact Section -->
-<section class="contact-section" id="contact" style="padding: 5rem 5%; max-width: 1400px; margin: 0 auto;">
-    <div class="section-title">
-        <h2>Entre em Contato</h2>
-        <p>Estamos prontos para transformar a gestão da sua empresa</p>
+<!-- Depoimentos -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">O que dizem nossos clientes</h2>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                        </div>
+                        <p class="card-text">"O chatbot reduziu nosso tempo de resposta ao cliente em 70%. Incrível!"</p>
+                        <p class="card-text"><strong>Carlos Silva</strong><br>Diretor, TechSolutions</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                        </div>
+                        <p class="card-text">"A automação de processos nos fez economizar 20 horas por semana."</p>
+                        <p class="card-text"><strong>Ana Santos</strong><br>Gerente, Logística Plus</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                        </div>
+                        <p class="card-text">"Implementação rápida e suporte excepcional. Recomendo!"</p>
+                        <p class="card-text"><strong>Roberto Lima</strong><br>CEO, Varejo Moderno</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem; margin-top: 3rem;">
-        <div>
-            <h3 style="margin-bottom: 1.5rem;">Fale Conosco</h3>
-            <div style="margin-bottom: 1.5rem;">
-                <p><i class="fas fa-phone" style="color: #2563eb; margin-right: 0.5rem;"></i> (11) 4354-8186</p>
-                <p><i class="fas fa-whatsapp" style="color: #25D366; margin-right: 0.5rem;"></i> WhatsApp: (11) 98217-0425</p>
-                <p><i class="fas fa-envelope" style="color: #2563eb; margin-right: 0.5rem;"></i> fernandoalexthec@gmail.com</p>
-            </div>
-            <div>
-                <h4 style="margin-bottom: 1rem;">Horário de Atendimento</h4>
-                <p>Segunda a Sexta: 8h às 18h</p>
-                <p>Sábado: 8h às 12h</p>
-            </div>
-        </div>
-        <div>
-            <h3 style="margin-bottom: 1.5rem;">Solicite uma Demonstração</h3>
-            <button class="btn-demo" style="width: 100%; padding: 1.2rem; font-size: 1.1rem;" onclick="openDemoModal()">
-                <i class="fas fa-calendar-check" style="margin-right: 0.5rem;"></i>
-                Agendar Demonstração Gratuita
-            </button>
-            <p style="margin-top: 1rem; color: #64748b; font-size: 0.9rem;">
-                <i class="fas fa-info-circle" style="margin-right: 0.5rem;"></i>
-                Sem compromisso. Mostraremos como nosso sistema pode resolver seus problemas específicos.
-            </p>
-        </div>
+</section>
+
+<!-- CTA Final -->
+<section class="bg-dark text-white py-5">
+    <div class="container text-center">
+        <h2 class="mb-4">Pronto para transformar sua empresa?</h2>
+        <p class="lead mb-4">Mais de 500 empresas já confiam em nossa solução.</p>
+        <a href="#contato" class="btn btn-light btn-lg me-3">
+            <i class="fas fa-calendar-alt"></i> Agendar Agora
+        </a>
+        <a href="{% url 'chatbot_page' %}" class="btn btn-outline-light btn-lg">
+            <i class="fas fa-robot"></i> Falar com o Chatbot
+        </a>
     </div>
 </section>
 {% endblock %}

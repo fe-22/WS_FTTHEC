@@ -1,10 +1,12 @@
-from django.contrib import admin
-from django.urls import path, include
-from django.conf import settings
-from django.conf.urls.static import static
+﻿from django.contrib import admin
+from django.urls import path
+from core.views import home, inscricao_view
+from ai_chat.views import chatbot_view, chatbot_page
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('core.urls')),
-    path('chat/', include('ai_chat.urls')),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    path("admin/", admin.site.urls),
+    path("", home, name="home"),
+    path("inscricao/", inscricao_view, name="inscricao"),
+    path("chat/", chatbot_page, name="chatbot_page"),      # Página HTML
+    path("api/chatbot/", chatbot_view, name="chatbot_api"), # API
+]
