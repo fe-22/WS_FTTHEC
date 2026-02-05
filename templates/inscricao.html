@@ -3,7 +3,18 @@
 {% block content %}
 <div class="container mt-5">
     <h2>Formulário de Inscrição</h2>
+    <form method="POST" action="{% url 'inscricao_view' %}">
+    {% csrf_token %}
     
+    <input type="text" name="nome" placeholder="Nome completo" required>
+    <input type="email" name="email" placeholder="Seu melhor e-mail" required>
+    <input type="tel" name="telefone" placeholder="Telefone/WhatsApp">
+    <input type="text" name="empresa" placeholder="Empresa">
+    <input type="text" name="cargo" placeholder="Cargo">
+    <textarea name="mensagem" placeholder="Sua mensagem ou interesse"></textarea>
+    
+    <button type="submit">Enviar Inscrição</button>
+</form>
     {% if messages %}
     <div class="messages">
         {% for message in messages %}
