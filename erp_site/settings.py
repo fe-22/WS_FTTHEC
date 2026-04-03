@@ -8,9 +8,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-sua-chave-secreta-aqui-para-dev')
 
-DEBUG = False
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+DEBUG = True
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
 
 ALLOWED_HOSTS = ['*']
 
