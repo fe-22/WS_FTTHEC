@@ -8,13 +8,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-sua-chave-secreta-aqui-para-dev')
 
-DEBUG = True
+DEBUG = False
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 ALLOWED_HOSTS = [
       'erp-django-app-811970467107.southamerica-east1.run.app',
     'localhost',
     '127.0.0.1'
 ]
+
+
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://erp-django-app-811970467107.southamerica-east1.run.app"
+]
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
