@@ -10,7 +10,11 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-sua-chave-secreta-aqui-par
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['ws-ftthec.onrender.com', 'localhost', '127.0.0.1', '.onrender.com']
+ALLOWED_HOSTS = [
+      'erp-django-app-811970467107.southamerica-east1.run.app',
+    'localhost',
+    '127.0.0.1'
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
