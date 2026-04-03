@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function() {
         
         try {
             // Envia para API
-            const response = await fetch("/api/chatbot/", {
+            const response = await fetch("/ai_chat/api/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     console.log("🎯 Botão Agendar clicado - Tracking conversão");
                     
                     // Tracking do clique
-                    fetch("/chat/lead/", {
+                    fetch("/ai_chat/lead/", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
