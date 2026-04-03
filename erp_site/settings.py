@@ -12,11 +12,7 @@ DEBUG = False
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
-ALLOWED_HOSTS = [
-      'erp-django-app-811970467107.southamerica-east1.run.app',
-    'localhost',
-    '127.0.0.1'
-]
+ALLOWED_HOSTS = ['*']
 
 
 
