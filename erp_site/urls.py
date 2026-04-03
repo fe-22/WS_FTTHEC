@@ -1,12 +1,8 @@
 ﻿from django.contrib import admin
-from django.urls import path
-from core.views import home, inscricao_view
-from ai_chat.views import chatbot_view, chatbot_page
+from django.urls import path, include
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", home, name="home"),
-    path("inscricao/", inscricao_view, name="inscricao"),
-    path("chat/", chatbot_page, name="chatbot_page"),      # Página HTML
-    path("api/chatbot/", chatbot_view, name="chatbot_api"), # API
+    path("", include("core.urls")),
+    path("ai_chat/", include("ai_chat.urls")),
 ]

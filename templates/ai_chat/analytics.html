@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="fas fa-chart-line"></i> 📊 Analytics do Chatbot</h3>
+                </div>
+                <div class="card-body">
+                    <!-- Métricas Gerais -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card bg-info text-white">
+                                <div class="card-body text-center">
+                                    <h4>{{ total_conversations }}</h4>
+                                    <p>Conversas Totais</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-success text-white">
+                                <div class="card-body text-center">
+                                    <h4>{{ total_conversions }}</h4>
+                                    <p>Conversões</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-warning text-white">
+                                <div class="card-body text-center">
+                                    <h4>{{ total_leads }}</h4>
+                                    <p>Leads Capturados</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-secondary text-white">
+                                <div class="card-body text-center">
+                                    <h4>{% if total_conversations > 0 %}{{ total_conversions|div:total_conversations|mul:100|floatformat:1 }}{% else %}0{% endif %}%</h4>
+                                    <p>Taxa de Conversão</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Conversões por Tipo -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5>Conversões por Tipo</h5>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Tipo</th>
+                                            <th>Quantidade</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for type, count in conversions_by_type.items %}
+                                        <tr>
+                                            <td>{{ type|title }}</td>
+                                            <td>{{ count }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Conversas Recentes -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Conversas Recentes</h5>
+                            <div class="list-group">
+                                {% for chat in recent_conversations %}
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">{{ chat.session_id }}</h6>
+                                        <small>{{ chat.created_at|date:"d/m/Y H:i" }}</small>
+                                    </div>
+                                    <p class="mb-1"><strong>Usuário:</strong> {{ chat.user_message|truncatechars:50 }}</p>
+                                    <small><strong>Bot:</strong> {{ chat.bot_response|truncatechars:50 }}</small>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <h5>Conversões Recentes</h5>
+                            <div class="list-group">
+                                {% for conv in recent_conversions %}
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">{{ conv.conversion_type|title }}</h6>
+                                        <small>{{ conv.converted_at|date:"d/m/Y H:i" }}</small>
+                                    </div>
+                                    <p class="mb-1">{{ conv.user_message|truncatechars:50 }}</p>
+                                    <small>Session: {{ conv.session_id }}</small>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Leads Recentes -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h5>Leads Recentes</h5>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Data</th>
+                                            <th>Nome</th>
+                                            <th>Email</th>
+                                            <th>Empresa</th>
+                                            <th>Fonte</th>
+                                            <th>Convertido</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for lead in recent_leads %}
+                                        <tr>
+                                            <td>{{ lead.created_at|date:"d/m/Y H:i" }}</td>
+                                            <td>{{ lead.name|default:"-" }}</td>
+                                            <td>{{ lead.email|default:"-" }}</td>
+                                            <td>{{ lead.company|default:"-" }}</td>
+                                            <td>{{ lead.source }}</td>
+                                            <td>
+                                                {% if lead.converted %}
+                                                <span class="badge bg-success">Sim</span>
+                                                {% else %}
+                                                <span class="badge bg-warning">Não</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -98,8 +98,9 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}">
-                <i class="fas fa-robot"></i> <strong>FTHEC Sistemas & Automações</strong>
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+                <img src="{% static 'images/logo.png' %}" alt="FTHEC Logo" style="height:40px; margin-right:10px;" />
+                <strong>FTHEC Sistemas & Automações</strong>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -109,8 +110,22 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'home' %}#vantagens">Vantagens</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}#contato">Demonstração</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="demoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-eye"></i> Demonstrações
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="demoDropdown">
+                            <li><a class="dropdown-item" href="{% url 'dashboard_demo' %}">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard ERP
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'pdv_demo' %}">
+                                <i class="fas fa-cash-register me-2"></i>Ponto de Venda
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'home' %}#contato">
+                                <i class="fas fa-calendar-check me-2"></i>Agendar Demonstração
+                            </a></li>
+                        </ul>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'chatbot_page' %}">
@@ -164,11 +179,20 @@
                 </div>
                 <div class="col-md-4 mb-4">
                     <h5>Contato</h5>
-                    <p><i class="fas fa-envelope"></i>fernandoalexthec@gmail.com</p>
+                    <p><i class="fas fa-envelope"></i>fthec@fthec.com.br</p>
                     <p><i class="fas fa-phone"></i> (11) 982170425</p>
                 </div>
             </div>
             <hr class="bg-white">
+            <div class="row text-center align-items-center">
+                <div class="col-md-6 mb-2">
+                    <p>CNPJ: 64.212.742/0001-63</p>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <p>Parceiro: Moderniza</p>
+                    <!-- Logo será adicionado quando disponível -->
+                </div>
+            </div>
             <div class="text-center pt-3">
                 <p>&copy; {% now "Y" %} FTHEC Sistemas & Automações. Todos os direitos reservados.</p>
             </div>

@@ -18,6 +18,14 @@ document.addEventListener("DOMContentLoaded", function() {
         return;
     }
     
+    // Gera session_id único para esta sessão
+    let sessionId = localStorage.getItem('chatbot_session_id');
+    if (!sessionId) {
+        sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('chatbot_session_id', sessionId);
+    }
+    console.log("Session ID:", sessionId);
+    
     // FUNÇÃO PRINCIPAL
     async function enviarMensagem() {
         const mensagem = userInput.value.trim();
@@ -41,7 +49,10 @@ document.addEventListener("DOMContentLoaded", function() {
                     "Content-Type": "application/json",
                     "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]")?.value || ""
                 },
-                body: JSON.stringify({ message: mensagem })
+                body: JSON.stringify({ 
+                    message: mensagem,
+                    session_id: sessionId 
+                })
             });
             
             const data = await response.json();
@@ -52,6 +63,31 @@ document.addEventListener("DOMContentLoaded", function() {
             botDiv.className = data.error ? "alert alert-danger" : "alert alert-success";
             botDiv.innerHTML = `<strong>Assistente:</strong> ${data.response}`;
             chatMessages.appendChild(botDiv);
+            
+            // Adiciona event listener para botões de ação na resposta
+            const actionButtons = botDiv.querySelectorAll('.agendar-demo');
+            actionButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log("🎯 Botão Agendar clicado - Tracking conversão");
+                    
+                    // Tracking do clique
+                    fetch("/chat/lead/", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]")?.value || ""
+                        },
+                        body: JSON.stringify({
+                            session_id: sessionId,
+                            action: 'button_click',
+                            button_type: 'agendar_demo'
+                        })
+                    }).then(() => {
+                        window.location.href = '/inscricao/';
+                    });
+                });
+            });
             
         } catch (error) {
             console.error("❌ Erro:", error);

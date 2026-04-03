@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container mt-5">
     <h2>Formulário de Inscrição</h2>
-    <form method="POST" action="{% url 'inscricao_view' %}">
+    <form method="POST" action="{% url 'inscricao' %}">
     {% csrf_token %}
     
     <input type="text" name="nome" placeholder="Nome completo" required>
