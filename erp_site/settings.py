@@ -66,13 +66,31 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'erp_site.wsgi.application'
 
-# Usando SQLite para desenvolvimento no Windows
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# Configuração de banco de dados
+if os.getenv('ENVIRONMENT') == 'production':
+    # MySQL no Cloud SQL para produção
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'erp_fthec',
+            'USER': 'root',
+            'PASSWORD': os.getenv('DB_PASSWORD', 'Fthec@2026'),
+            'HOST': os.getenv('DB_HOST', '104.198.74.183'),
+            'PORT': '3306',
+            'OPTIONS': {
+                'charset': 'utf8mb4',
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            },
+        }
     }
-}
+else:
+    # SQLite para desenvolvimento local
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
