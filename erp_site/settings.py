@@ -69,6 +69,9 @@ WSGI_APPLICATION = 'erp_site.wsgi.application'
 # Configuração de banco de dados
 if os.getenv('ENVIRONMENT') == 'production':
     # MySQL no Cloud SQL para produção
+    import pymysql
+    pymysql.install_as_MySQLdb()
+
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
