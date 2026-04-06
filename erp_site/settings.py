@@ -6,7 +6,8 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-dev-fallback-key-change-in-production-12345!@#")
+# 'or' garante que string vazia também cai no fallback
+SECRET_KEY = os.environ.get("SECRET_KEY") or "django-insecure-dev-fallback-key-change-in-production-12345!@#"
 
 DEBUG = True
 CSRF_COOKIE_SECURE = False
@@ -67,19 +68,42 @@ TEMPLATES = [
 WSGI_APPLICATION = 'erp_site.wsgi.application'
 
 # Configuração de banco de dados
-# Usa MySQL se DB_HOST estiver definido (Cloud Run), senão SQLite local
-if os.getenv('DB_HOST') or os.getenv('ENVIRONMENT') == 'production':
-    # MySQL no Cloud SQL para produção
+# Cloud Run usa Cloud SQL Auth Proxy via Unix socket (CLOUD_SQL_CONNECTION_NAME)
+# Dev local usa SQLite
+_CLOUD_SQL_CONNECTION_NAME = os.getenv('CLOUD_SQL_CONNECTION_NAME', '')
+_DB_HOST = os.getenv('DB_HOST', '')
+
+if _CLOUD_SQL_CONNECTION_NAME:
+    # Cloud Run + Cloud SQL Auth Proxy (unix socket — método recomendado pelo Google)
     import pymysql
     pymysql.install_as_MySQLdb()
 
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'erp_fthec',
-            'USER': 'root',
-            'PASSWORD': os.getenv('DB_PASSWORD', 'Fthec@2026'),
-            'HOST': os.getenv('DB_HOST', '104.198.74.183'),
+            'NAME': os.getenv('DB_NAME', 'erp_fthec'),
+            'USER': os.getenv('DB_USER', 'root'),
+            'PASSWORD': os.getenv('DB_PASSWORD', ''),
+            'HOST': f'/cloudsql/{_CLOUD_SQL_CONNECTION_NAME}',
+            'PORT': '',  # Não usar porta com socket
+            'OPTIONS': {
+                'charset': 'utf8mb4',
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            },
+        }
+    }
+elif _DB_HOST:
+    # Conexão TCP direta (fallback / testes)
+    import pymysql
+    pymysql.install_as_MySQLdb()
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.getenv('DB_NAME', 'erp_fthec'),
+            'USER': os.getenv('DB_USER', 'root'),
+            'PASSWORD': os.getenv('DB_PASSWORD', ''),
+            'HOST': _DB_HOST,
             'PORT': '3306',
             'OPTIONS': {
                 'charset': 'utf8mb4',
