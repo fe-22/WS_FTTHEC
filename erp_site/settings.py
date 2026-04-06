@@ -6,7 +6,7 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-dev-fallback-key-change-in-production-12345!@#")
 
 DEBUG = True
 CSRF_COOKIE_SECURE = False
@@ -67,7 +67,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'erp_site.wsgi.application'
 
 # Configuração de banco de dados
-if os.getenv('ENVIRONMENT') == 'production':
+# Usa MySQL se DB_HOST estiver definido (Cloud Run), senão SQLite local
+if os.getenv('DB_HOST') or os.getenv('ENVIRONMENT') == 'production':
     # MySQL no Cloud SQL para produção
     import pymysql
     pymysql.install_as_MySQLdb()
