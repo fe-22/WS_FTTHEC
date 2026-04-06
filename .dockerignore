@@ -26,6 +26,10 @@ coverage.xml
 .pytest_cache
 .hypothesis
 
+# Env files (nao copiar para o container)
+.env
+.env.*
+
 # Django
 *.log
 local_settings.py

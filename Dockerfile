@@ -20,12 +20,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project
 COPY . .
 
-# Run migrations and collect static files
-RUN python manage.py migrate --noinput
+# Collect static files only (sem banco de dados)
 RUN python manage.py collectstatic --noinput
 
 # Expose port
 EXPOSE 8080
 
-# Run the application
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "erp_site.wsgi:application"]
+# Usar start.sh para migrations + servidor
+RUN chmod +x /app/start.sh
+CMD ["/app/start.sh"]

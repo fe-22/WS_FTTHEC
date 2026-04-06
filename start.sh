@@ -1,104 +1,14 @@
-# Aguardar banco de dados estar pronto (para MySQL)
-echo "Aguardando banco de dados..."
-sleep 10
-# Aguardar banco de dados estar pronto (para MySQL)
-echo "Aguardando banco de dados..."
-sleep 10
-# Aguardar banco de dados estar pronto (para MySQL)
-echo "Aguardando banco de dados..."
-sleep 10
-# Aguardar banco de dados estar pronto (para MySQL)
-echo "Aguardando banco de dados..."
-sleep 10
-# Aguardar banco de dados estar pronto (para MySQL)
-echo "Aguardando banco de dados..."
-sleep 10
-# Aguardar banco de dados estar pronto (para MySQL)
-echo "Aguardando banco de dados..."
-sleep 10
-# Aguardar banco de dados estar pronto (para MySQL)
-echo "Aguardando banco de dados..."
-sleep 10
-# Aguardar banco de dados estar pronto (para MySQL)
-echo "Aguardando banco de dados..."
-sleep 10
-# Aguardar banco de dados estar pronto (para MySQL)
-echo "Aguardando banco de dados..."
-sleep 10
-# Aguardar banco de dados estar pronto (para MySQL)
-echo "Aguardando banco de dados..."
-sleep 10
-# Aguardar banco de dados estar pronto (para MySQL)
-echo "Aguardando banco de dados..."
-sleep 10
-# Aguardar banco de dados estar pronto (para MySQL)
-echo "Aguardando banco de dados..."
-sleep 10
-# Aguardar banco de dados estar pronto (para MySQL)
-echo "Aguardando banco de dados..."
-sleep 10
-# Aguardar banco de dados estar pronto (para MySQL)
-echo "Aguardando banco de dados..."
-sleep 10
-# Aguardar banco de dados estar pronto (para MySQL)
-echo "Aguardando banco de dados..."
-sleep 10
-# Aguardar banco de dados estar pronto (para MySQL)
-echo "Aguardando banco de dados..."
-sleep 10
-# Aguardar banco de dados estar pronto (para MySQL)
-echo "Aguardando banco de dados..."
-sleep 10
-# Aguardar banco de dados estar pronto (para MySQL)
-echo "Aguardando banco de dados..."
-sleep 10
-# Aguardar banco de dados estar pronto (para MySQL)
-echo "Aguardando banco de dados..."
-sleep 10
-# Aguardar banco de dados estar pronto (para MySQL)
-echo "Aguardando banco de dados..."
-sleep 10
-# Aguardar banco de dados estar pronto (para MySQL)
-echo "Aguardando banco de dados..."
-sleep 10
-# Aguardar banco de dados estar pronto (para MySQL)
-echo "Aguardando banco de dados..."
-sleep 10
-# Aguardar banco de dados estar pronto (para MySQL)
-echo "Aguardando banco de dados..."
-sleep 10
-# Aguardar banco de dados estar pronto (para MySQL)
-echo "Aguardando banco de dados..."
-sleep 10
-# Criar superuser padrão se não existir (opcional)
-# python manage.py createsuperuser --noinput --username=admin --email=admin@example.com 2>/dev/null || true
-# Iniciar servidor Django com gunicorn
-echo "Iniciando servidor Django..."
-exec gunicorn erp_site.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 4 --timeout 120
-
 #!/bin/bash
+set -e
 
-echo "=== Django Migration e Deploy ==="
+echo "=== Iniciando aplicacao ==="
 
-# Aguardar banco de dados estar pronto (para MySQL)
+# Aguardar banco de dados estar pronto
 echo "Aguardando banco de dados..."
 sleep 10
-# Executar migrações do banco de dados
-echo "Executando migrações..."
+
+echo "Rodando migrations..."
 python manage.py migrate --noinput
 
-# Aguardar banco de dados estar pronto (para MySQL)
-echo "Aguardando banco de dados..."
-sleep 10
-# Criar superuser padrão se não existir (opcional)
-# python manage.py createsuperuser --noinput --username=admin --email=admin@example.com 2>/dev/null || true
-
-# Criar superuser padrão se não existir (opcional)
-# python manage.py createsuperuser --noinput --username=admin --email=admin@example.com 2>/dev/null || true
-
-# Aguardar banco de dados estar pronto (para MySQL)
-echo "Aguardando banco de dados..."
-sleep 10
-# Iniciar servidor Django com gunicorn
-echo "Iniciando servidor Django..."
-exec gunicorn erp_site.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 4 --timeout 120
+echo "Iniciando servidor Gunicorn..."
+exec gunicorn --bind 0.0.0.0:8080 --workers 2 --timeout 120 erp_site.wsgi:application
