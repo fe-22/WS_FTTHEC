@@ -2,7 +2,11 @@
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 import datetime
+
+from .models import Inscricao
 
 def home(request):
     """Página inicial - Landing Page"""
@@ -32,15 +36,28 @@ def inscricao_view(request):
                     f.write(f"{timestamp},{nome},{email},{telefone},{empresa},{cargo},{mensagem}\n")
                 
                 print(f"📁 Lead salvo no CSV: {nome}, {email}")  # Debug
+
+                # 1.5 SALVAR NO BANCO PARA CRM
+                Inscricao.objects.create(
+                    nome=nome,
+                    email=email,
+                    telefone=telefone,
+                    empresa=empresa,
+                    cargo=cargo,
+                    mensagem=mensagem,
+                )
                 
                 # 2. ENVIAR EMAIL
-                try:
-                    email_backend = getattr(settings, 'EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
-                    print(f"✉️ EMAIL_BACKEND atual: {email_backend}")  # Debug
+                email_backend = getattr(settings, 'EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+                print(f"✉️ EMAIL_BACKEND atual: {email_backend}")  # Debug
+                email_sent = False
+                email_error_message = None
 
-                    if email_backend == 'django.core.mail.backends.console.EmailBackend':
-                        print("⚠️ Modo console ativado. Emails serão apenas logados, não enviados.")
-                    else:
+                if email_backend == 'django.core.mail.backends.console.EmailBackend':
+                    print("⚠️ Modo console ativado. Emails serão apenas logados, não enviados.")
+                    email_error_message = "Email não foi enviado de verdade porque o backend está em modo console."
+                else:
+                    try:
                         print("✉️ Tentando enviar emails reais via SMTP...")
 
                         # Email para ADMIN
@@ -88,14 +105,16 @@ def inscricao_view(request):
                             fail_silently=False,
                         )
 
+                        email_sent = True
                         print("✅ Emails enviados com sucesso!")
 
-                except Exception as email_error:
-                    print(f"⚠️ Erro no envio de email (não crítico): {email_error}")
-                    # Não mostra erro para o usuário, apenas loga
-                
+                    except Exception as email_error:
+                        email_error_message = str(email_error)
+                        print(f"⚠️ Erro no envio de email (não crítico): {email_error_message}")
+
                 # 3. Mensagem de sucesso para o usuário
-                messages.success(request, f"✅ Obrigado {nome}! Inscrição realizada com sucesso. Em breve entraremos em contato.")
+                messages.success(request, f"✅ Obrigado {nome}! Sua inscrição foi recebida com sucesso. Em breve nossa equipe entrará em contato.")
+
                 return redirect("home")
                 
             except Exception as e:
@@ -104,6 +123,26 @@ def inscricao_view(request):
     
     # Se GET ou erro, mostra a página de inscrição
     return render(request, "inscricao.html")
+
+@login_required
+def crm_view(request):
+    """CRM de inscrições e mensagens de leads."""
+    leads = Inscricao.objects.order_by('-data_inscricao')
+    query = request.GET.get('q', '').strip()
+    if query:
+        leads = leads.filter(
+            Q(nome__icontains=query) |
+            Q(email__icontains=query) |
+            Q(empresa__icontains=query) |
+            Q(cargo__icontains=query) |
+            Q(mensagem__icontains=query)
+        )
+    context = {
+        'leads': leads,
+        'query': query,
+    }
+    return render(request, 'crm.html', context)
+
 
 def dashboard_demo(request):
     """Página de demonstração do Dashboard do ERP"""

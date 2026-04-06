@@ -85,7 +85,7 @@ Principais benefícios:
 • Melhoria na tomada de decisões
 • Integração entre departamentos (vendas, compras, estoque, financeiro)
 
-O WS_FTTHEC é um ERP inteligente com chatbot integrado para transformar seu negócio!"""
+O Fthec sistemas e automação é um ERP inteligente com chatbot integrado para transformar seu negócio!"""
 
             elif any(word in user_message for word in [
                 "adquirir", "comprar", "contratar", "contato", "comercial",
@@ -102,7 +102,7 @@ O WS_FTTHEC é um ERP inteligente com chatbot integrado para transformar seu neg
                     conversion_type='demo_request'
                 )
                 # Resposta direcionando para contato comercial
-                resposta = """Excelente! Para adquirir o WS_FTTHEC para sua empresa, nossa equipe comercial está pronta para ajudar.
+                resposta = """Excelente! Para adquirir o Fthec sistemas e automação para sua empresa, nossa equipe comercial está pronta para ajudar.
 
 Como prosseguir:
 1. 📝 Preencha o formulário de inscrição em nossa página principal
@@ -116,7 +116,7 @@ Acesse /inscricao/ ou clique no botão acima para começar!"""
 
             else:
                 # Resposta padrão para outras perguntas
-                resposta = """Olá! Sou especialista em ERP. Posso explicar o que é um ERP ou ajudar você a entrar em contato com nossa equipe comercial para adquirir o WS_FTTHEC.
+                resposta = """Olá! Sou especialista em ERP. Posso explicar o que é um ERP ou ajudar você a entrar em contato com nossa equipe comercial para adquirir o Fthec sistemas e automação.
 
 Pergunte sobre:
 • "O que é um ERP?" - explicação completa

@@ -131,6 +131,20 @@
                             <i class="fas fa-comments"></i> Chatbot
                         </a>
                     </li>
+                    {% if request.user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'crm' %}">
+                            <i class="fas fa-clipboard-list"></i> CRM
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Sair</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Entrar</a>
+                    </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="btn btn-primary ms-2" href="{% url 'home' %}#contato">
                             <i class="fas fa-calendar-check"></i> Agendar

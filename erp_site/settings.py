@@ -112,10 +112,21 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', '')
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 3600  # 1 hora
 
-# Configuração de email (console para desenvolvimento - funciona!)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = 'fthec@fthec.com.br'
-ADMIN_EMAIL = 'fthec@fthec.com.br'
+# Configuração de email via .env (use SMTP para envio real)
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'localhost')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True').lower() in ['true', '1', 'yes']
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', 'False').lower() in ['true', '1', 'yes']
+EMAIL_TIMEOUT = int(os.getenv('EMAIL_TIMEOUT', 10))
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'fthec@fthec.com.br')
+ADMIN_EMAIL = os.getenv('ADMIN_EMAIL', 'fthec@fthec.com.br')
+
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/crm/'
+LOGOUT_REDIRECT_URL = '/'
 
 # CORS Configuration - Permitir requisições de qualquer origem (necessário para o chatbot no Google Cloud)
 CORS_ALLOWED_ORIGINS = [
