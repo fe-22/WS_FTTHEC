@@ -1,18 +1,14 @@
 #!/bin/bash
-# start.sh
-echo "=== Iniciando Django no Render ==="
-echo "Diretório atual: $(pwd)"
-echo "Arquivos:"
-ls -la
 
-echo "Python path:"
-python -c "import sys; print('\n'.join(sys.path))"
+echo "=== Django Migration e Deploy ==="
 
-echo "Testando import do Django..."
-python -c "import django; print('Django version:', django.get_version())"
+# Executar migrações do banco de dados
+echo "Executando migrações..."
+python manage.py migrate --noinput
 
-echo "Testando app.py..."
-python -c "from app import app; print('App importado com sucesso!')"
+# Criar superuser padrão se não existir (opcional)
+# python manage.py createsuperuser --noinput --username=admin --email=admin@example.com 2>/dev/null || true
 
-echo "Iniciando gunicorn..."
-exec gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --access-logfile - --error-logfile -
+# Iniciar servidor Django com gunicorn
+echo "Iniciando servidor Django..."
+exec gunicorn erp_site.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 4 --timeout 120
