@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Financeiro - FTHEC{% endblock %}
+
+{% block extra_css %}
+<style>
+    .finance-shell {
+        padding: 24px 0 40px;
+    }
+
+    .finance-hero,
+    .finance-card {
+        border-radius: 26px;
+        box-shadow: 0 18px 38px rgba(24,36,50,0.08);
+    }
+
+    .finance-hero {
+        padding: 32px;
+        background: linear-gradient(135deg, #1f2937, #d97706);
+        color: #fff;
+    }
+
+    .finance-card {
+        background: rgba(255,255,255,0.96);
+        padding: 24px;
+        height: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container finance-shell">
+    <div class="finance-hero mb-4">
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+            <div>
+                <p class="section-kicker mb-2" style="color:#fde68a;">Financeiro</p>
+                <h1 class="display-6 fw-bold mb-2">Painel para caixa, margem e previsibilidade</h1>
+                <p class="mb-0 text-white-50">Modelo focado em visibilidade rapida para decisao financeira.</p>
+            </div>
+            <div>
+                <a href="{% url 'dashboard_demo' %}" class="btn btn-light">Voltar ao executivo</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-6 col-xl-3"><div class="finance-card"><small class="text-muted">MRR</small><h3>R$ {{ mrr }}</h3><span class="text-success">+9,1%</span></div></div>
+        <div class="col-md-6 col-xl-3"><div class="finance-card"><small class="text-muted">Caixa disponivel</small><h3>R$ {{ caixa_disponivel }}</h3><span class="text-muted">42 dias de folego</span></div></div>
+        <div class="col-md-6 col-xl-3"><div class="finance-card"><small class="text-muted">Inadimplencia</small><h3>{{ inadimplencia }}%</h3><span class="text-success">abaixo da meta</span></div></div>
+        <div class="col-md-6 col-xl-3"><div class="finance-card"><small class="text-muted">Margem EBITDA</small><h3>{{ margem_ebitda }}%</h3><span class="text-success">subindo</span></div></div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="finance-card">
+                <h4 class="mb-3">Fluxo de caixa semanal</h4>
+                <div style="height: 300px;">
+                    <canvas id="fluxoChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="finance-card h-100">
+                <h4 class="mb-3">Contas criticas</h4>
+                {% for conta in contas %}
+                <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
+                    <div>
+                        <strong>{{ conta.titulo }}</strong>
+                        <div class="text-muted small">{{ conta.status }}</div>
+                    </div>
+                    <div>R$ {{ conta.valor }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('fluxoChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ fluxo_labels|safe }},
+            datasets: [
+                {
+                    label: 'Entradas',
+                    data: {{ fluxo_entrada|safe }},
+                    backgroundColor: '#0f766e'
+                },
+                {
+                    label: 'Saidas',
+                    data: {{ fluxo_saida|safe }},
+                    backgroundColor: '#d97706'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+});
+</script>
+{% endblock %}

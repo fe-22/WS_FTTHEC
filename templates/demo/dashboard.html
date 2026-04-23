@@ -1,294 +1,227 @@
 {% extends "base.html" %}
-{% load static %}
 
-{% block title %}Dashboard ERP - FTHEC{% endblock %}
+{% block title %}Dashboard Executivo - FTHEC{% endblock %}
+
+{% block extra_css %}
+<style>
+    .demo-shell {
+        padding: 24px 0 40px;
+    }
+
+    .demo-hero {
+        background: linear-gradient(135deg, #182432, #0f766e);
+        border-radius: 28px;
+        color: #fff;
+        padding: 32px;
+        margin-bottom: 24px;
+    }
+
+    .metric-card {
+        padding: 24px;
+        border-radius: 24px;
+        background: rgba(255,255,255,0.96);
+        box-shadow: 0 20px 40px rgba(24,36,50,0.08);
+        height: 100%;
+    }
+
+    .metric-card .metric-value {
+        font-size: 2rem;
+        font-weight: 800;
+    }
+
+    .soft-card {
+        border-radius: 24px;
+        background: rgba(255,255,255,0.94);
+        padding: 24px;
+        box-shadow: 0 20px 40px rgba(24,36,50,0.08);
+        height: 100%;
+    }
+
+    .pipeline-bar {
+        height: 12px;
+        border-radius: 999px;
+        background: #eef2f0;
+        overflow: hidden;
+    }
+
+    .pipeline-fill {
+        height: 100%;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <!-- Header -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h1 class="h3 mb-0 text-gray-800">
-                        <i class="fas fa-tachometer-alt text-primary me-2"></i>
-                        Dashboard ERP
-                    </h1>
-                    <p class="text-muted mb-0">Visão geral do seu negócio em tempo real</p>
+<div class="container-fluid demo-shell px-lg-4">
+    <div class="demo-hero">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <p class="section-kicker mb-2" style="color:#ffd8a8;">Dashboard Executivo</p>
+                <h1 class="display-6 fw-bold mb-3">Leitura rapida para diretoria comercial e operacional</h1>
+                <p class="mb-0 text-white-50">Visao consolidada de receita, funil, estoque, pedidos e eficiencia do atendimento.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="{% url 'financeiro_demo' %}" class="btn btn-light me-2">Financeiro</a>
+                <a href="{% url 'operacoes_demo' %}" class="btn btn-outline-light">Operacoes</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-6 col-xl-3">
+            <div class="metric-card">
+                <small class="text-muted">Vendas hoje</small>
+                <div class="metric-value">R$ {{ vendas_hoje|floatformat:2 }}</div>
+                <span class="text-success">+12,4% vs ontem</span>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="metric-card">
+                <small class="text-muted">Vendas do mes</small>
+                <div class="metric-value">R$ {{ vendas_mes|floatformat:2 }}</div>
+                <span class="text-success">meta em 91%</span>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="metric-card">
+                <small class="text-muted">Ticket medio</small>
+                <div class="metric-value">R$ {{ ticket_medio|floatformat:2 }}</div>
+                <span class="text-muted">carteira premium em alta</span>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="metric-card">
+                <small class="text-muted">SLA atendimento</small>
+                <div class="metric-value">{{ sla_atendimento }}%</div>
+                <span class="text-success">dentro da meta</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-xl-8">
+            <div class="soft-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h4 class="mb-1">Receitas x despesas</h4>
+                        <small class="text-muted">Ultimos 6 meses</small>
+                    </div>
+                    <span class="badge bg-light text-dark">Atualizado ha 3 min</span>
                 </div>
-                <div class="d-flex gap-2">
-                    <button class="btn btn-outline-primary">
-                        <i class="fas fa-download me-1"></i>Exportar Relatório
-                    </button>
-                    <button class="btn btn-primary">
-                        <i class="fas fa-plus me-1"></i>Novo Pedido
-                    </button>
+                <div style="height: 320px;">
+                    <canvas id="receitasDespesasChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4">
+            <div class="soft-card">
+                <h4 class="mb-3">Pipeline comercial</h4>
+                {% for etapa in pipeline %}
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>{{ etapa.etapa }}</span>
+                        <strong>{{ etapa.volume }}</strong>
+                    </div>
+                    <div class="pipeline-bar">
+                        <div class="pipeline-fill bg-{{ etapa.cor }}" style="width: {{ etapa.volume|floatformat:0 }}px;"></div>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="alert alert-warning mt-4 mb-0">
+                    {{ produtos_estoque_baixo }} produtos com estoque baixo e {{ pedidos_pendentes }} pedidos aguardando aprovacao.
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Cards de Métricas -->
-    <div class="row mb-4">
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Vendas Hoje
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                R$ {{ vendas_hoje|floatformat:2 }}
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+    <div class="row g-4">
+        <div class="col-xl-7">
+            <div class="soft-card">
+                <h4 class="mb-3">Produtos mais vendidos</h4>
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Vendas</th>
+                                <th>Receita</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for produto in produtos_mais_vendidos %}
+                            <tr>
+                                <td>{{ produto.nome }}</td>
+                                <td><span class="badge bg-dark">{{ produto.vendas }}</span></td>
+                                <td>R$ {{ produto.receita|floatformat:2 }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Vendas do Mês
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                R$ {{ vendas_mes|floatformat:2 }}
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+        <div class="col-xl-5">
+            <div class="soft-card h-100">
+                <h4 class="mb-3">Resumo operacional</h4>
+                <div class="d-flex justify-content-between py-3 border-bottom">
+                    <span>Clientes ativos</span>
+                    <strong>{{ clientes_ativos }}</strong>
                 </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Pedidos Pendentes
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                {{ pedidos_pendentes }}
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+                <div class="d-flex justify-content-between py-3 border-bottom">
+                    <span>Pedidos pendentes</span>
+                    <strong>{{ pedidos_pendentes }}</strong>
                 </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Clientes Ativos
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                {{ clientes_ativos }}
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-users fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+                <div class="d-flex justify-content-between py-3 border-bottom">
+                    <span>Produtos com risco</span>
+                    <strong>{{ produtos_estoque_baixo }}</strong>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Gráfico e Produtos -->
-    <div class="row">
-        <!-- Gráfico de Receitas vs Despesas -->
-        <div class="col-xl-8 col-lg-7 mb-4">
-            <div class="card shadow">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
-                        <i class="fas fa-chart-line me-1"></i>
-                        Receitas vs Despesas (Últimos 6 meses)
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <div class="chart-container" style="position: relative; height: 300px;">
-                        <canvas id="receitasDespesasChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Alertas -->
-        <div class="col-xl-4 col-lg-5 mb-4">
-            <div class="card shadow">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-warning">
-                        <i class="fas fa-exclamation-triangle me-1"></i>
-                        Alertas do Sistema
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <div class="alert alert-warning" role="alert">
-                        <i class="fas fa-exclamation-circle me-2"></i>
-                        <strong>{{ produtos_estoque_baixo }} produtos</strong> com estoque baixo
-                    </div>
-                    <div class="alert alert-info" role="alert">
-                        <i class="fas fa-info-circle me-2"></i>
-                        {{ pedidos_pendentes }} pedidos aguardando aprovação
-                    </div>
-                    <div class="alert alert-success" role="alert">
-                        <i class="fas fa-check-circle me-2"></i>
-                        Backup realizado com sucesso hoje
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Produtos Mais Vendidos -->
-    <div class="row">
-        <div class="col-12 mb-4">
-            <div class="card shadow">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
-                        <i class="fas fa-star me-1"></i>
-                        Produtos Mais Vendidos
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Produto</th>
-                                    <th class="text-center">Vendas</th>
-                                    <th class="text-end">Receita</th>
-                                    <th class="text-center">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for produto in produtos_mais_vendidos %}
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 35px; height: 35px;">
-                                                <i class="fas fa-box fa-sm"></i>
-                                            </div>
-                                            <div>
-                                                <div class="font-weight-bold">{{ produto.nome }}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge bg-primary">{{ produto.vendas }}</span>
-                                    </td>
-                                    <td class="text-end font-weight-bold">
-                                        R$ {{ produto.receita|floatformat:2 }}
-                                    </td>
-                                    <td class="text-center">
-                                        <button class="btn btn-sm btn-outline-primary me-1">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-secondary">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="d-flex justify-content-between py-3">
+                    <span>Canal com maior crescimento</span>
+                    <strong>Inside sales</strong>
                 </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
 
-<!-- Chart.js Script -->
+{% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const ctx = document.getElementById('receitasDespesasChart').getContext('2d');
-
-    const data = {
-        labels: {{ receitas_despesas|safe }},
-        datasets: [{
-            label: 'Receitas',
-            data: {{ receitas_despesas|safe }},
-            borderColor: 'rgb(40, 167, 69)',
-            backgroundColor: 'rgba(40, 167, 69, 0.1)',
-            tension: 0.4,
-            fill: true
-        }, {
-            label: 'Despesas',
-            data: {{ receitas_despesas|safe }},
-            borderColor: 'rgb(220, 53, 69)',
-            backgroundColor: 'rgba(220, 53, 69, 0.1)',
-            tension: 0.4,
-            fill: true
-        }]
-    };
-
     new Chart(ctx, {
         type: 'line',
-        data: data,
+        data: {
+            labels: {{ chart_labels|safe }},
+            datasets: [
+                {
+                    label: 'Receitas',
+                    data: {{ chart_receitas|safe }},
+                    borderColor: '#0f766e',
+                    backgroundColor: 'rgba(15, 118, 110, 0.12)',
+                    fill: true,
+                    tension: 0.35
+                },
+                {
+                    label: 'Despesas',
+                    data: {{ chart_despesas|safe }},
+                    borderColor: '#d97706',
+                    backgroundColor: 'rgba(217, 119, 6, 0.10)',
+                    fill: true,
+                    tension: 0.35
+                }
+            ]
+        },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    position: 'top',
-                },
-                title: {
-                    display: true,
-                    text: 'Receitas vs Despesas'
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: function(value) {
-                            return 'R$ ' + value.toLocaleString('pt-BR');
-                        }
-                    }
+                    position: 'top'
                 }
             }
         }
     });
 });
 </script>
-
-<style>
-.border-left-primary {
-    border-left: 0.25rem solid #4e73df !important;
-}
-.border-left-success {
-    border-left: 0.25rem solid #1cc88a !important;
-}
-.border-left-info {
-    border-left: 0.25rem solid #36b9cc !important;
-}
-.border-left-warning {
-    border-left: 0.25rem solid #f6c23e !important;
-}
-.text-primary {
-    color: #5a5c69 !important;
-}
-.text-gray-800 {
-    color: #5a5c69 !important;
-}
-</style>
 {% endblock %}

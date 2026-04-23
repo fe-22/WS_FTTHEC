@@ -1,187 +1,370 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
+{% load static %}
 
-{% block title %}WS_FTTHEC - Sistema ERP Inteligente{% endblock %}
+{% block title %}FTHEC - ERP, CRM e Automacao{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-shell {
+        padding: 42px 0 64px;
+    }
+
+    .hero-panel {
+        background: linear-gradient(135deg, rgba(15, 118, 110, 0.95), rgba(17, 24, 39, 0.96));
+        border-radius: 32px;
+        overflow: hidden;
+        color: #fff;
+        position: relative;
+    }
+
+    .hero-panel::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(circle at 15% 20%, rgba(255,255,255,0.16), transparent 26%),
+            radial-gradient(circle at 85% 25%, rgba(217,119,6,0.22), transparent 22%);
+        pointer-events: none;
+    }
+
+    .hero-copy,
+    .hero-visual {
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-copy {
+        padding: 72px 54px;
+    }
+
+    .hero-title {
+        font-size: clamp(2.5rem, 5vw, 4.9rem);
+        line-height: 0.95;
+        font-weight: 800;
+        letter-spacing: -0.05em;
+    }
+
+    .hero-lead {
+        max-width: 560px;
+        font-size: 1.1rem;
+        color: rgba(255,255,255,0.84);
+    }
+
+    .metric-strip {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 28px;
+    }
+
+    .metric-box {
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 22px;
+        padding: 18px 20px;
+        background: rgba(255,255,255,0.08);
+    }
+
+    .metric-box strong {
+        display: block;
+        font-size: 1.5rem;
+    }
+
+    .hero-visual {
+        min-height: 100%;
+        padding: 40px;
+    }
+
+    .dashboard-window {
+        background: rgba(255,255,255,0.96);
+        border-radius: 28px;
+        padding: 20px;
+        color: #12202e;
+        box-shadow: 0 24px 40px rgba(0,0,0,0.18);
+    }
+
+    .mini-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        margin-bottom: 14px;
+    }
+
+    .mini-stat,
+    .mini-chart,
+    .mini-list {
+        border-radius: 20px;
+        padding: 18px;
+        background: #f6f7f4;
+    }
+
+    .mini-chart {
+        height: 184px;
+        background:
+            linear-gradient(180deg, rgba(15,118,110,0.12), rgba(15,118,110,0.02)),
+            linear-gradient(90deg, rgba(24,36,50,0.05) 1px, transparent 1px),
+            linear-gradient(rgba(24,36,50,0.05) 1px, transparent 1px);
+        background-size: auto, 46px 46px, 46px 46px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .mini-chart::after {
+        content: "";
+        position: absolute;
+        left: 8%;
+        right: 8%;
+        bottom: 18%;
+        height: 52%;
+        border-bottom: 4px solid #0f766e;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        clip-path: polygon(0 72%, 18% 56%, 36% 62%, 54% 28%, 76% 36%, 100% 0, 100% 100%, 0 100%);
+        background: linear-gradient(180deg, rgba(15,118,110,0.16), rgba(15,118,110,0));
+    }
+
+    .gallery-card,
+    .model-card,
+    .story-card,
+    .sector-card {
+        overflow: hidden;
+        height: 100%;
+    }
+
+    .gallery-card img,
+    .story-card img {
+        width: 100%;
+        height: 240px;
+        object-fit: cover;
+    }
+
+    .showcase-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        border-radius: 999px;
+        padding: 10px 16px;
+        background: rgba(255,255,255,0.12);
+        font-size: 0.9rem;
+        margin-bottom: 22px;
+    }
+
+    .process-line {
+        border-left: 2px solid rgba(15, 118, 110, 0.18);
+        padding-left: 24px;
+        margin-left: 10px;
+    }
+
+    .process-item {
+        position: relative;
+        margin-bottom: 24px;
+    }
+
+    .process-item::before {
+        content: "";
+        position: absolute;
+        left: -31px;
+        top: 6px;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 0 8px rgba(217, 119, 6, 0.12);
+    }
+
+    .model-icon {
+        width: 62px;
+        height: 62px;
+        border-radius: 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        margin-bottom: 18px;
+        background: rgba(15, 118, 110, 0.12);
+        color: #0f766e;
+    }
+
+    .cta-band {
+        background: linear-gradient(135deg, #182432, #0f766e);
+        border-radius: 28px;
+        color: #fff;
+        padding: 42px;
+    }
+
+    @media (max-width: 991.98px) {
+        .hero-copy {
+            padding: 42px 28px 24px;
+        }
+
+        .hero-visual {
+            padding: 0 20px 28px;
+        }
+
+        .metric-strip {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="hero bg-primary text-white py-5">
+<section class="hero-shell">
     <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <h1 class="display-4 fw-bold">Transforme seu Negócio com Nosso ERP Inteligente</h1>
-                <p class="lead">Automatize processos, tome decisões melhores e cresça com um sistema completo integrado com IA.</p>
-                <div class="mt-4">
-                    <a href="#contato" class="btn btn-light btn-lg me-3">
-                        <i class="fas fa-calendar-check"></i> Fale com especialista
-                    </a>
-                    <a href="#vantagens" class="btn btn-outline-light btn-lg">
-                        <i class="fas fa-chart-line"></i> Conhecer Vantagens
-                    </a>
+        <div class="hero-panel">
+            <div class="row g-0 align-items-center">
+                <div class="col-lg-7 hero-copy">
+                    <div class="showcase-badge">
+                        <span class="section-kicker mb-0" style="color:#ffd8a8;">ERP COM IA</span>
+                        <span>Vendas, operacoes e financeiro no mesmo fluxo</span>
+                    </div>
+                    <h1 class="hero-title">ERP com cara de operacao real, nao de sistema generico.</h1>
+                    <p class="hero-lead mt-4">
+                        Centralize pedidos, leads, CRM, atendimento, dashboards e automacoes em uma experiencia mais clara para o time comercial e operacional.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3 mt-4">
+                        <a href="#contato" class="btn btn-light btn-lg px-4">Agendar demonstracao</a>
+                        <a href="#modelos" class="btn btn-outline-light btn-lg px-4">Ver modelos</a>
+                    </div>
+                    <div class="metric-strip">
+                        <div class="metric-box">
+                            <small>Tempo para decisao</small>
+                            <strong>-42%</strong>
+                            <span class="small">com dados diarios por area</span>
+                        </div>
+                        <div class="metric-box">
+                            <small>Leads acompanhados</small>
+                            <strong>3x</strong>
+                            <span class="small">mais visibilidade do funil</span>
+                        </div>
+                        <div class="metric-box">
+                            <small>Integracao</small>
+                            <strong>360</strong>
+                            <span class="small">operacao, comercial e financeiro</span>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-lg-6 text-center">
-                <img src="https://cdn.pixabay.com/photo/2017/08/01/00/38/man-2562325_1280.jpg" 
-                     class="img-fluid rounded shadow" 
-                     alt="ERP Moderno" 
-                     style="max-height: 400px;">
+                <div class="col-lg-5 hero-visual">
+                    <div class="dashboard-window">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <small class="text-muted d-block">Painel executivo</small>
+                                <strong>Visao da operacao</strong>
+                            </div>
+                            <span class="badge bg-success">Ao vivo</span>
+                        </div>
+                        <div class="mini-grid">
+                            <div class="mini-stat">
+                                <small class="text-muted">MRR</small>
+                                <h4 class="mb-1">R$ 126k</h4>
+                                <span class="text-success small">+8,4% no mes</span>
+                            </div>
+                            <div class="mini-stat">
+                                <small class="text-muted">SLA atendimento</small>
+                                <h4 class="mb-1">96%</h4>
+                                <span class="text-success small">dentro da meta</span>
+                            </div>
+                        </div>
+                        <div class="mini-chart mb-3"></div>
+                        <div class="mini-list">
+                            <div class="d-flex justify-content-between py-2 border-bottom">
+                                <span>Comercial</span>
+                                <strong>64 propostas</strong>
+                            </div>
+                            <div class="d-flex justify-content-between py-2 border-bottom">
+                                <span>Financeiro</span>
+                                <strong>2,8% inadimplencia</strong>
+                            </div>
+                            <div class="d-flex justify-content-between pt-2">
+                                <span>Operacoes</span>
+                                <strong>97,2% OTIF</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Vantagens -->
 <section id="vantagens" class="py-5">
     <div class="container">
-        <h2 class="text-center mb-5">Por que escolher nosso ERP?</h2>
-        
-        <div class="row">
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center p-4">
-                        <div class="mb-3">
-                            <i class="fas fa-robot fa-3x text-primary"></i>
-                        </div>
-                        <h4>Chatbot Inteligente</h4>
-                        <p>Assistente 24/7 que responde dúvidas, gera relatórios e ajuda na tomada de decisões.</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center p-4">
-                        <div class="mb-3">
-                            <i class="fas fa-bolt fa-3x text-success"></i>
-                        </div>
-                        <h4>Automação Total</h4>
-                        <p>Automatize processos repetitivos e ganhe tempo para focar no que realmente importa.</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center p-4">
-                        <div class="mb-3">
-                            <i class="fas fa-chart-bar fa-3x text-info"></i>
-                        </div>
-                        <h4>Relatórios em Tempo Real</h4>
-                        <p>Dashboards interativos com dados atualizados para decisões ágeis e precisas.</p>
-                    </div>
-                </div>
-            </div>
+        <div class="text-center mb-5">
+            <div class="section-kicker mb-2">Vantagens</div>
+            <h2 class="display-6 fw-bold">Uma vitrine mais forte para vender o valor do produto</h2>
+            <p class="text-muted mx-auto" style="max-width: 760px;">
+            </p>
         </div>
-        
-        <div class="row mt-4">
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center p-4">
-                        <div class="mb-3">
-                            <i class="fas fa-mobile-alt fa-3x text-warning"></i>
-                        </div>
-                        <h4>Acesso em Qualquer Lugar</h4>
-                        <p>Acesse o sistema de qualquer dispositivo, a qualquer hora.</p>
-                    </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-xl-3">
+                <div class="card p-4 h-100">
+                    <div class="model-icon"><i class="fas fa-chart-pie"></i></div>
+                    <h4>Dashboards por area</h4>
+                    <p class="text-muted mb-0">Modelos para diretoria, financeiro, operacao e ponto de venda.</p>
                 </div>
             </div>
-            
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center p-4">
-                        <div class="mb-3">
-                            <i class="fas fa-shield-alt fa-3x text-danger"></i>
-                        </div>
-                        <h4>Segurança Máxima</h4>
-                        <p>Seus dados protegidos com criptografia de ponta e backups automáticos.</p>
-                    </div>
+            <div class="col-md-6 col-xl-3">
+                <div class="card p-4 h-100">
+                    <div class="model-icon"><i class="fas fa-users-cog"></i></div>
+                    <h4>CRM e funil</h4>
+                    <p class="text-muted mb-0">Leads centralizados com leitura rapida da etapa comercial.</p>
                 </div>
             </div>
-            
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center p-4">
-                        <div class="mb-3">
-                            <i class="fas fa-headset fa-3x text-secondary"></i>
-                        </div>
-                        <h4>Suporte Dedicado</h4>
-                        <p>Equipe especializada para ajudar na implantação e no dia a dia.</p>
-                    </div>
+            <div class="col-md-6 col-xl-3">
+                <div class="card p-4 h-100">
+                    <div class="model-icon"><i class="fas fa-bolt"></i></div>
+                    <h4>Automacao pratica</h4>
+                    <p class="text-muted mb-0">Cadastro, atendimento e follow-up com menos retrabalho manual.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-3">
+                <div class="card p-4 h-100">
+                    <div class="model-icon"><i class="fas fa-mobile-screen-button"></i></div>
+                    <h4>Visual responsivo</h4>
+                    <p class="text-muted mb-0">Apresentacao melhor no desktop e leitura clara no celular.</p>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Formulário de Contato -->
-<section id="contato" class="py-5 bg-light">
+<section id="galeria" class="py-5">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-6">
-                <h2>Agende uma Demonstração Gratuita</h2>
-                <p class="lead">Descubra como nosso ERP pode transformar sua empresa.</p>
-                
-                <div class="mt-4">
-                    <h5><i class="fas fa-check text-success"></i> Sem compromisso</h5>
-                    <h5><i class="fas fa-check text-success"></i> Personalizado para seu negócio</h5>
-                    <h5><i class="fas fa-check text-success"></i> 30 minutos que valem ouro</h5>
-                </div>
-                
-                <!-- Chatbot Preview -->
-                <div class="mt-5">
-                    <h4>Experimente nosso Chatbot</h4>
-                    <p>Converse agora com nossa IA e veja como ela pode ajudar:</p>
-                    <a href="{% url 'chatbot_page' %}" class="btn btn-success">
-                        <i class="fas fa-robot"></i> Fale com nosso especialista
-                    </a>
+        <div class="row align-items-end mb-4">
+            <div class="col-lg-7">
+                <div class="section-kicker mb-2"></div>
+                <h2 class="display-6 fw-bold">
+            </div>
+            <div class="col-lg-5">
+                <p class="text-muted mb-0">
+
+                </p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="card gallery-card">
+                    <img src="{% static 'images/WhatsApp Image 2026-02-06 at 10.53.17.jpg' %}" alt="Equipe FTHEC em reuniao">
+                    <div class="p-4">
+                        <h4>Apresentacao comercial</h4>
+                        <p class="text-muted mb-0">Uso da propria imagem da empresa para dar identidade real ao produto.</p>
+                    </div>
                 </div>
             </div>
-            
-            <div class="col-lg-6">
-                <div class="card shadow">
-                    <div class="card-body p-4">
-                        <h4 class="card-title mb-4">Preencha para Agendar</h4>
-                        
-                        <form method="POST" action="{% url 'inscricao' %}">
-                            {% csrf_token %}
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Nome Completo *</label>
-                                <input type="text" name="nome" class="form-control" placeholder="Seu nome" required>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">E-mail *</label>
-                                <input type="email" name="email" class="form-control" placeholder="seu@email.com" required>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Telefone/WhatsApp</label>
-                                <input type="tel" name="telefone" class="form-control" placeholder="(11) 99999-9999">
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Empresa</label>
-                                <input type="text" name="empresa" class="form-control" placeholder="Nome da empresa">
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Cargo</label>
-                                <input type="text" name="cargo" class="form-control" placeholder="Seu cargo">
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Mensagem (Opcional)</label>
-                                <textarea name="mensagem" class="form-control" rows="3" placeholder="Alguma dúvida ou informação adicional?"></textarea>
-                            </div>
-                            
-                            <button type="submit" class="btn btn-primary btn-lg w-100">
-                                <i class="fas fa-paper-plane"></i> Solicitar Demonstração
-                            </button>
-                            
-                            <p class="text-muted small mt-3">
-                                * Campos obrigatórios. Entraremos em contato em até 24h.
-                            </p>
-                        </form>
+            <div class="col-lg-4">
+                <div class="card gallery-card">
+                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80" alt="Equipe analisando dashboard">
+                    <div class="p-4">
+                        <h4>Analise com contexto</h4>
+                        <p class="text-muted mb-0">Imagem de equipe em analise para reforcar decisao baseada em indicadores.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card gallery-card">
+                    <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80" alt="Operacao e tecnologia">
+                    <div class="p-4">
+                        <h4>Operacao integrada</h4>
+                        <p class="text-muted mb-0">Visual de tecnologia e operacao para conectar o discurso do ERP com rotina real.</p>
                     </div>
                 </div>
             </div>
@@ -189,56 +372,64 @@
     </div>
 </section>
 
-<!-- Depoimentos -->
+<section id="modelos" class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <div class="section-kicker mb-2">Modelos</div>
+            <h2 class="display-6 fw-bold">Tres estilos de dashboard para apresentar o sistema</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="card model-card p-4">
+                    <div class="model-icon"><i class="fas fa-gauge-high"></i></div>
+                    <h4>Executivo</h4>
+                    <p class="text-muted">Foco em receita, pedidos, carteira, produtos e alertas de direcao.</p>
+                    <a href="{% url 'dashboard_demo' %}" class="btn btn-outline-dark mt-3">Abrir dashboard</a>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card model-card p-4">
+                    <div class="model-icon"><i class="fas fa-wallet"></i></div>
+                    <h4>Financeiro</h4>
+                    <p class="text-muted">Fluxo de caixa, previsao, contas criticas e margem com leitura rapida.</p>
+                    <a href="{% url 'financeiro_demo' %}" class="btn btn-outline-dark mt-3">Abrir financeiro</a>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card model-card p-4">
+                    <div class="model-icon"><i class="fas fa-industry"></i></div>
+                    <h4>Operacional</h4>
+                    <p class="text-muted">Produtividade, OTIF, gargalos por equipe e alertas de execucao.</p>
+                    <a href="{% url 'operacoes_demo' %}" class="btn btn-outline-dark mt-3">Abrir operacoes</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section class="py-5">
     <div class="container">
-        <h2 class="text-center mb-5">O que dizem nossos clientes</h2>
-        
-        <div class="row">
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star text-warning"></i>
-                        </div>
-                        <p class="card-text">"O chatbot reduziu nosso tempo de resposta ao cliente em 70%. Incrível!"</p>
-                        <p class="card-text"><strong>Carlos Silva</strong><br>Diretor, TechSolutions</p>
-                    </div>
-                </div>
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-5">
+                <div class="section-kicker mb-2">Processo</div>
+                <h2 class="display-6 fw-bold">Como a demonstracao pode ser vendida no site</h2>
+                <p class="text-muted">A narrativa agora mostra o que o cliente enxerga primeiro, o que mede e o que ganha.</p>
             </div>
-            
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star text-warning"></i>
+            <div class="col-lg-7">
+                <div class="card p-4">
+                    <div class="process-line">
+                        <div class="process-item">
+                            <h5>1. Mapeamento do cenario</h5>
+                            <p class="text-muted mb-0">Entendimento de comercial, financeiro, operacao e atendimento.</p>
                         </div>
-                        <p class="card-text">"A automação de processos nos fez economizar 20 horas por semana."</p>
-                        <p class="card-text"><strong>Ana Santos</strong><br>Gerente, Logística Plus</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star text-warning"></i>
+                        <div class="process-item">
+                            <h5>2. Escolha do painel ideal</h5>
+                            <p class="text-muted mb-0">Demo executiva, financeira, operacional ou PDV conforme a dor principal.</p>
                         </div>
-                        <p class="card-text">"Implementação rápida e suporte excepcional. Recomendo!"</p>
-                        <p class="card-text"><strong>Roberto Lima</strong><br>CEO, Varejo Moderno</p>
+                        <div class="process-item mb-0">
+                            <h5>3. Implantacao com ganho visivel</h5>
+                            <p class="text-muted mb-0">KPI, rotina e fluxo definidos para o time conseguir usar de verdade.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -246,17 +437,103 @@
     </div>
 </section>
 
-<!-- CTA Final -->
-<section class="bg-dark text-white py-5">
-    <div class="container text-center">
-        <h2 class="mb-4">Pronto para transformar sua empresa?</h2>
-        <p class="lead mb-4">Mais de 500 empresas já confiam em nossa solução.</p>
-        <a href="#contato" class="btn btn-light btn-lg me-3">
-            <i class="fas fa-calendar-alt"></i> Agendar Agora
-        </a>
-        <a href="{% url 'chatbot_page' %}" class="btn btn-outline-light btn-lg">
-            <i class="fas fa-robot"></i> Falar com o Chatbot
-        </a>
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="card sector-card p-4 h-100">
+                    <h4>Industria</h4>
+                    <p class="text-muted mb-0">Chao de fabrica, indicadores de produtividade, retrabalho e abastecimento.</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card sector-card p-4 h-100">
+                    <h4>Distribuicao</h4>
+                    <p class="text-muted mb-0">Pedidos, expedicao, OTIF, embarque e monitoramento de carteira.</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card sector-card p-4 h-100">
+                    <h4>Servicos</h4>
+                    <p class="text-muted mb-0">Pipeline, agenda comercial, faturamento recorrente e SLA de atendimento.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="contato" class="py-5">
+    <div class="container">
+        <div class="cta-band mb-4">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-7">
+                    <div class="section-kicker mb-2" style="color:#ffd8a8;">Contato</div>
+                    <h2 class="fw-bold mb-3">Agende uma demonstracao e apresente um ERP com muito mais presenca visual.</h2>
+                    <p class="mb-0 text-white-50">Se quiser, depois eu ainda posso evoluir isso com imagens locais proprias, capturas de tela reais do sistema e identidade visual mais forte.</p>
+                </div>
+                <div class="col-lg-5 text-lg-end">
+                    <a href="{% url 'chatbot_page' %}" class="btn btn-outline-light btn-lg me-2">Falar com chatbot</a>
+                    <a href="{% url 'dashboard_demo' %}" class="btn btn-light btn-lg">Ver demo</a>
+                </div>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-5">
+                <div class="card story-card">
+                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80" alt="Reuniao de implantacao">
+                    <div class="p-4">
+                        <h4>Apresentacao com narrativa comercial</h4>
+                        <p class="text-muted mb-0">A pagina prepara melhor a conversa para a equipe comercial antes da demonstracao.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="card p-4 p-lg-5">
+                    <h3 class="mb-3">Solicitar demonstracao</h3>
+                    <form method="POST" action="{% url 'inscricao' %}">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Nome completo *</label>
+                                <input type="text" name="nome" class="form-control form-control-lg" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">E-mail *</label>
+                                <input type="email" name="email" class="form-control form-control-lg" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Telefone</label>
+                                <input type="tel" name="telefone" class="form-control form-control-lg">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Empresa</label>
+                                <input type="text" name="empresa" class="form-control form-control-lg">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Cargo</label>
+                                <input type="text" name="cargo" class="form-control form-control-lg">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Area de interesse</label>
+                                <select class="form-select form-select-lg">
+                                    <option>Dashboard executivo</option>
+                                    <option>Financeiro</option>
+                                    <option>Operacoes</option>
+                                    <option>PDV</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Mensagem</label>
+                                <textarea name="mensagem" rows="4" class="form-control form-control-lg"></textarea>
+                            </div>
+                            <div class="col-12 d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">Solicitar demonstracao</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 {% endblock %}

@@ -1,141 +1,159 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 {% load static %}
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}FTHEC - ERP Inteligente com IA{% endblock %}</title>
-    
-    <!-- Bootstrap 5 -->
+    <title>{% block title %}FTHEC - ERP Inteligente{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #4361ee;
-            --secondary-color: #3a0ca3;
-            --accent-color: #4cc9f0;
+            --bg: #f4f1ea;
+            --surface: #fffdf8;
+            --ink: #182432;
+            --muted: #5b6672;
+            --brand: #0f766e;
+            --brand-dark: #115e59;
+            --accent: #d97706;
+            --border: rgba(24, 36, 50, 0.08);
+            --shadow: 0 24px 60px rgba(24, 36, 50, 0.10);
         }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        .hero {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            padding: 100px 0;
-        }
-        
-        .navbar {
-            padding: 20px 0;
-            transition: all 0.3s;
-        }
-        
-        .navbar-scrolled {
-            padding: 10px 0;
-            background-color: rgba(255, 255, 255, 0.95) !important;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .card {
-            border: none;
-            border-radius: 15px;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-        }
-        
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-weight: 600;
-        }
-        
-        .btn-primary:hover {
-            background-color: var(--secondary-color);
-            border-color: var(--secondary-color);
-        }
-        
-        .section-title {
-            position: relative;
-            padding-bottom: 15px;
-            margin-bottom: 50px;
-        }
-        
-        .section-title:after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 4px;
-            background: var(--accent-color);
-            border-radius: 2px;
-        }
-        
-        footer {
-            background-color: #2b2d42;
-            color: #fff;
-            padding: 50px 0 20px;
-        }
-        
-        /* Smooth scrolling */
+
         html {
             scroll-behavior: smooth;
         }
+
+        body {
+            background:
+                radial-gradient(circle at top left, rgba(15, 118, 110, 0.14), transparent 32%),
+                radial-gradient(circle at top right, rgba(217, 119, 6, 0.12), transparent 28%),
+                linear-gradient(180deg, #fcfbf7 0%, var(--bg) 100%);
+            color: var(--ink);
+            font-family: "Outfit", sans-serif;
+        }
+
+        .navbar {
+            padding: 18px 0;
+            backdrop-filter: blur(10px);
+            background: rgba(24, 36, 50, 0.86) !important;
+            transition: all 0.25s ease;
+        }
+
+        .navbar-scrolled {
+            padding: 12px 0;
+            background: rgba(17, 24, 39, 0.94) !important;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.16);
+        }
+
+        .navbar-brand strong {
+            letter-spacing: 0.04em;
+            font-size: 0.96rem;
+        }
+
+        .nav-link,
+        .dropdown-item {
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background-color: var(--brand);
+            border-color: var(--brand);
+            border-radius: 999px;
+            font-weight: 700;
+            padding: 12px 26px;
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus {
+            background-color: var(--brand-dark);
+            border-color: var(--brand-dark);
+        }
+
+        .btn-outline-light,
+        .btn-outline-dark {
+            border-radius: 999px;
+        }
+
+        .card {
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.88);
+            box-shadow: var(--shadow);
+        }
+
+        .section-kicker {
+            color: var(--accent);
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+        }
+
+        .text-muted {
+            color: var(--muted) !important;
+        }
+
+        .message-wrap {
+            padding-top: 84px;
+        }
+
+        footer {
+            background: linear-gradient(180deg, #16202c 0%, #0f1721 100%);
+            color: #fff;
+            padding: 60px 0 24px;
+        }
+
+        footer a {
+            color: rgba(255, 255, 255, 0.86);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            color: #fff;
+        }
     </style>
-    
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
-                <img src="{% static 'images/logo.png' %}" alt="FTHEC Logo" style="height:40px; margin-right:10px;" />
-                <strong>FTHEC Sistemas & Automações</strong>
+                <img src="{% static 'images/logo.png' %}" alt="FTHEC Logo" style="height:40px; margin-right:10px;">
+                <strong>FTHEC Sistemas & Automacoes</strong>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'home' %}#vantagens">Vantagens</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}#galeria">Galeria</a>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="demoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-eye"></i> Demonstrações
+                            <i class="fas fa-eye me-1"></i>Demos
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="demoDropdown">
-                            <li><a class="dropdown-item" href="{% url 'dashboard_demo' %}">
-                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard ERP
-                            </a></li>
-                            <li><a class="dropdown-item" href="{% url 'pdv_demo' %}">
-                                <i class="fas fa-cash-register me-2"></i>Ponto de Venda
-                            </a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'home' %}#contato">
-                                <i class="fas fa-calendar-check me-2"></i>Agendar Demonstração
-                            </a></li>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="demoDropdown">
+                            <li><a class="dropdown-item" href="{% url 'dashboard_demo' %}">Dashboard executivo</a></li>
+                            <li><a class="dropdown-item" href="{% url 'financeiro_demo' %}">Dashboard financeiro</a></li>
+                            <li><a class="dropdown-item" href="{% url 'operacoes_demo' %}">Dashboard operacional</a></li>
+                            <li><a class="dropdown-item" href="{% url 'pdv_demo' %}">Ponto de venda</a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'chatbot_page' %}">
-                            <i class="fas fa-comments"></i> Chatbot
-                        </a>
+                        <a class="nav-link" href="{% url 'chatbot_page' %}">Chatbot</a>
                     </li>
                     {% if request.user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'crm' %}">
-                            <i class="fas fa-clipboard-list"></i> CRM
-                        </a>
+                        <a class="nav-link" href="{% url 'crm' %}">CRM</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'logout' %}">Sair</a>
@@ -145,18 +163,15 @@
                         <a class="nav-link" href="{% url 'login' %}">Entrar</a>
                     </li>
                     {% endif %}
-                    <li class="nav-item">
-                        <a class="btn btn-primary ms-2" href="{% url 'home' %}#contato">
-                            <i class="fas fa-calendar-check"></i> Agendar
-                        </a>
+                    <li class="nav-item ms-lg-3 mt-3 mt-lg-0">
+                        <a class="btn btn-primary" href="{% url 'home' %}#contato">Agendar demo</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Messages -->
-    <div class="container mt-5 pt-5">
+    <div class="container message-wrap">
         {% if messages %}
             {% for message in messages %}
             <div class="alert alert-{{ message.tags }} alert-dismissible fade show mt-3" role="alert">
@@ -167,73 +182,50 @@
         {% endif %}
     </div>
 
-    <!-- Main Content -->
     <main>
-        {% block content %}
-        {% endblock %}
+        {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
     <footer class="mt-5">
         <div class="container">
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    
-                    <p>ERP inteligente com chatbot integrado para transformar seu negócio.</p>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <h5 class="mb-3">FTHEC</h5>
+                    <p class="mb-0">ERP com foco em vendas, operacao, financeiro e atendimento com apoio de IA.</p>
                 </div>
-                <div class="col-md-4 mb-4">
-                    <h5>Links Rápidos</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="{% url 'home' %}" class="text-white">Home</a></li>
-                        <li><a href="{% url 'home' %}#vantagens" class="text-white">Vantagens</a></li>
-                        <li><a href="{% url 'home' %}#contato" class="text-white">Demonstração</a></li>
-                        <li><a href="{% url 'chatbot_page' %}" class="text-white">Chatbot</a></li>
-                    </ul>
+                <div class="col-md-4">
+                    <h5 class="mb-3">Acessos</h5>
+                    <p class="mb-2"><a href="{% url 'dashboard_demo' %}">Dashboard executivo</a></p>
+                    <p class="mb-2"><a href="{% url 'financeiro_demo' %}">Financeiro</a></p>
+                    <p class="mb-2"><a href="{% url 'operacoes_demo' %}">Operacoes</a></p>
+                    <p class="mb-0"><a href="{% url 'pdv_demo' %}">PDV</a></p>
                 </div>
-                <div class="col-md-4 mb-4">
-                    <h5>Contato</h5>
-                    <p><i class="fas fa-envelope"></i>fthec@fthec.com.br</p>
-                    <p><i class="fas fa-phone"></i> (11) 982170425</p>
-                </div>
-            </div>
-            <hr class="bg-white">
-            <div class="row text-center align-items-center">
-                <div class="col-md-6 mb-2">
-                    <p>CNPJ: 64.212.742/0001-63</p>
-                </div>
-                <div class="col-md-6 mb-2">
-                    <p>Parceiro: Moderniza</p>
-                    <!-- Logo será adicionado quando disponível -->
+                <div class="col-md-4">
+                    <h5 class="mb-3">Contato</h5>
+                    <p class="mb-2"><i class="fas fa-envelope me-2"></i>fthec@fthec.com.br</p>
+                    <p class="mb-2"><i class="fas fa-phone me-2"></i>(11) 98217-0425</p>
+                    <p class="mb-0"><i class="fas fa-building me-2"></i>CNPJ 64.212.742/0001-63</p>
                 </div>
             </div>
-            <div class="text-center pt-3">
-                <p>&copy; {% now "Y" %} FTHEC Sistemas & Automações. Todos os direitos reservados.</p>
-            </div>
-            <!-- Versículo bíblico adicionado -->
-            <div class="text-center pt-2 pb-2">
-                <p class="small fst-italic">
-                    <i class="fas fa-heart text-danger me-1"></i> 
-                    “Consagre ao Senhor todas as suas obras, e os seus planos serão bem-sucedidos.” — Provérbios 16:3
-                </p>
+            <hr class="my-4" style="border-color: rgba(255,255,255,0.15);">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+                <p class="mb-0">&copy; {% now "Y" %} FTHEC Sistemas & Automacoes.</p>
+                <p class="mb-0 small fst-italic">"Consagre ao Senhor todas as suas obras." Proverbios 16:3</p>
             </div>
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Navbar scroll effect -->
     <script>
     window.addEventListener('scroll', function() {
         const navbar = document.querySelector('.navbar');
-        if (window.scrollY > 50) {
+        if (window.scrollY > 40) {
             navbar.classList.add('navbar-scrolled');
         } else {
             navbar.classList.remove('navbar-scrolled');
         }
     });
     </script>
-    
     {% block extra_js %}{% endblock %}
 </body>
 </html>

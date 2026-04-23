@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Operacional - FTHEC{% endblock %}
+
+{% block extra_css %}
+<style>
+    .ops-shell {
+        padding: 24px 0 40px;
+    }
+
+    .ops-hero,
+    .ops-card {
+        border-radius: 26px;
+        box-shadow: 0 18px 38px rgba(24,36,50,0.08);
+    }
+
+    .ops-hero {
+        padding: 32px;
+        color: #fff;
+        background: linear-gradient(135deg, #182432, #2563eb);
+    }
+
+    .ops-card {
+        background: rgba(255,255,255,0.96);
+        padding: 24px;
+        height: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container ops-shell">
+    <div class="ops-hero mb-4">
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+            <div>
+                <p class="section-kicker mb-2" style="color:#bfdbfe;">Operacoes</p>
+                <h1 class="display-6 fw-bold mb-2">Modelo orientado a execucao diaria</h1>
+                <p class="mb-0 text-white-50">Leitura de gargalos, produtividade e alertas por equipe.</p>
+            </div>
+            <div><a href="{% url 'dashboard_demo' %}" class="btn btn-light">Voltar ao executivo</a></div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-6 col-xl-3"><div class="ops-card"><small class="text-muted">OTIF</small><h3>{{ otif }}%</h3></div></div>
+        <div class="col-md-6 col-xl-3"><div class="ops-card"><small class="text-muted">Tempo medio</small><h3>{{ tempo_medio }} min</h3></div></div>
+        <div class="col-md-6 col-xl-3"><div class="ops-card"><small class="text-muted">Retrabalho</small><h3>{{ retrabalho }}%</h3></div></div>
+        <div class="col-md-6 col-xl-3"><div class="ops-card"><small class="text-muted">Ocupacao</small><h3>{{ ocupacao }}%</h3></div></div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="ops-card">
+                <h4 class="mb-3">Ordens processadas por turno</h4>
+                <div style="height: 300px;">
+                    <canvas id="prodChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="ops-card">
+                <h4 class="mb-3">Alertas de hoje</h4>
+                {% for alerta in alertas %}
+                <div class="alert alert-light border">{{ alerta }}</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-1">
+        <div class="col-12">
+            <div class="ops-card">
+                <h4 class="mb-3">Comparativo por equipe</h4>
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Equipe</th>
+                                <th>Meta</th>
+                                <th>Realizado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for equipe in equipes %}
+                            <tr>
+                                <td>{{ equipe.nome }}</td>
+                                <td>{{ equipe.meta }}%</td>
+                                <td>
+                                    <span class="badge {% if equipe.realizado >= equipe.meta %}bg-success{% else %}bg-warning text-dark{% endif %}">
+                                        {{ equipe.realizado }}%
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('prodChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ prod_labels|safe }},
+            datasets: [{
+                label: 'Ordens processadas',
+                data: {{ prod_valores|safe }},
+                borderColor: '#2563eb',
+                backgroundColor: 'rgba(37, 99, 235, 0.10)',
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+});
+</script>
+{% endblock %}

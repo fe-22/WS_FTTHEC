@@ -27,6 +27,27 @@ steps:
       - 'push'
       - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$COMMIT_SHA'
 
+  # Executar migrations Django via Cloud SQL Auth Proxy
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        # Inicia o Cloud SQL Auth Proxy em background
+        wget -q https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.14.1/cloud-sql-proxy.linux.amd64 -O /cloud-sql-proxy
+        chmod +x /cloud-sql-proxy
+        /cloud-sql-proxy --unix-socket /cloudsql norse-wavelet-484820-u1:us-central1:free-trial-first-project &
+        sleep 3
+        # Instala dependências e executa migrate
+        pip install -r requirements.txt -q
+        CLOUD_SQL_CONNECTION_NAME=$_CLOUD_SQL_CONNECTION_NAME \
+        DB_NAME=$_DB_NAME \
+        DB_USER=$_DB_USER \
+        DB_PASSWORD=$$DB_PASSWORD \
+        SECRET_KEY=$$SECRET_KEY \
+        python manage.py migrate --noinput
+    secretEnv: ['SECRET_KEY', 'DB_PASSWORD']
+
   # Deploy to Cloud Run with Cloud SQL Auth Proxy
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
@@ -51,9 +72,9 @@ steps:
       - '10'
       # Cloud SQL Auth Proxy — conecta via Unix socket (sem TCP direto)
       - '--add-cloudsql-instances'
-      - '$_CLOUD_SQL_CONNECTION_NAME'
+      - 'norse-wavelet-484820-u1:us-central1:free-trial-first-project'
       - '--set-env-vars'
-      - 'DEBUG=False,DJANGO_SETTINGS_MODULE=erp_site.settings,CLOUD_SQL_CONNECTION_NAME=$_CLOUD_SQL_CONNECTION_NAME,DB_NAME=$_DB_NAME,DB_USER=$_DB_USER'
+      - 'DEBUG=False,DJANGO_SETTINGS_MODULE=erp_site.settings,CLOUD_SQL_CONNECTION_NAME=norse-wavelet-484820-u1:us-central1:free-trial-first-project,DB_NAME=$_DB_NAME,DB_USER=$_DB_USER'
       # Segredos do Secret Manager (evita expor credenciais em logs)
       # Pré-requisito: crie os segredos no Secret Manager com estes nomes exatos:
       #   gcloud secrets create SECRET_KEY --replication-policy="automatic"
@@ -65,3 +86,10 @@ steps:
 
 # Set timeout
 timeout: '1200s'
+
+availableSecrets:
+  secretManager:
+    - versionName: projects/$PROJECT_ID/secrets/SECRET_KEY/versions/latest
+      env: 'SECRET_KEY'
+    - versionName: projects/$PROJECT_ID/secrets/DB_PASSWORD/versions/latest
+      env: 'DB_PASSWORD'

@@ -1,14 +1,18 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 
-echo "=== Iniciando aplicacao ==="
+echo "=== Iniciando aplicacao Django ==="
 
-# Aguardar banco de dados estar pronto
-echo "Aguardando banco de dados..."
-sleep 10
-
-echo "Rodando migrations..."
+python manage.py collectstatic --noinput
 python manage.py migrate --noinput
 
-echo "Iniciando servidor Gunicorn..."
-exec gunicorn --bind 0.0.0.0:8080 --workers 2 --timeout 120 erp_site.wsgi:application
+HOST="${GUNICORN_HOST:-0.0.0.0}"
+PORT="${PORT:-8000}"
+WORKERS="${GUNICORN_WORKERS:-2}"
+TIMEOUT="${GUNICORN_TIMEOUT:-120}"
+
+echo "Subindo Gunicorn em ${HOST}:${PORT} com ${WORKERS} workers"
+exec gunicorn erp_site.wsgi:application \
+    --bind "${HOST}:${PORT}" \
+    --workers "${WORKERS}" \
+    --timeout "${TIMEOUT}"

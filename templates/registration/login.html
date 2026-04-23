@@ -9,6 +9,11 @@
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h3 class="card-title mb-4">Entrar</h3>
+                    {% if form.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        Usuario ou senha invalidos.
+                    </div>
+                    {% endif %}
                     <form method="post" action="{% url 'login' %}">
                         {% csrf_token %}
                         <div class="mb-3">
@@ -23,6 +28,9 @@
                             <input type="checkbox" name="remember_me" class="form-check-input" id="id_remember_me">
                             <label class="form-check-label" for="id_remember_me">Manter-me conectado</label>
                         </div>
+                        {% if next %}
+                        <input type="hidden" name="next" value="{{ next }}">
+                        {% endif %}
                         <button type="submit" class="btn btn-primary w-100">Entrar</button>
                     </form>
                 </div>
