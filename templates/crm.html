@@ -1,51 +1,643 @@
 {% extends 'base.html' %}
 
-{% block title %}CRM - Fthec Sistemas e Automação{% endblock %}
+{% block title %}CRM - FTHEC Sistemas e Automacoes{% endblock %}
+
+{% block extra_css %}
+<style>
+    .crm-shell {
+        padding-top: 3rem;
+        padding-bottom: 4rem;
+    }
+
+    .crm-hero {
+        padding: 2rem;
+        border-radius: 28px;
+        background:
+            radial-gradient(circle at top right, rgba(15, 118, 110, 0.18), transparent 30%),
+            linear-gradient(145deg, rgba(255, 253, 248, 0.98), rgba(255, 255, 255, 0.92));
+        border: 1px solid rgba(24, 36, 50, 0.08);
+        box-shadow: var(--shadow);
+    }
+
+    .crm-stat {
+        border-radius: 20px;
+        padding: 1rem 1.25rem;
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid rgba(24, 36, 50, 0.08);
+    }
+
+    .crm-stat .value {
+        font-size: 1.7rem;
+        font-weight: 800;
+        color: var(--ink);
+    }
+
+    .crm-panel {
+        border-radius: 28px;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(24, 36, 50, 0.08);
+        box-shadow: var(--shadow);
+    }
+
+    .crm-panel h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.35rem;
+    }
+
+    .crm-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.45rem 0.8rem;
+        border-radius: 999px;
+        background: rgba(15, 118, 110, 0.08);
+        color: var(--brand-dark);
+        font-size: 0.85rem;
+        font-weight: 700;
+    }
+
+    .crm-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+        gap: 1.5rem;
+    }
+
+    .crm-table {
+        margin-bottom: 0;
+    }
+
+    .crm-table th {
+        font-size: 0.78rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+        border-bottom-width: 1px;
+    }
+
+    .crm-table td {
+        vertical-align: top;
+    }
+
+    .crm-contact-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+    }
+
+    .crm-contact-list a,
+    .crm-contact-list span {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.3rem 0.6rem;
+        border-radius: 999px;
+        background: rgba(24, 36, 50, 0.06);
+        color: var(--ink);
+        text-decoration: none;
+        font-size: 0.82rem;
+    }
+
+    .crm-actions {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .crm-empty {
+        padding: 2rem 1rem;
+        text-align: center;
+        color: var(--muted);
+    }
+
+    .crm-loading {
+        display: none;
+        align-items: center;
+        gap: 0.6rem;
+        color: var(--muted);
+        font-weight: 600;
+    }
+
+    .crm-loading.is-visible {
+        display: inline-flex;
+    }
+
+    .crm-upload {
+        padding: 1rem 1.1rem;
+        border-radius: 22px;
+        background: rgba(15, 118, 110, 0.06);
+        border: 1px dashed rgba(15, 118, 110, 0.28);
+    }
+
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.35rem 0.65rem;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 700;
+    }
+
+    .status-pill.pending {
+        background: rgba(217, 119, 6, 0.12);
+        color: #9a6700;
+    }
+
+    .status-pill.done {
+        background: rgba(15, 118, 110, 0.12);
+        color: var(--brand-dark);
+    }
+
+    .status-pill.failed {
+        background: rgba(185, 28, 28, 0.1);
+        color: #b91c1c;
+    }
+
+    @media (max-width: 991px) {
+        .crm-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container mt-5 pt-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2>CRM de Leads</h2>
-            <p class="text-muted">Aqui você visualiza as inscrições e mensagens recebidas.</p>
+<section class="crm-shell">
+    <div class="container">
+        <div class="crm-hero mb-4">
+            <div class="row g-4 align-items-end">
+                <div class="col-lg-7">
+                    <span class="section-kicker">CRM Operacional</span>
+                    <h1 class="mt-2 mb-3">Leads do site e empresas para prospeccao em uma unica tela.</h1>
+                    <p class="text-muted mb-0">
+                        Primeiro atualize a base de empresas. Depois use os filtros para localizar empresas e complementar os contatos comerciais quando necessario.
+                    </p>
+                </div>
+                <div class="col-lg-5">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="crm-stat">
+                                <div class="text-muted small">Leads recebidos</div>
+                                <div class="value">{{ leads|length }}</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="crm-stat">
+                                <div class="text-muted small">Empresas na base</div>
+                                <div class="value">{{ empresas_count }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <form class="d-flex" method="get" action="{% url 'crm' %}">
-            <input type="search" name="q" class="form-control me-2" placeholder="Buscar por nome, email, empresa ou mensagem" value="{{ query }}">
-            <button class="btn btn-outline-primary" type="submit">Buscar</button>
-        </form>
-    </div>
 
-    <div class="table-responsive">
-        <table class="table table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>Data</th>
-                    <th>Nome</th>
-                    <th>Email</th>
-                    <th>Telefone</th>
-                    <th>Empresa</th>
-                    <th>Cargo</th>
-                    <th>Mensagem</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for lead in leads %}
-                    <tr>
-                        <td>{{ lead.data_inscricao|date:'d/m/Y H:i' }}</td>
-                        <td>{{ lead.nome }}</td>
-                        <td>{{ lead.email }}</td>
-                        <td>{{ lead.telefone|default:'-' }}</td>
-                        <td>{{ lead.empresa|default:'-' }}</td>
-                        <td>{{ lead.cargo|default:'-' }}</td>
-                        <td>{{ lead.mensagem|default:'-' }}</td>
-                    </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="7" class="text-center">Nenhum lead encontrado.</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="crm-grid">
+            <div class="crm-panel">
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+                    <div>
+                        <h3>Empresas para prospeccao</h3>
+                        <p class="text-muted mb-0">Atualize a base, aplique os filtros e trabalhe a lista comercial.</p>
+                    </div>
+                    <div class="crm-chip">
+                        <i class="fas fa-database"></i>
+                        Base sincronizada
+                    </div>
+                </div>
+
+                <form method="post" class="crm-upload mb-4">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="sincronizar_receita">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+                        <div>
+                            <h4 class="mb-1">Atualizar base de empresas</h4>
+                            <p class="text-muted mb-0">Use um recorte mais amplo para carregar a base. A busca detalhada acontece logo abaixo, sem novo download.</p>
+                        </div>
+                        <span class="crm-chip">
+                            <i class="fas fa-cloud-arrow-down"></i>
+                            Fonte de dados externa
+                        </span>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-lg-3">
+                            <label class="form-label">Referencia da base</label>
+                            <input type="text" class="form-control" name="release" placeholder="2026-04">
+                            <div class="form-text">
+                                Deixe em branco para usar a referencia mais recente disponivel.
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <label class="form-label">Abertura a partir de</label>
+                            <input type="date" class="form-control" name="data_inicio">
+                        </div>
+                        <div class="col-lg-3">
+                            <label class="form-label">Abertura ate</label>
+                            <input type="date" class="form-control" name="data_fim">
+                        </div>
+                        <div class="col-lg-3">
+                            <label class="form-label">UF da empresa</label>
+                            <input type="text" class="form-control" name="uf" maxlength="2" placeholder="SP">
+                        </div>
+                        <div class="col-lg-4">
+                            <label class="form-label">CNAE principal ou secundario</label>
+                            <input type="text" class="form-control" name="segmentos" placeholder="6201500, 6202300">
+                        </div>
+                        <div class="col-lg-4">
+                            <label class="form-label">Municipio</label>
+                            <input type="text" class="form-control" name="municipio" placeholder="Campinas">
+                        </div>
+                        <div class="col-lg-4">
+                            <label class="form-label">Mais de um municipio</label>
+                            <input type="text" class="form-control" name="municipios" placeholder="Campinas, Jundiai">
+                        </div>
+                        <div class="col-lg-3">
+                            <label class="form-label">Situacao cadastral</label>
+                            <input type="text" class="form-control" name="situacao_cadastral" value="{{ receita_sync_defaults.situacao_cadastral }}" placeholder="02">
+                        </div>
+                        <div class="col-lg-3">
+                            <label class="form-label">Quantidade maxima</label>
+                            <input type="number" class="form-control" name="limit" min="1" max="5000" value="{{ receita_sync_defaults.limit }}">
+                        </div>
+                        <div class="col-lg-3 d-flex align-items-end">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" value="on" id="matriz-only" name="matriz_only">
+                                <label class="form-check-label" for="matriz-only">
+                                    Apenas matriz
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 d-flex align-items-end">
+                            <div class="d-flex gap-2 flex-wrap">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-rotate me-2"></i>Atualizar base
+                                </button>
+                                <span class="crm-chip">
+                                    <i class="fas fa-database"></i>
+                                    Atualizacao manual
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+                    <div>
+                        <h4 class="mb-1">Buscar na base carregada</h4>
+                        <p class="text-muted mb-0">Esses filtros consultam somente os dados ja carregados no sistema.</p>
+                    </div>
+                </div>
+                <form id="empresa-filtros" class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label">Busca textual</label>
+                        <input type="text" class="form-control" name="q" placeholder="Nome da empresa, municipio, CNPJ ou CNAE">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Abertura a partir de</label>
+                        <input type="date" class="form-control" name="data_inicio">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Abertura ate</label>
+                        <input type="date" class="form-control" name="data_fim">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">CNAE principal ou secundario</label>
+                        <input type="text" class="form-control" name="segmentos" placeholder="6201500, 6202300">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">UF</label>
+                        <input type="text" class="form-control" name="uf" maxlength="2" placeholder="SP">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Municipio</label>
+                        <input type="text" class="form-control" name="municipio" placeholder="Campinas">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Situacao cadastral</label>
+                        <input type="text" class="form-control" name="situacao_cadastral" placeholder="02">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Resultados por pagina</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" name="limit" min="1" max="200" value="25">
+                            <span class="input-group-text">registros</span>
+                        </div>
+                    </div>
+                    <div class="col-12 d-flex gap-2 flex-wrap">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search me-2"></i>Buscar empresas
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" id="limpar-filtros">
+                            Limpar
+                        </button>
+                        <div class="crm-loading" id="empresas-loading">
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Consultando base
+                        </div>
+                    </div>
+                </form>
+
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                    <div>
+                        <strong id="empresas-count">0</strong> empresas encontradas
+                    </div>
+                    <div class="text-muted small" id="empresas-feedback">
+                        {% if empresas_count %}
+                        Base pronta para consulta.
+                        {% else %}
+                        Nenhuma empresa carregada ainda. Atualize a base para liberar a busca.
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table crm-table">
+                        <thead>
+                            <tr>
+                                <th>Empresa</th>
+                                <th>Abertura</th>
+                                <th>CNAE</th>
+                                <th>Contato</th>
+                                <th>Status</th>
+                                <th>Acoes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="empresas-results">
+                            <tr>
+                                <td colspan="6" class="crm-empty">Use os filtros acima para listar empresas ja carregadas na base.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="crm-panel">
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+                    <div>
+                        <h3>Leads recebidos</h3>
+                        <p class="text-muted mb-0">Fila comercial gerada pelo site institucional.</p>
+                    </div>
+                    <form class="d-flex" method="get" action="{% url 'crm' %}">
+                        <input type="search" name="q" class="form-control me-2" placeholder="Buscar lead" value="{{ query }}">
+                        <button class="btn btn-outline-primary" type="submit">Buscar</button>
+                    </form>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table crm-table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Lead</th>
+                                <th>Empresa</th>
+                                <th>Mensagem</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for lead in leads %}
+                            <tr>
+                                <td>{{ lead.data_inscricao|date:'d/m/Y H:i' }}</td>
+                                <td>
+                                    <strong>{{ lead.nome }}</strong><br>
+                                    <span class="text-muted small">{{ lead.email }}</span><br>
+                                    <span class="text-muted small">{{ lead.telefone|default:'-' }}</span>
+                                </td>
+                                <td>
+                                    {{ lead.empresa|default:'-' }}<br>
+                                    <span class="text-muted small">{{ lead.cargo|default:'-' }}</span>
+                                </td>
+                                <td class="text-muted">{{ lead.mensagem|default:'-' }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="crm-empty">Nenhum lead encontrado.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    (function() {
+        const apiUrl = "{% url 'crm_empresas_api' %}";
+        const enrichUrlTemplate = "{% url 'crm_empresa_enriquecer_api' 0 %}";
+        const form = document.getElementById("empresa-filtros");
+        const clearButton = document.getElementById("limpar-filtros");
+        const loadingNode = document.getElementById("empresas-loading");
+        const countNode = document.getElementById("empresas-count");
+        const feedbackNode = document.getElementById("empresas-feedback");
+        const resultsNode = document.getElementById("empresas-results");
+
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) {
+                return parts.pop().split(";").shift();
+            }
+            return "";
+        }
+
+        function escapeHtml(value) {
+            return (value || "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function formatDate(value) {
+            if (!value) {
+                return "-";
+            }
+            const [year, month, day] = value.split("-");
+            return `${day}/${month}/${year}`;
+        }
+
+        function statusLabel(status) {
+            if (status === "done") {
+                return "Enriquecido";
+            }
+            if (status === "failed") {
+                return "Falhou";
+            }
+            return "Pendente";
+        }
+
+        function renderContacts(empresa) {
+            const contatos = empresa.contatos_publicos || {};
+            const items = [];
+
+            if (empresa.email) {
+                items.push(`<a href="mailto:${escapeHtml(empresa.email)}">${escapeHtml(empresa.email)}</a>`);
+            }
+
+            if (empresa.telefone) {
+                items.push(`<span>${escapeHtml(empresa.telefone)}</span>`);
+            }
+
+            (contatos.emails || []).slice(0, 2).forEach((email) => {
+                if (email !== empresa.email) {
+                    items.push(`<a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a>`);
+                }
+            });
+
+            (contatos.telefones || []).slice(0, 2).forEach((telefone) => {
+                if (telefone !== empresa.telefone) {
+                    items.push(`<span>${escapeHtml(telefone)}</span>`);
+                }
+            });
+
+            (contatos.formularios || []).slice(0, 1).forEach((url) => {
+                items.push(`<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Formulario</a>`);
+            });
+
+            if (!items.length && empresa.site_url) {
+                items.push(`<a href="${escapeHtml(empresa.site_url)}" target="_blank" rel="noopener noreferrer">Site</a>`);
+            }
+
+            if (!items.length) {
+                return '<span class="text-muted small">Contato ainda nao localizado.</span>';
+            }
+
+            return `<div class="crm-contact-list">${items.join("")}</div>`;
+        }
+
+        function renderRows(results) {
+            if (!results.length) {
+                resultsNode.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="crm-empty">Nenhuma empresa encontrada para os filtros informados.</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            resultsNode.innerHTML = results.map((empresa) => `
+                <tr data-empresa-id="${empresa.id}">
+                    <td>
+                        <strong>${escapeHtml(empresa.razao_social)}</strong><br>
+                        <span class="text-muted small">${escapeHtml(empresa.nome_fantasia || "Sem fantasia")}</span><br>
+                        <span class="text-muted small">${escapeHtml(empresa.cnpj_formatado || empresa.cnpj)}</span><br>
+                        <span class="text-muted small">${escapeHtml(empresa.municipio || "-")}/${escapeHtml(empresa.uf || "-")}</span>
+                    </td>
+                    <td>
+                        ${formatDate(empresa.data_abertura)}<br>
+                        <span class="text-muted small">Situacao cadastral ${escapeHtml(empresa.situacao_cadastral || "-")}</span>
+                    </td>
+                    <td>
+                        <span class="crm-chip">${escapeHtml(empresa.cnae_principal || "-")}</span>
+                    </td>
+                    <td>${renderContacts(empresa)}</td>
+                    <td>
+                        <span class="status-pill ${escapeHtml(empresa.enrichment_status)}">
+                            ${statusLabel(empresa.enrichment_status)}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="crm-actions">
+                            <button type="button" class="btn btn-sm btn-outline-primary enrich-button" data-id="${empresa.id}">
+                                Enriquecer
+                            </button>
+                            ${empresa.site_url ? `<a class="btn btn-sm btn-outline-dark" href="${escapeHtml(empresa.site_url)}" target="_blank" rel="noopener noreferrer">Site</a>` : ""}
+                        </div>
+                    </td>
+                </tr>
+            `).join("");
+        }
+
+        async function fetchEmpresas() {
+            loadingNode.classList.add("is-visible");
+            feedbackNode.textContent = "Consultando empresas ja carregadas na base.";
+
+            const params = new URLSearchParams(new FormData(form));
+
+            try {
+                const response = await fetch(`${apiUrl}?${params.toString()}`, {
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest"
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error("Falha ao consultar empresas.");
+                }
+
+                const payload = await response.json();
+                countNode.textContent = payload.count;
+                feedbackNode.textContent = `Exibindo ${payload.results.length} de ${payload.count} empresas encontradas.`;
+                renderRows(payload.results);
+            } catch (error) {
+                countNode.textContent = "0";
+                feedbackNode.textContent = error.message;
+                resultsNode.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="crm-empty">Nao foi possivel consultar a base neste momento.</td>
+                    </tr>
+                `;
+            } finally {
+                loadingNode.classList.remove("is-visible");
+            }
+        }
+
+        async function enrichEmpresa(empresaId, button) {
+            const url = enrichUrlTemplate.replace("/0/", `/${empresaId}/`);
+            const originalLabel = button.textContent;
+            button.disabled = true;
+            button.textContent = "Enriquecendo...";
+
+            try {
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCookie("csrftoken"),
+                        "X-Requested-With": "XMLHttpRequest"
+                    },
+                    body: JSON.stringify({ discover_site: true })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Falha no enriquecimento.");
+                }
+
+                await fetchEmpresas();
+            } catch (error) {
+                feedbackNode.textContent = error.message;
+            } finally {
+                button.disabled = false;
+                button.textContent = originalLabel;
+            }
+        }
+
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+            fetchEmpresas();
+        });
+
+        clearButton.addEventListener("click", function() {
+            form.reset();
+            countNode.textContent = "0";
+            feedbackNode.textContent = "Filtros limpos. Execute uma nova busca quando quiser.";
+            resultsNode.innerHTML = `
+                <tr>
+                    <td colspan="6" class="crm-empty">Use os filtros acima para listar empresas ja carregadas na base.</td>
+                </tr>
+            `;
+        });
+
+        resultsNode.addEventListener("click", function(event) {
+            const button = event.target.closest(".enrich-button");
+            if (!button) {
+                return;
+            }
+
+            enrichEmpresa(button.dataset.id, button);
+        });
+    })();
+</script>
 {% endblock %}

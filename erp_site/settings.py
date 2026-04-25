@@ -182,6 +182,9 @@ CORS_ALLOW_HEADERS = [
 
 LEADS_CSV_PATH = Path(os.getenv("LEADS_CSV_PATH", BASE_DIR / "var" / "leads.csv"))
 LEADS_CSV_ENABLED = env_bool("LEADS_CSV_ENABLED", True)
+RECEITA_SYNC_CACHE_DIR = Path(
+    os.getenv("RECEITA_SYNC_CACHE_DIR", BASE_DIR / "var" / "receita_cache")
+)
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 USE_X_FORWARDED_HOST = env_bool("USE_X_FORWARDED_HOST", True)

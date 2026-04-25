@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}FTHEC - ERP Inteligente{% endblock %}</title>
+    <title>{% block title %}FTHEC - ERP Proprio para sua Operacao{% endblock %}</title>
     <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -124,7 +124,7 @@
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
                 <img src="{% static 'images/logo.png' %}" alt="FTHEC Logo" style="height:40px; margin-right:10px;">
-                <strong>FTHEC Sistemas & Automacoes</strong>
+                <strong>FTHEC ERP Proprio</strong>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -135,11 +135,11 @@
                         <a class="nav-link" href="{% url 'home' %}#vantagens">Vantagens</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}#galeria">Galeria</a>
+                        <a class="nav-link" href="{% url 'home' %}#prova">Resultados</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="demoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-eye me-1"></i>Demos
+                            <i class="fas fa-eye me-1"></i>Modelos
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="demoDropdown">
                             <li><a class="dropdown-item" href="{% url 'dashboard_demo' %}">Dashboard executivo</a></li>
@@ -164,7 +164,7 @@
                     </li>
                     {% endif %}
                     <li class="nav-item ms-lg-3 mt-3 mt-lg-0">
-                        <a class="btn btn-primary" href="{% url 'home' %}#contato">Agendar demo</a>
+                        <a class="btn btn-primary" href="{% url 'home' %}#contato">Solicitar diagnostico</a>
                     </li>
                 </ul>
             </div>
@@ -191,17 +191,17 @@
             <div class="row g-4">
                 <div class="col-md-4">
                     <h5 class="mb-3">FTHEC</h5>
-                    <p class="mb-0">ERP com foco em vendas, operacao, financeiro e atendimento com apoio de IA.</p>
+                    <p class="mb-0">ERP proprio para empresas que precisam controlar a operacao com mais autonomia, menos adaptacao forcada e mais resultado.</p>
                 </div>
                 <div class="col-md-4">
-                    <h5 class="mb-3">Acessos</h5>
-                    <p class="mb-2"><a href="{% url 'dashboard_demo' %}">Dashboard executivo</a></p>
-                    <p class="mb-2"><a href="{% url 'financeiro_demo' %}">Financeiro</a></p>
-                    <p class="mb-2"><a href="{% url 'operacoes_demo' %}">Operacoes</a></p>
-                    <p class="mb-0"><a href="{% url 'pdv_demo' %}">PDV</a></p>
+                    <h5 class="mb-3">O que entregamos</h5>
+                    <p class="mb-2"><a href="{% url 'dashboard_demo' %}">Visao executiva da empresa</a></p>
+                    <p class="mb-2"><a href="{% url 'financeiro_demo' %}">Controle financeiro confiavel</a></p>
+                    <p class="mb-2"><a href="{% url 'operacoes_demo' %}">Gestao operacional com indicadores</a></p>
+                    <p class="mb-0"><a href="{% url 'pdv_demo' %}">Frente de caixa e vendas</a></p>
                 </div>
                 <div class="col-md-4">
-                    <h5 class="mb-3">Contato</h5>
+                    <h5 class="mb-3">Fale com a FTHEC</h5>
                     <p class="mb-2"><i class="fas fa-envelope me-2"></i>fthec@fthec.com.br</p>
                     <p class="mb-2"><i class="fas fa-phone me-2"></i>(11) 98217-0425</p>
                     <p class="mb-0"><i class="fas fa-building me-2"></i>CNPJ 64.212.742/0001-63</p>

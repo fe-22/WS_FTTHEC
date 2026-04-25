@@ -7,9 +7,17 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.db.models import Q
-from django.shortcuts import redirect, render
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_http_methods
 
-from .models import Inscricao
+from .models import EmpresaReceita, Inscricao
+from .services import (
+    build_empresa_queryset,
+    discover_public_contacts,
+    serialize_empresa,
+    sync_receita_filtered_import,
+)
 
 
 def home(request):
@@ -123,6 +131,72 @@ def inscricao_view(request):
 @login_required
 def crm_view(request):
     """CRM de inscricoes e mensagens de leads."""
+    if request.method == "POST":
+        action = request.POST.get("action", "").strip()
+        if action == "sincronizar_receita":
+            filtros = {
+                "release": request.POST.get("release", "").strip(),
+                "data_inicio": request.POST.get("data_inicio", "").strip(),
+                "data_fim": request.POST.get("data_fim", "").strip(),
+                "segmentos": request.POST.get("segmentos", "").strip(),
+                "uf": request.POST.get("uf", "").strip().upper(),
+                "municipio": request.POST.get("municipio", "").strip(),
+                "municipios": request.POST.get("municipios", "").strip(),
+                "situacao_cadastral": request.POST.get("situacao_cadastral", "").strip(),
+                "matriz_only": request.POST.get("matriz_only") == "on",
+            }
+            limit_raw = request.POST.get("limit", "").strip()
+
+            if not any(
+                [
+                    filtros["data_inicio"],
+                    filtros["data_fim"],
+                    filtros["segmentos"],
+                    filtros["uf"],
+                    filtros["municipio"],
+                    filtros["municipios"],
+                ]
+            ):
+                messages.error(
+                    request,
+                    "Informe ao menos um filtro de recorte antes de sincronizar a base Receita.",
+                )
+                return redirect("crm")
+
+            try:
+                limit = int(limit_raw) if limit_raw else 500
+                limit = min(max(limit, 1), 5000)
+            except ValueError:
+                messages.error(request, "Informe um limite numerico valido para a sincronizacao.")
+                return redirect("crm")
+
+            try:
+                summary = sync_receita_filtered_import(
+                    cache_dir=settings.RECEITA_SYNC_CACHE_DIR,
+                    release=filtros["release"] or None,
+                    data_inicio=filtros["data_inicio"],
+                    data_fim=filtros["data_fim"],
+                    segmentos=filtros["segmentos"],
+                    uf=filtros["uf"],
+                    municipio=filtros["municipio"],
+                    municipios=filtros["municipios"],
+                    situacao_cadastral=filtros["situacao_cadastral"] or "02",
+                    matriz_only=filtros["matriz_only"],
+                    limit=limit,
+                )
+                messages.success(
+                    request,
+                    "Sincronizacao concluida. "
+                    f"Referencia: {summary['release']}. "
+                    f"Correspondencias: {summary['matched']}. "
+                    f"Criados: {summary['created']}. "
+                    f"Atualizados: {summary['updated']}.",
+                )
+            except Exception as exc:
+                messages.error(request, f"Falha ao sincronizar base da Receita: {exc}")
+
+            return redirect("crm")
+
     leads = Inscricao.objects.order_by("-data_inscricao")
     query = request.GET.get("q", "").strip()
     if query:
@@ -136,8 +210,95 @@ def crm_view(request):
     context = {
         "leads": leads,
         "query": query,
+        "empresas_count": EmpresaReceita.objects.count(),
+        "receita_sync_defaults": {
+            "situacao_cadastral": "02",
+            "limit": 500,
+        },
     }
     return render(request, "crm.html", context)
+
+
+@login_required
+@require_http_methods(["GET"])
+def crm_empresas_api(request):
+    """API para consulta de empresas importadas da base Receita."""
+    queryset = build_empresa_queryset(request.GET)
+    total = queryset.count()
+
+    try:
+        limit = min(max(int(request.GET.get("limit", 50)), 1), 200)
+    except (TypeError, ValueError):
+        limit = 50
+
+    try:
+        offset = max(int(request.GET.get("offset", 0)), 0)
+    except (TypeError, ValueError):
+        offset = 0
+
+    empresas = queryset[offset : offset + limit]
+    data = {
+        "count": total,
+        "limit": limit,
+        "offset": offset,
+        "results": [serialize_empresa(item) for item in empresas],
+    }
+    return JsonResponse(data)
+
+
+@login_required
+@require_http_methods(["POST"])
+def crm_empresa_enriquecer_api(request, empresa_id):
+    """Enriquece empresa com contatos comerciais publicos."""
+    empresa = get_object_or_404(EmpresaReceita, pk=empresa_id)
+
+    try:
+        payload = json.loads(request.body.decode("utf-8") or "{}")
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        payload = {}
+
+    discover_site = payload.get("discover_site", True)
+
+    try:
+        contatos_publicos, source_urls = discover_public_contacts(
+            empresa,
+            discover_site=discover_site,
+        )
+    except Exception as exc:
+        empresa.enrichment_status = "failed"
+        empresa.save(update_fields=["enrichment_status", "updated_at"])
+        return JsonResponse(
+            {
+                "ok": False,
+                "error": str(exc),
+                "empresa": serialize_empresa(empresa),
+            },
+            status=502,
+        )
+
+    empresa.contatos_publicos = contatos_publicos
+    empresa.enrichment_source_urls = source_urls
+    empresa.enrichment_status = "done"
+    empresa.enrichment_checked_at = datetime.datetime.now(datetime.timezone.utc)
+
+    if not empresa.site_url and source_urls:
+        empresa.site_url = source_urls[0]
+
+    if contatos_publicos["emails"] and not empresa.email:
+        empresa.email = contatos_publicos["emails"][0]
+
+    if contatos_publicos["telefones"] and not empresa.telefone:
+        empresa.telefone = contatos_publicos["telefones"][0]
+
+    empresa.save()
+
+    return JsonResponse(
+        {
+            "ok": True,
+            "empresa": serialize_empresa(empresa),
+            "source_urls": source_urls,
+        }
+    )
 
 
 def dashboard_demo(request):
