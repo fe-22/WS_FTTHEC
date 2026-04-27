@@ -8,7 +8,7 @@ try:
 except ImportError:
     dj_database_url = None
 
-load_dotenv()
+load_dotenv(override=True)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -30,8 +30,15 @@ SECRET_KEY = os.getenv(
     "django-insecure-dev-fallback-key-change-in-production-12345!@#",
 )
 DEBUG = env_bool("DEBUG", False)
+APP_ENV = os.getenv("APP_ENV", "production" if not DEBUG else "development").strip().lower()
+IS_DEVELOPMENT = APP_ENV in {"development", "dev", "local"}
 
 ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", "localhost,127.0.0.1")
+if IS_DEVELOPMENT:
+    for host in ("localhost", "127.0.0.1"):
+        if host not in ALLOWED_HOSTS:
+            ALLOWED_HOSTS.append(host)
+
 CSRF_TRUSTED_ORIGINS = env_list("CSRF_TRUSTED_ORIGINS")
 CORS_ALLOWED_ORIGINS = env_list("CORS_ALLOWED_ORIGINS")
 CORS_ALLOW_ALL_ORIGINS = env_bool("CORS_ALLOW_ALL_ORIGINS", False)
@@ -187,9 +194,9 @@ RECEITA_SYNC_CACHE_DIR = Path(
 )
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-USE_X_FORWARDED_HOST = env_bool("USE_X_FORWARDED_HOST", True)
+USE_X_FORWARDED_HOST = env_bool("USE_X_FORWARDED_HOST", not IS_DEVELOPMENT)
 
-if DEBUG:
+if IS_DEVELOPMENT:
     CSRF_COOKIE_SECURE = False
     SESSION_COOKIE_SECURE = False
     SECURE_SSL_REDIRECT = False

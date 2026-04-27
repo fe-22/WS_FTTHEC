@@ -2,6 +2,7 @@ FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+ENV PORT=8080
 
 WORKDIR /app
 
@@ -16,8 +17,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN chmod +x /app/start.sh
+RUN sed -i 's/\r$//' /app/start.sh && chmod +x /app/start.sh
 
-EXPOSE 8000
+EXPOSE 8080
 
-CMD ["/app/start.sh"]
+CMD ["sh", "/app/start.sh"]
