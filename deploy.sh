@@ -1,69 +1,99 @@
 #!/bin/bash
 
-# Script para deploy no Google Cloud Run
-# Uso: ./deploy.sh [PROJECT_ID]
+# Deploy Cloud Run (source deploy) para Django + Cloud SQL.
+# Uso:
+#   ./deploy.sh PROJECT_ID DOMAIN CLOUD_SQL_CONNECTION_NAME [REGION] [SERVICE_NAME]
+# Exemplo:
+#   ./deploy.sh meu-projeto fthec.com.br meu-projeto:southamerica-east1:erp-db southamerica-east1 ws-fthec
 
-set -e
+set -euo pipefail
 
-PROJECT_ID=${1:-"your-project-id"}
-SERVICE_NAME="ws-fthec"
-REGION="southamerica-east1"
-IMAGE_NAME="gcr.io/${PROJECT_ID}/${SERVICE_NAME}"
+PROJECT_ID="${1:-}"
+DOMAIN="${2:-}"
+CLOUD_SQL_CONNECTION_NAME="${3:-}"
+REGION="${4:-southamerica-east1}"
+SERVICE_NAME="${5:-ws-fthec}"
 
-echo "🚀 Iniciando deploy do WS_FTTHEC no Google Cloud Run"
-echo "📍 Projeto: ${PROJECT_ID}"
-echo "🌎 Região: ${REGION}"
-echo "🏷️  Serviço: ${SERVICE_NAME}"
-
-# Verificar se gcloud está instalado e configurado
-if ! command -v gcloud &> /dev/null; then
-    echo "❌ gcloud CLI não encontrado. Instale o Google Cloud SDK primeiro."
-    exit 1
+if [[ -z "${PROJECT_ID}" || -z "${DOMAIN}" || -z "${CLOUD_SQL_CONNECTION_NAME}" ]]; then
+  echo "Uso: ./deploy.sh PROJECT_ID DOMAIN CLOUD_SQL_CONNECTION_NAME [REGION] [SERVICE_NAME]"
+  exit 1
 fi
 
-# Verificar se está logado
-if ! gcloud auth list --filter=status:ACTIVE --format="value(account)" | head -n 1 > /dev/null; then
-    echo "❌ Você não está logado no gcloud. Execute: gcloud auth login"
-    exit 1
+if ! command -v gcloud >/dev/null 2>&1; then
+  echo "gcloud CLI nao encontrado. Instale o Google Cloud SDK."
+  exit 1
 fi
 
-# Configurar projeto
-echo "🔧 Configurando projeto: ${PROJECT_ID}"
-gcloud config set project ${PROJECT_ID}
+if ! gcloud auth list --filter=status:ACTIVE --format="value(account)" | head -n 1 >/dev/null; then
+  echo "Voce nao esta logado no gcloud. Execute: gcloud auth login"
+  exit 1
+fi
 
-# Habilitar APIs necessárias
-echo "🔌 Habilitando APIs necessárias..."
-gcloud services enable run.googleapis.com
-gcloud services enable containerregistry.googleapis.com
-gcloud services enable cloudbuild.googleapis.com
+echo "Iniciando deploy no Cloud Run"
+echo "Projeto: ${PROJECT_ID}"
+echo "Regiao: ${REGION}"
+echo "Servico: ${SERVICE_NAME}"
+echo "Dominio: ${DOMAIN}"
+echo "Cloud SQL: ${CLOUD_SQL_CONNECTION_NAME}"
 
-# Build e push da imagem
-echo "🏗️  Building e fazendo push da imagem Docker..."
-gcloud builds submit --tag ${IMAGE_NAME}:latest .
+gcloud config set project "${PROJECT_ID}"
 
-# Deploy no Cloud Run
-echo "🚀 Fazendo deploy no Cloud Run..."
-gcloud run deploy ${SERVICE_NAME} \
-    --image ${IMAGE_NAME}:latest \
-    --platform managed \
-    --region ${REGION} \
+echo "Habilitando APIs"
+gcloud services enable \
+  run.googleapis.com \
+  cloudbuild.googleapis.com \
+  artifactregistry.googleapis.com \
+  secretmanager.googleapis.com \
+  sqladmin.googleapis.com
+
+echo "Verificando segredos obrigatorios"
+gcloud secrets describe SECRET_KEY >/dev/null 2>&1 || {
+  echo "Secret SECRET_KEY nao encontrado."
+  echo "Crie com: echo -n 'sua_chave' | gcloud secrets create SECRET_KEY --replication-policy=automatic --data-file=-"
+  exit 1
+}
+gcloud secrets describe DB_PASSWORD >/dev/null 2>&1 || {
+  echo "Secret DB_PASSWORD nao encontrado."
+  echo "Crie com: echo -n 'sua_senha' | gcloud secrets create DB_PASSWORD --replication-policy=automatic --data-file=-"
+  exit 1
+}
+if ! gcloud secrets describe OPENAI_API_KEY >/dev/null 2>&1; then
+  echo "Aviso: secret OPENAI_API_KEY nao encontrado. O chatbot pode falhar sem ele."
+fi
+
+ALLOWED_HOSTS="${DOMAIN},www.${DOMAIN}"
+CSRF_TRUSTED_ORIGINS="https://${DOMAIN},https://www.${DOMAIN}"
+CORS_ALLOWED_ORIGINS="${CSRF_TRUSTED_ORIGINS}"
+DB_HOST="/cloudsql/${CLOUD_SQL_CONNECTION_NAME}"
+
+echo "Deploying source para Cloud Run"
+if gcloud secrets describe OPENAI_API_KEY >/dev/null 2>&1; then
+  gcloud run deploy "${SERVICE_NAME}" \
+    --source . \
+    --region "${REGION}" \
     --allow-unauthenticated \
-    --port 8080 \
+    --add-cloudsql-instances "${CLOUD_SQL_CONNECTION_NAME}" \
     --memory 1Gi \
     --cpu 1 \
     --max-instances 10 \
-    --set-env-vars DEBUG=False,DJANGO_SETTINGS_MODULE=erp_site.settings \
-    --set-secrets OPENAI_API_KEY=OPENAI_API_KEY:latest \
-    --set-secrets SECRET_KEY=SECRET_KEY:latest
+    --set-env-vars "DEBUG=False,DJANGO_SETTINGS_MODULE=erp_site.settings,ALLOWED_HOSTS=${ALLOWED_HOSTS},CSRF_TRUSTED_ORIGINS=${CSRF_TRUSTED_ORIGINS},CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS},DB_HOST=${DB_HOST},DB_PORT=3306,DB_NAME=erp_fthec,DB_USER=root,USE_X_FORWARDED_HOST=True,SECURE_SSL_REDIRECT=True" \
+    --set-secrets "SECRET_KEY=SECRET_KEY:latest,DB_PASSWORD=DB_PASSWORD:latest,OPENAI_API_KEY=OPENAI_API_KEY:latest"
+else
+  gcloud run deploy "${SERVICE_NAME}" \
+    --source . \
+    --region "${REGION}" \
+    --allow-unauthenticated \
+    --add-cloudsql-instances "${CLOUD_SQL_CONNECTION_NAME}" \
+    --memory 1Gi \
+    --cpu 1 \
+    --max-instances 10 \
+    --set-env-vars "DEBUG=False,DJANGO_SETTINGS_MODULE=erp_site.settings,ALLOWED_HOSTS=${ALLOWED_HOSTS},CSRF_TRUSTED_ORIGINS=${CSRF_TRUSTED_ORIGINS},CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS},DB_HOST=${DB_HOST},DB_PORT=3306,DB_NAME=erp_fthec,DB_USER=root,USE_X_FORWARDED_HOST=True,SECURE_SSL_REDIRECT=True" \
+    --set-secrets "SECRET_KEY=SECRET_KEY:latest,DB_PASSWORD=DB_PASSWORD:latest"
+fi
 
-# Obter URL do serviço
-SERVICE_URL=$(gcloud run services describe ${SERVICE_NAME} --region=${REGION} --format="value(status.url)")
+SERVICE_URL="$(gcloud run services describe "${SERVICE_NAME}" --region="${REGION}" --format='value(status.url)')"
 
 echo ""
-echo "✅ Deploy concluído com sucesso!"
-echo "🌐 URL do serviço: ${SERVICE_URL}"
-echo ""
-echo "📋 Próximos passos:"
-echo "1. Configure as secrets OPENAI_API_KEY e SECRET_KEY no Google Cloud Secret Manager"
-echo "2. Teste o chatbot em: ${SERVICE_URL}/ai_chat/"
-echo "3. Verifique os logs: gcloud logs read --service=${SERVICE_NAME} --region=${REGION}"
+echo "Deploy concluido."
+echo "URL do servico: ${SERVICE_URL}"
+echo "Teste: ${SERVICE_URL}/ai_chat/"
