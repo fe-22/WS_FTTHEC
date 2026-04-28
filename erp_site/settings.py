@@ -7,7 +7,7 @@ try:
 except ImportError:
     dj_database_url = None
 
-load_dotenv(override=True)
+load_dotenv(override=False)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -31,31 +31,44 @@ SECRET_KEY = os.getenv(
 )
 
 DEBUG = env_bool("DEBUG", False)
+RUNNING_ON_CLOUD_RUN = bool(os.getenv("K_SERVICE"))
 
 APP_ENV = os.getenv(
     "APP_ENV",
-    "production" if not DEBUG else "development"
+    "production" if (RUNNING_ON_CLOUD_RUN or not DEBUG) else "development",
 ).strip().lower()
 
 IS_DEVELOPMENT = APP_ENV in {"development", "dev", "local"}
 
 
 # 🔥 CLOUD RUN FIXES
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", "localhost,127.0.0.1")
+if RUNNING_ON_CLOUD_RUN:
+    ALLOWED_HOSTS.extend([".run.app", "run.app"])
+if IS_DEVELOPMENT:
+    for host in ("localhost", "127.0.0.1"):
+        if host not in ALLOWED_HOSTS:
+            ALLOWED_HOSTS.append(host)
+ALLOWED_HOSTS = list(dict.fromkeys(ALLOWED_HOSTS))
 
-CSRF_TRUSTED_ORIGINS = env_list(
-    "CSRF_TRUSTED_ORIGINS",
-    "https://*.run.app"
-)
+CSRF_TRUSTED_ORIGINS = env_list("CSRF_TRUSTED_ORIGINS")
+if RUNNING_ON_CLOUD_RUN:
+    CSRF_TRUSTED_ORIGINS.append("https://*.run.app")
+CSRF_TRUSTED_ORIGINS = list(dict.fromkeys(CSRF_TRUSTED_ORIGINS))
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_HOST = env_bool("USE_X_FORWARDED_HOST", RUNNING_ON_CLOUD_RUN)
 
-SECURE_SSL_REDIRECT = False
-SECURE_HSTS_SECONDS = 0
-
-CSRF_COOKIE_SECURE = False
-SESSION_COOKIE_SECURE = False
+if IS_DEVELOPMENT:
+    SECURE_SSL_REDIRECT = False
+    SECURE_HSTS_SECONDS = 0
+    CSRF_COOKIE_SECURE = False
+    SESSION_COOKIE_SECURE = False
+else:
+    SECURE_SSL_REDIRECT = env_bool("SECURE_SSL_REDIRECT", True)
+    SECURE_HSTS_SECONDS = int(os.getenv("SECURE_HSTS_SECONDS", "31536000"))
+    CSRF_COOKIE_SECURE = env_bool("CSRF_COOKIE_SECURE", True)
+    SESSION_COOKIE_SECURE = env_bool("SESSION_COOKIE_SECURE", True)
 
 
 # 🌐 CORS
