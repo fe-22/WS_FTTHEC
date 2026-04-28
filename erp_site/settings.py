@@ -33,13 +33,14 @@ DEBUG = env_bool("DEBUG", False)
 APP_ENV = os.getenv("APP_ENV", "production" if not DEBUG else "development").strip().lower()
 IS_DEVELOPMENT = APP_ENV in {"development", "dev", "local"}
 
-ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", "localhost,127.0.0.1")
+ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", "*")
 if IS_DEVELOPMENT:
     for host in ("localhost", "127.0.0.1"):
         if host not in ALLOWED_HOSTS:
             ALLOWED_HOSTS.append(host)
 
 CSRF_TRUSTED_ORIGINS = env_list("CSRF_TRUSTED_ORIGINS")
+CSRF_TRUSTED_ORIGINS = ["https://*.run.app"]
 CORS_ALLOWED_ORIGINS = env_list("CORS_ALLOWED_ORIGINS")
 CORS_ALLOW_ALL_ORIGINS = env_bool("CORS_ALLOW_ALL_ORIGINS", False)
 

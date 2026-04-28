@@ -50,10 +50,14 @@ Thumbs.db
 # Environment variables
 .env
 *.env
+.tmp_django_pid
 
 # Project data
 leads.csv
 *.csv
 erp_fthec_site.txt
+public_html_upload/
+requirements_windows.txt
+setup.sh
 
 WS_FTTHEC/
