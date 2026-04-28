@@ -41,7 +41,7 @@ IS_DEVELOPMENT = APP_ENV in {"development", "dev", "local"}
 
 
 # 🔥 CLOUD RUN FIXES
-ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", "*")
+ALLOWED_HOSTS = ["*"]
 
 CSRF_TRUSTED_ORIGINS = env_list(
     "CSRF_TRUSTED_ORIGINS",
