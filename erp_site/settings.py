@@ -50,7 +50,12 @@ CSRF_TRUSTED_ORIGINS = env_list(
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 USE_X_FORWARDED_HOST = True
-SECURE_SSL_REDIRECT = False  # importante para Cloud Run
+
+SECURE_SSL_REDIRECT = False
+SECURE_HSTS_SECONDS = 0
+
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
 
 
 # 🌐 CORS
@@ -107,7 +112,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "erp_site.wsgi.application"
 
 
-# 🗄️ Banco
+# 🗄️ BANCO (CORRIGIDO)
 database_url = os.getenv("DATABASE_URL", "").strip()
 
 if database_url:
@@ -116,11 +121,7 @@ if database_url:
             "DATABASE_URL definido, mas dj-database-url não instalado"
         )
     DATABASES = {
-        "default": dj_database_url.parse(
-            database_url,
-            conn_max_age=int(os.getenv("DB_CONN_MAX_AGE", "60")),
-            ssl_require=env_bool("DB_SSL_REQUIRE", False),
-        )
+        "default": dj_database_url.parse(database_url)
     }
 else:
     DATABASES = {
@@ -186,15 +187,3 @@ ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "fthec@fthec.com.br")
 LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "/crm/"
 LOGOUT_REDIRECT_URL = "/"
-
-
-# 🌐 CORS headers
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_HEADERS = [
-    "accept",
-    "authorization",
-    "content-type",
-    "origin",
-    "user-agent",
-    "x-csrftoken",
-]
