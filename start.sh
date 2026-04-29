@@ -1,18 +1,10 @@
 #!/bin/sh
-set -e
 
-echo "=== Iniciando aplicacao Django ==="
-
-python manage.py collectstatic --noinput
+echo "Running migrations..."
 python manage.py migrate --noinput
 
-HOST="${GUNICORN_HOST:-0.0.0.0}"
-PORT="${PORT:-8000}"
-WORKERS="${GUNICORN_WORKERS:-2}"
-TIMEOUT="${GUNICORN_TIMEOUT:-120}"
+echo "Collecting static files..."
+python manage.py collectstatic --noinput
 
-echo "Subindo Gunicorn em ${HOST}:${PORT} com ${WORKERS} workers"
-exec gunicorn erp_site.wsgi:application \
-    --bind "${HOST}:${PORT}" \
-    --workers "${WORKERS}" \
-    --timeout "${TIMEOUT}"
+echo "Starting Gunicorn..."
+gunicorn core.wsgi:application --bind 0.0.0.0:$PORT --workers 3
