@@ -9,7 +9,7 @@ Sistema ERP completo com chatbot integrado para automação empresarial.
 1. **Google Cloud SDK** instalado e configurado
 2. **Docker** instalado
 3. **Conta Google Cloud** com projeto criado
-4. **APIs habilitadas**: Cloud Run, Container Registry, Cloud Build
+4. **APIs habilitadas**: Cloud Run, Artifact Registry, Cloud Build
 
 ### Configuração Inicial
 
@@ -40,20 +40,33 @@ Execute o script de deploy:
 
 ```bash
 chmod +x deploy.sh
-./deploy.sh YOUR_PROJECT_ID
+./deploy.sh YOUR_PROJECT_ID SEU_DOMINIO CLOUD_SQL_CONNECTION_NAME [REGION] [SERVICE_NAME]
 ```
 
 ### Deploy Manual
 
-Se preferir fazer manualmente:
+Se preferir fazer manualmente (Artifact Registry):
 
 ```bash
-# Build e push da imagem
-gcloud builds submit --tag gcr.io/YOUR_PROJECT_ID/ws-fthec:latest .
+# Defina variaveis
+PROJECT_ID="YOUR_PROJECT_ID"
+REGION="southamerica-east1"
+AR_REPO="ws-fthec"
+SERVICE_NAME="ws-fthec"
+
+# Crie o repositorio Docker no Artifact Registry (uma vez)
+gcloud artifacts repositories create "$AR_REPO" \
+  --repository-format=docker \
+  --location="$REGION" \
+  --description="Docker images for $SERVICE_NAME"
+
+# Build e push da imagem no Artifact Registry
+gcloud builds submit \
+  --tag "$REGION-docker.pkg.dev/$PROJECT_ID/$AR_REPO/$SERVICE_NAME:latest" .
 
 # Deploy no Cloud Run
 gcloud run deploy ws-fthec \
-    --image gcr.io/YOUR_PROJECT_ID/ws-fthec:latest \
+    --image "$REGION-docker.pkg.dev/$PROJECT_ID/$AR_REPO/$SERVICE_NAME:latest" \
     --platform managed \
     --region southamerica-east1 \
     --allow-unauthenticated \
@@ -145,6 +158,7 @@ git add .
 git commit -m "Atualização do sistema"
 git push
 ./deploy.sh YOUR_PROJECT_ID
+./deploy.sh YOUR_PROJECT_ID SEU_DOMINIO CLOUD_SQL_CONNECTION_NAME [REGION] [SERVICE_NAME]
 ```
 
 ---
