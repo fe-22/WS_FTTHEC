@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.db.models import Q
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_http_methods
 
@@ -21,7 +21,7 @@ from .services import (
 
 
 def home(request):
-    return HttpResponse("OK")
+    return render(request, "home.html")
 
 
 def inscricao_view(request):
