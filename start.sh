@@ -7,4 +7,4 @@ echo "Collecting static files..."
 python manage.py collectstatic --noinput
 
 echo "Starting Gunicorn..."
-gunicorn core.wsgi:application --bind 0.0.0.0:$PORT --workers 3
+gunicorn erp_site.wsgi:application --bind 0.0.0.0:$PORT --workers 3
