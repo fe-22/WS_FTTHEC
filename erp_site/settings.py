@@ -205,3 +205,7 @@ ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "fthec@fthec.com.br")
 LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "/crm/"
 LOGOUT_REDIRECT_URL = "/"
+
+# Registro publico (desabilitado por padrao)
+ALLOW_PUBLIC_CRM_REGISTRATION = env_bool("ALLOW_PUBLIC_CRM_REGISTRATION", False)
+CRM_INVITE_MAX_AGE_SECONDS = int(os.getenv("CRM_INVITE_MAX_AGE_SECONDS", "86400"))

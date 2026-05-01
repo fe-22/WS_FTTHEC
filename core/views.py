@@ -4,13 +4,17 @@ from pathlib import Path
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth import login
+from django.contrib.auth.models import User
 from django.core.mail import send_mail
+from django.core.signing import BadSignature, SignatureExpired, dumps, loads
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_http_methods
 
+from .forms import CRMInviteCreateForm, CRMInviteSetPasswordForm, CRMUserCreationForm
 from .models import EmpresaReceita, Inscricao
 from .services import (
     build_empresa_queryset,
@@ -22,6 +26,95 @@ from .services import (
 
 def home(request):
     return render(request, "home.html")
+
+
+def crm_register_view(request):
+    if not getattr(settings, "ALLOW_PUBLIC_CRM_REGISTRATION", False):
+        messages.error(request, "Cadastro de acesso desabilitado.")
+        return redirect("login")
+
+    if request.method == "POST":
+        form = CRMUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, "Acesso criado com sucesso.")
+            return redirect("crm")
+    else:
+        form = CRMUserCreationForm()
+
+    return render(request, "registration/register.html", {"form": form})
+
+
+@login_required
+@user_passes_test(lambda user: user.is_staff)
+def crm_invite_create_view(request):
+    invite_url = None
+    invite_username = None
+
+    if request.method == "POST":
+        form = CRMInviteCreateForm(request.POST)
+        if form.is_valid():
+            invite_username = form.cleaned_data["username"]
+            token = dumps(
+                {"username": invite_username},
+                salt="crm-register-invite",
+            )
+            invite_url = request.build_absolute_uri(
+                f"/accounts/register/invite/{token}/"
+            )
+            messages.success(request, "Convite gerado com sucesso.")
+    else:
+        form = CRMInviteCreateForm()
+
+    context = {
+        "form": form,
+        "invite_url": invite_url,
+        "invite_username": invite_username,
+        "invite_max_age_hours": int(getattr(settings, "CRM_INVITE_MAX_AGE_SECONDS", 86400) / 3600),
+    }
+    return render(request, "registration/invite_create.html", context)
+
+
+def crm_register_invite_view(request, token):
+    max_age = int(getattr(settings, "CRM_INVITE_MAX_AGE_SECONDS", 86400))
+
+    try:
+        payload = loads(token, salt="crm-register-invite", max_age=max_age)
+        username = payload["username"].strip()
+    except SignatureExpired:
+        messages.error(request, "Este convite expirou.")
+        return redirect("login")
+    except (BadSignature, KeyError, AttributeError):
+        messages.error(request, "Convite invalido.")
+        return redirect("login")
+
+    if User.objects.filter(username=username).exists():
+        messages.error(request, "Este convite ja foi utilizado.")
+        return redirect("login")
+
+    if request.method == "POST":
+        form = CRMInviteSetPasswordForm(request.POST)
+        if form.is_valid():
+            user = User.objects.create_user(
+                username=username,
+                password=form.cleaned_data["password1"],
+            )
+            login(request, user)
+            messages.success(request, "Conta criada com sucesso.")
+            return redirect("crm")
+    else:
+        form = CRMInviteSetPasswordForm()
+
+    return render(
+        request,
+        "registration/register_invite.html",
+        {
+            "form": form,
+            "username": username,
+            "invite_max_age_hours": int(max_age / 3600),
+        },
+    )
 
 
 def inscricao_view(request):
@@ -210,6 +303,7 @@ def crm_view(request):
         "leads": leads,
         "query": query,
         "empresas_count": EmpresaReceita.objects.count(),
+        "can_manage_invites": request.user.is_staff,
         "receita_sync_defaults": {
             "situacao_cadastral": "02",
             "limit": 500,

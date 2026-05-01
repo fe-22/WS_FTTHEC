@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Convite CRM - Fthec Sistemas e Automação{% endblock %}
+
+{% block content %}
+<div class="container mt-5 pt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title mb-4">Gerar convite de acesso</h3>
+                    <form method="post">
+                        {% csrf_token %}
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for error in form.non_field_errors %}
+                            <div>{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <div class="mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">Usuário do novo acesso</label>
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                            <small class="text-danger">{{ form.username.errors|join:", " }}</small>
+                            {% endif %}
+                        </div>
+                        <button type="submit" class="btn btn-primary">Gerar convite</button>
+                        <a href="{% url 'crm' %}" class="btn btn-outline-secondary ms-2">Voltar ao CRM</a>
+                    </form>
+
+                    {% if invite_url %}
+                    <hr>
+                    <p class="mb-2"><strong>Convite criado para:</strong> {{ invite_username }}</p>
+                    <p class="mb-2"><strong>Validade:</strong> {{ invite_max_age_hours }} horas</p>
+                    <div class="alert alert-info mb-0" role="alert" style="word-break: break-all;">
+                        {{ invite_url }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

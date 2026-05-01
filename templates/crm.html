@@ -173,6 +173,13 @@
                     </p>
                 </div>
                 <div class="col-lg-5">
+                    {% if can_manage_invites %}
+                    <div class="d-flex justify-content-end mb-3">
+                        <a href="{% url 'crm_invite_create' %}" class="btn btn-outline-dark btn-sm">
+                            Gerar convite de acesso
+                        </a>
+                    </div>
+                    {% endif %}
                     <div class="row g-3">
                         <div class="col-6">
                             <div class="crm-stat">
