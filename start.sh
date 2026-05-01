@@ -1,10 +1,10 @@
 #!/bin/sh
+set -e
 
-echo "Running migrations..."
-python manage.py migrate --noinput
+echo "=== Django start ==="
 
-echo "Collecting static files..."
-python manage.py collectstatic --noinput
-
-echo "Starting Gunicorn..."
-gunicorn erp_site.wsgi:application --bind 0.0.0.0:$PORT --workers 3
+exec gunicorn erp_site.wsgi:application \
+  --bind 0.0.0.0:${PORT:-8080} \
+  --workers 1 \
+  --threads 1 \
+  --timeout 180
