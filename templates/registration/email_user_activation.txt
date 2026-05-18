@@ -1,0 +1,8 @@
+Ola {{ nome }},
+
+Recebemos seu cadastro no CRM.
+
+Para ativar seu acesso e definir sua senha, abra este link:
+{{ activation_url }}
+
+Se voce nao solicitou este cadastro, ignore este e-mail.

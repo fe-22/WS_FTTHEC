@@ -1,5 +1,6 @@
 import datetime
 import json
+import os
 from pathlib import Path
 
 from django.conf import settings
@@ -12,16 +13,48 @@ from django.core.signing import BadSignature, SignatureExpired, dumps, loads
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
 from django.views.decorators.http import require_http_methods
 
-from .forms import CRMInviteCreateForm, CRMInviteSetPasswordForm, CRMUserCreationForm
-from .models import EmpresaReceita, Inscricao
+from .forms import (
+    CRMInviteCreateForm,
+    CRMInviteSetPasswordForm,
+    CRMPublicRegistrationForm,
+)
+from .models import CRMAccessRequest, EmpresaReceita, Inscricao
 from .services import (
     build_empresa_queryset,
     discover_public_contacts,
     serialize_empresa,
     sync_receita_filtered_import,
 )
+
+try:
+    from google.cloud import firestore
+except ImportError:
+    firestore = None
+
+
+def _get_firestore_client():
+    if firestore is None:
+        return None
+    try:
+        project_id = os.getenv("FIRESTORE_PROJECT_ID", "").strip() or None
+        if project_id:
+            return firestore.Client(project=project_id)
+        return firestore.Client()
+    except Exception:
+        return None
+
+
+def _save_inscricao_firestore(payload):
+    client = _get_firestore_client()
+    if client is None:
+        return False
+    data = dict(payload)
+    data["created_at"] = firestore.SERVER_TIMESTAMP
+    client.collection("inscricoes").add(data)
+    return True
 
 
 def home(request):
@@ -34,16 +67,69 @@ def crm_register_view(request):
         return redirect("login")
 
     if request.method == "POST":
-        form = CRMUserCreationForm(request.POST)
+        form = CRMPublicRegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            nome = form.cleaned_data["nome"].strip()
+            email = form.cleaned_data["email"].strip().lower()
+            empresa = form.cleaned_data["empresa"].strip()
+            telefone = form.cleaned_data["telefone"].strip()
+            password = form.cleaned_data["password1"]
+
+            user, created = User.objects.get_or_create(
+                username=email,
+                defaults={
+                    "email": email,
+                    "first_name": nome,
+                    "is_active": True,
+                },
+            )
+            if not created and user.is_active:
+                messages.error(request, "Este e-mail ja possui acesso ativo.")
+                return redirect("login")
+
+            user.email = email
+            user.first_name = nome
+            user.is_active = True
+            user.set_password(password)
+            user.save()
+
+            CRMAccessRequest.objects.update_or_create(
+                user=user,
+                defaults={
+                    "empresa": empresa,
+                    "telefone": telefone,
+                    "status": "active",
+                },
+            )
+
+            send_mail(
+                subject=f"[FTHEC CRM] Novo cadastro ativo - {empresa}",
+                message=render_to_string(
+                    "registration/email_admin_new_signup.txt",
+                    {
+                        "nome": nome,
+                        "email": email,
+                        "empresa": empresa,
+                        "telefone": telefone,
+                        "status": "active",
+                    },
+                ),
+                from_email=getattr(settings, "DEFAULT_FROM_EMAIL", "fthec@fthec.com.br"),
+                recipient_list=[getattr(settings, "ADMIN_EMAIL", "fthec@fthec.com.br")],
+                fail_silently=True,
+            )
             login(request, user)
-            messages.success(request, "Acesso criado com sucesso.")
+            messages.success(request, "Cadastro concluido com sucesso.")
             return redirect("crm")
     else:
-        form = CRMUserCreationForm()
+        form = CRMPublicRegistrationForm()
 
     return render(request, "registration/register.html", {"form": form})
+
+
+def crm_activate_account_view(request, uidb64, token):
+    messages.info(request, "Fluxo de ativacao por e-mail desativado.")
+    return redirect("crm_register")
 
 
 @login_required
@@ -143,14 +229,16 @@ def inscricao_view(request):
                             f"{timestamp},{nome},{email},{telefone},{empresa},{cargo},{mensagem}\n"
                         )
 
-                Inscricao.objects.create(
-                    nome=nome,
-                    email=email,
-                    telefone=telefone,
-                    empresa=empresa,
-                    cargo=cargo,
-                    mensagem=mensagem,
-                )
+                payload = {
+                    "nome": nome,
+                    "email": email,
+                    "telefone": telefone,
+                    "empresa": empresa,
+                    "cargo": cargo,
+                    "mensagem": mensagem,
+                }
+                if not _save_inscricao_firestore(payload):
+                    Inscricao.objects.create(**payload)
 
                 email_backend = getattr(
                     settings,
@@ -223,9 +311,13 @@ def inscricao_view(request):
 @login_required
 def crm_view(request):
     """CRM de inscricoes e mensagens de leads."""
+    crm_receita_enabled = getattr(settings, "CRM_RECEITA_ENABLED", False)
     if request.method == "POST":
         action = request.POST.get("action", "").strip()
         if action == "sincronizar_receita":
+            if not crm_receita_enabled:
+                messages.info(request, "Integracao com Receita desativada neste ambiente.")
+                return redirect("crm")
             filtros = {
                 "release": request.POST.get("release", "").strip(),
                 "data_inicio": request.POST.get("data_inicio", "").strip(),
@@ -302,7 +394,8 @@ def crm_view(request):
     context = {
         "leads": leads,
         "query": query,
-        "empresas_count": EmpresaReceita.objects.count(),
+        "empresas_count": EmpresaReceita.objects.count() if crm_receita_enabled else 0,
+        "crm_receita_enabled": crm_receita_enabled,
         "can_manage_invites": request.user.is_staff,
         "receita_sync_defaults": {
             "situacao_cadastral": "02",
@@ -316,6 +409,11 @@ def crm_view(request):
 @require_http_methods(["GET"])
 def crm_empresas_api(request):
     """API para consulta de empresas importadas da base Receita."""
+    if not getattr(settings, "CRM_RECEITA_ENABLED", False):
+        return JsonResponse(
+            {"ok": False, "error": "Integracao com Receita desativada."},
+            status=503,
+        )
     queryset = build_empresa_queryset(request.GET)
     total = queryset.count()
 
@@ -343,6 +441,11 @@ def crm_empresas_api(request):
 @require_http_methods(["POST"])
 def crm_empresa_enriquecer_api(request, empresa_id):
     """Enriquece empresa com contatos comerciais publicos."""
+    if not getattr(settings, "CRM_RECEITA_ENABLED", False):
+        return JsonResponse(
+            {"ok": False, "error": "Integracao com Receita desativada."},
+            status=503,
+        )
     empresa = get_object_or_404(EmpresaReceita, pk=empresa_id)
 
     try:

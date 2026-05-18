@@ -36,6 +36,51 @@ class CRMUserCreationForm(UserCreationForm):
         )
 
 
+class CRMPublicRegistrationForm(forms.Form):
+    empresa = forms.CharField(
+        max_length=150,
+        widget=forms.TextInput(
+            attrs={"class": "form-control", "placeholder": "Nome da empresa"}
+        ),
+    )
+    nome = forms.CharField(
+        max_length=150,
+        widget=forms.TextInput(
+            attrs={"class": "form-control", "placeholder": "Nome completo"}
+        ),
+    )
+    email = forms.EmailField(
+        widget=forms.EmailInput(
+            attrs={"class": "form-control", "placeholder": "seu@email.com"}
+        )
+    )
+    telefone = forms.CharField(
+        max_length=20,
+        required=False,
+        widget=forms.TextInput(
+            attrs={"class": "form-control", "placeholder": "(11) 99999-9999"}
+        ),
+    )
+    password1 = forms.CharField(
+        strip=False,
+        widget=forms.PasswordInput(
+            attrs={"class": "form-control", "placeholder": "Crie uma senha"}
+        ),
+    )
+    password2 = forms.CharField(
+        strip=False,
+        widget=forms.PasswordInput(
+            attrs={"class": "form-control", "placeholder": "Confirme a senha"}
+        ),
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if cleaned_data.get("password1") != cleaned_data.get("password2"):
+            raise forms.ValidationError("As senhas nao conferem.")
+        return cleaned_data
+
+
 class CRMInviteCreateForm(forms.Form):
     username = forms.CharField(
         max_length=150,

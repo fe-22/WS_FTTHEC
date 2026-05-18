@@ -1,5 +1,6 @@
 import unicodedata
 
+from django.conf import settings
 from django.db import models
 
 
@@ -72,6 +73,27 @@ class EmpresaReceita(models.Model):
         self.nome_fantasia_normalizado = normalize_search_text(self.nome_fantasia)
         self.municipio_normalizado = normalize_search_text(self.municipio)
         super().save(*args, **kwargs)
+
+
+class CRMAccessRequest(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="crm_access_request",
+    )
+    empresa = models.CharField(max_length=150)
+    telefone = models.CharField(max_length=20, blank=True)
+    status = models.CharField(max_length=20, default="pending")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "Solicitacao de acesso CRM"
+        verbose_name_plural = "Solicitacoes de acesso CRM"
+
+    def __str__(self):
+        return f"{self.user.email} - {self.empresa}"
 
 
 def normalize_search_text(value):

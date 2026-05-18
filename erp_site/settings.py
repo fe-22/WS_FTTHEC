@@ -1,8 +1,3 @@
-
-
-
-
-
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -35,15 +30,15 @@ SECRET_KEY = os.getenv(
     "django-insecure-dev-fallback-key-change-in-production-12345!@#",
 )
 
-DEBUG = env_bool("DEBUG", False)
 RUNNING_ON_CLOUD_RUN = bool(os.getenv("K_SERVICE"))
 
 APP_ENV = os.getenv(
     "APP_ENV",
-    "production" if (RUNNING_ON_CLOUD_RUN or not DEBUG) else "development",
+    "production" if RUNNING_ON_CLOUD_RUN else "development",
 ).strip().lower()
 
 IS_DEVELOPMENT = APP_ENV in {"development", "dev", "local"}
+DEBUG = env_bool("DEBUG", IS_DEVELOPMENT and not RUNNING_ON_CLOUD_RUN)
 
 
 # 🔥 CLOUD RUN FIXES
@@ -171,6 +166,8 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+WHITENOISE_USE_FINDERS = IS_DEVELOPMENT
+WHITENOISE_AUTOREFRESH = IS_DEVELOPMENT
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -181,7 +178,10 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 
 
 # 🔐 Sessão
-SESSION_ENGINE = "django.contrib.sessions.backends.db"
+SESSION_ENGINE = os.getenv(
+    "SESSION_ENGINE",
+    "django.contrib.sessions.backends.signed_cookies",
+)
 SESSION_COOKIE_AGE = int(os.getenv("SESSION_COOKIE_AGE", "3600"))
 
 
@@ -200,12 +200,13 @@ EMAIL_USE_SSL = env_bool("EMAIL_USE_SSL", False)
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "fthec@fthec.com.br")
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "fthec@fthec.com.br")
 
+# 📄 Leads CSV
+LEADS_CSV_ENABLED = env_bool("LEADS_CSV_ENABLED", True)
+LEADS_CSV_PATH = os.getenv("LEADS_CSV_PATH", str(BASE_DIR / "leads.csv"))
+
 
 # 🔐 Login
 LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "/crm/"
 LOGOUT_REDIRECT_URL = "/"
-
-# Registro publico (desabilitado por padrao)
-ALLOW_PUBLIC_CRM_REGISTRATION = env_bool("ALLOW_PUBLIC_CRM_REGISTRATION", False)
-CRM_INVITE_MAX_AGE_SECONDS = int(os.getenv("CRM_INVITE_MAX_AGE_SECONDS", "86400"))
+CRM_RECEITA_ENABLED = env_bool("CRM_RECEITA_ENABLED", False)

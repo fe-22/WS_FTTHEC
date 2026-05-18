@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import EmpresaReceita, Inscricao
+from .models import CRMAccessRequest, EmpresaReceita, Inscricao
 
 
 @admin.register(Inscricao)
@@ -23,3 +23,10 @@ class EmpresaReceitaAdmin(admin.ModelAdmin):
     )
     search_fields = ("razao_social", "nome_fantasia", "cnpj", "email", "telefone")
     list_filter = ("uf", "situacao_cadastral", "enrichment_status", "data_abertura")
+
+
+@admin.register(CRMAccessRequest)
+class CRMAccessRequestAdmin(admin.ModelAdmin):
+    list_display = ("user", "empresa", "telefone", "status", "created_at")
+    search_fields = ("user__email", "user__first_name", "empresa", "telefone")
+    list_filter = ("status", "created_at")

@@ -199,6 +199,7 @@
         </div>
 
         <div class="crm-grid">
+            {% if crm_receita_enabled %}
             <div class="crm-panel">
                 <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
                     <div>
@@ -375,6 +376,7 @@
                     </table>
                 </div>
             </div>
+            {% endif %}
 
             <div class="crm-panel">
                 <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
@@ -428,6 +430,7 @@
 {% endblock %}
 
 {% block extra_js %}
+{% if crm_receita_enabled %}
 <script>
     (function() {
         const apiUrl = "{% url 'crm_empresas_api' %}";
@@ -647,4 +650,5 @@
         });
     })();
 </script>
+{% endif %}
 {% endblock %}

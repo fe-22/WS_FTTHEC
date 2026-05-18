@@ -1,0 +1,7 @@
+Novo cadastro pendente no CRM
+
+Nome: {{ nome }}
+Email: {{ email }}
+Empresa: {{ empresa }}
+Telefone: {{ telefone|default:"-" }}
+Status: {{ status|default:"active" }}

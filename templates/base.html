@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}FTHEC - ERP Proprio para sua Operacao{% endblock %}</title>
+    <title>{% block title %}Fthec sistemas e automação comercial{% endblock %}</title>
     <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -125,7 +125,7 @@
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
                 <img src="{% static 'images/logo.png' %}" alt="FTHEC Logo" style="height:40px; margin-right:10px;">
-                <strong>Fthec Sistemas e Automação</strong>
+                <strong>Fthec sistemas e automação comercial</strong>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -165,7 +165,7 @@
                     </li>
                     {% endif %}
                     <li class="nav-item ms-lg-3 mt-3 mt-lg-0">
-                        <a class="btn btn-primary" href="{% url 'home' %}#contato">Solicitar diagnostico</a>
+                        <a class="btn btn-primary" href="{% url 'home' %}#contato">Solicitar diagnóstico</a>
                     </li>
                 </ul>
             </div>
@@ -192,13 +192,13 @@
             <div class="row g-4">
                 <div class="col-md-4">
                     <h5 class="mb-3">FTHEC</h5>
-                    <p class="mb-0">ERP proprio para empresas que precisam controlar a operacao com mais autonomia, menos adaptacao forcada e mais resultado.</p>
+                    <p class="mb-0">ERP próprio para empresas que precisam controlar a operação com mais autonomia, menos adaptação forçada e mais resultado.</p>
                 </div>
                 <div class="col-md-4">
                     <h5 class="mb-3">O que entregamos</h5>
-                    <p class="mb-2"><a href="{% url 'dashboard_demo' %}">Visao executiva da empresa</a></p>
-                    <p class="mb-2"><a href="{% url 'financeiro_demo' %}">Controle financeiro confiavel</a></p>
-                    <p class="mb-2"><a href="{% url 'operacoes_demo' %}">Gestao operacional com indicadores</a></p>
+                    <p class="mb-2"><a href="{% url 'dashboard_demo' %}">Visão executiva da empresa</a></p>
+                    <p class="mb-2"><a href="{% url 'financeiro_demo' %}">Controle financeiro confiável</a></p>
+                    <p class="mb-2"><a href="{% url 'operacoes_demo' %}">Gestão operacional com indicadores</a></p>
                     <p class="mb-0"><a href="{% url 'pdv_demo' %}">Frente de caixa e vendas</a></p>
                 </div>
                 <div class="col-md-4">
@@ -211,7 +211,7 @@
             <hr class="my-4" style="border-color: rgba(255,255,255,0.15);">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
                 <p class="mb-0">&copy; {% now "Y" %} FTHEC Sistemas & Automacoes.</p>
-                <p class="mb-0 small fst-italic">"Consagre ao Senhor todas as suas obras." Proverbios 16:3</p>
+                <p class="mb-0 small fst-italic">"Consagre ao Senhor todas as suas obras." Provérbios 16:3</p>
             </div>
         </div>
     </footer>
