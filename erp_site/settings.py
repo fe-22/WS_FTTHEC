@@ -128,20 +128,28 @@ WSGI_APPLICATION = "erp_site.wsgi.application"
 # 🗄️ BANCO (CORRIGIDO)
 database_url = os.getenv("DATABASE_URL", "").strip()
 
-if database_url:
-    if dj_database_url is None:
+if dj_database_url is None:
+    raise RuntimeError("Pacote dj-database-url não instalado")
+
+if not database_url:
+    if IS_DEVELOPMENT:
+        DATABASES = {
+            "default": {
+                "ENGINE": "django.db.backends.sqlite3",
+                "NAME": BASE_DIR / "db.sqlite3",
+            }
+        }
+    else:
         raise RuntimeError(
-            "DATABASE_URL definido, mas dj-database-url não instalado"
+            "DATABASE_URL obrigatorio em producao. Configure o banco PostgreSQL no Render."
         )
-    DATABASES = {
-        "default": dj_database_url.parse(database_url)
-    }
 else:
     DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
+        "default": dj_database_url.parse(
+            database_url,
+            conn_max_age=600,
+            ssl_require=True,
+        )
     }
 
 

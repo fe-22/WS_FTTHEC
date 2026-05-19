@@ -3,9 +3,15 @@ services:
   - type: web
     name: erp-company-site
     env: python
-    buildCommand: pip install -r requirements.txt && python manage.py migrate
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate
     startCommand: gunicorn erp_site.wsgi:application
     envVars:
       - key: DATABASE_URL
       - key: OPENAI_API_KEY
       - key: SECRET_KEY
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: erp-company-site.onrender.com
+      - key: CSRF_TRUSTED_ORIGINS
+        value: https://erp-company-site.onrender.com
