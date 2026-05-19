@@ -43,6 +43,12 @@ DEBUG = env_bool("DEBUG", IS_DEVELOPMENT and not RUNNING_ON_CLOUD_RUN)
 
 # 🔥 CLOUD RUN FIXES
 ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", "localhost,127.0.0.1")
+render_external_hostname = os.getenv("RENDER_EXTERNAL_HOSTNAME", "").strip()
+if render_external_hostname:
+    ALLOWED_HOSTS.append(render_external_hostname)
+    ALLOWED_HOSTS.append(f".{render_external_hostname.split('.', 1)[-1]}")
+if os.getenv("RENDER"):
+    ALLOWED_HOSTS.append(".onrender.com")
 if RUNNING_ON_CLOUD_RUN:
     ALLOWED_HOSTS.extend([".run.app", "run.app"])
 if IS_DEVELOPMENT:
@@ -52,6 +58,10 @@ if IS_DEVELOPMENT:
 ALLOWED_HOSTS = list(dict.fromkeys(ALLOWED_HOSTS))
 
 CSRF_TRUSTED_ORIGINS = env_list("CSRF_TRUSTED_ORIGINS")
+if render_external_hostname:
+    CSRF_TRUSTED_ORIGINS.append(f"https://{render_external_hostname}")
+if os.getenv("RENDER"):
+    CSRF_TRUSTED_ORIGINS.append("https://*.onrender.com")
 if RUNNING_ON_CLOUD_RUN:
     CSRF_TRUSTED_ORIGINS.append("https://*.run.app")
 CSRF_TRUSTED_ORIGINS = list(dict.fromkeys(CSRF_TRUSTED_ORIGINS))
