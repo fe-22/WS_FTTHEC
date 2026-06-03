@@ -96,6 +96,75 @@ class CRMInviteCreateForm(forms.Form):
         return username
 
 
+class CRMAccessProvisionForm(forms.Form):
+    username = forms.CharField(
+        label="Usuario ou e-mail",
+        max_length=150,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "usuario@empresa.com ou admin",
+                "autocomplete": "username",
+            }
+        ),
+    )
+    email = forms.EmailField(
+        label="E-mail para envio",
+        required=False,
+        widget=forms.EmailInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "usuario@empresa.com",
+                "autocomplete": "email",
+            }
+        ),
+    )
+    nome = forms.CharField(
+        label="Nome",
+        max_length=150,
+        required=False,
+        widget=forms.TextInput(
+            attrs={"class": "form-control", "placeholder": "Nome do usuario"}
+        ),
+    )
+    empresa = forms.CharField(
+        label="Empresa",
+        max_length=150,
+        required=False,
+        widget=forms.TextInput(
+            attrs={"class": "form-control", "placeholder": "Empresa vinculada"}
+        ),
+    )
+    telefone = forms.CharField(
+        label="Telefone",
+        max_length=20,
+        required=False,
+        widget=forms.TextInput(
+            attrs={"class": "form-control", "placeholder": "(11) 99999-9999"}
+        ),
+    )
+    make_staff = forms.BooleanField(
+        label="Permitir administrar acessos",
+        required=False,
+        widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
+    )
+    send_email = forms.BooleanField(
+        label="Tentar enviar a senha por e-mail",
+        required=False,
+        widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
+    )
+
+    def clean_username(self):
+        username = self.cleaned_data["username"].strip()
+        if "@" in username:
+            return username.lower()
+        return username
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email", "").strip()
+        return email.lower()
+
+
 class CRMInviteSetPasswordForm(forms.Form):
     password1 = forms.CharField(
         strip=False,

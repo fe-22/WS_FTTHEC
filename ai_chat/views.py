@@ -2,6 +2,7 @@ import json
 import os
 import uuid
 
+from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.utils import timezone
@@ -66,6 +67,13 @@ def _count_firestore(collection):
 
 def chatbot_page(request):
     return render(request, "ai_chat/chatbot.html")
+
+
+def _installer_button(installer_url):
+    if not installer_url:
+        return ""
+    return f"""
+<a class="btn btn-warning btn-sm" href="{installer_url}" target="_blank" rel="noopener noreferrer">Baixar instalador de teste gratis</a>"""
 
 
 @csrf_exempt
@@ -133,6 +141,7 @@ def chatbot_view(request):
             data = json.loads(request.body)
             user_message = data.get("message", "").lower().strip()
             session_id = data.get("session_id", str(uuid.uuid4()))
+            installer_url = getattr(settings, "ERP_TEST_INSTALLER_URL", "")
 
             history_payload = {
                 "session_id": session_id,
@@ -143,6 +152,53 @@ def chatbot_view(request):
                 ChatHistory.objects.create(**history_payload)
 
             if any(
+                word in user_message
+                for word in [
+                    "quais empresas",
+                    "qual empresa",
+                    "tipo de empresa",
+                    "tipos de empresa",
+                    "setor",
+                    "setores",
+                    "segmento",
+                    "segmentos",
+                    "ramo",
+                    "ramos",
+                    "onde usar",
+                    "quem usa",
+                    "pode usar erp",
+                    "usar um erp",
+                    "loja",
+                    "comercio",
+                    "varejo",
+                    "industria",
+                    "servico",
+                    "servicos",
+                    "distribuidora",
+                    "atacado",
+                    "oficina",
+                    "clinica",
+                    "restaurante",
+                    "mercado",
+                ]
+            ):
+                resposta = f"""Um ERP pode ser usado em praticamente toda empresa que precisa controlar processos, pessoas, vendas, estoque, financeiro ou atendimento em uma rotina unica.
+
+Exemplos onde faz sentido:
+- Comercio e varejo: loja, mercado, farmacia, material de construcao, autopecas e e-commerce.
+- Distribuicao e atacado: pedidos, estoque, separacao, entrega, carteira de clientes e faturamento.
+- Industria e fabricacao: producao, ordens, insumos, custo, retrabalho e entrega.
+- Servicos: contratos, agenda, atendimento, cobranca recorrente, OS e SLA.
+- Oficinas e assistencia tecnica: ordem de servico, pecas, mao de obra, garantia e retorno do cliente.
+- Clinicas, escolas e negocios locais: cadastro, agenda, pagamentos e indicadores.
+
+O ponto principal nao e o ramo. O ERP passa a valer a pena quando a empresa perde tempo com planilhas, retrabalho, falta de visao financeira ou informacao espalhada.
+
+Para indicar melhor, me diga: sua empresa e comercio, industria, servicos ou distribuicao?
+
+<button class="btn btn-primary btn-sm agendar-demo" onclick="window.location.href='/#contato'">Solicitar diagnostico</button>
+{_installer_button(installer_url)}"""
+            elif any(
                 word in user_message
                 for word in [
                     "o que",
@@ -210,7 +266,7 @@ O Fthec sistemas e automacao e um ERP inteligente com chatbot integrado para tra
                 if not _save_firestore("chat_conversions", conversion_payload):
                     ChatConversion.objects.create(**conversion_payload)
 
-                resposta = """Excelente! Para adquirir o Fthec sistemas e automacao para sua empresa, nossa equipe comercial esta pronta para ajudar.
+                resposta = f"""Excelente! Para adquirir o Fthec sistemas e automacao para sua empresa, nossa equipe comercial esta pronta para ajudar.
 
 Como prosseguir:
 1. Preencha o formulario de inscricao em nossa pagina principal
@@ -219,6 +275,7 @@ Como prosseguir:
 4. Orcamento detalhado sem compromisso
 
 <button class="btn btn-primary btn-sm agendar-demo" onclick="window.location.href='/inscricao/'">Fale com especialista</button>
+{_installer_button(installer_url)}
 
 Acesse /inscricao/ ou clique no botao acima para comecar!"""
             else:
@@ -226,6 +283,7 @@ Acesse /inscricao/ ou clique no botao acima para comecar!"""
 
 Pergunte sobre:
 - "O que e um ERP?" - explicacao completa
+- "Em quais empresas posso usar ERP?" - exemplos por segmento
 - "Como adquirir um ERP?" - contato comercial"""
 
             final_history_payload = {

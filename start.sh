@@ -13,7 +13,14 @@ fi
 
 if [ -n "${DJANGO_SUPERUSER_USERNAME:-}" ] && [ -n "${DJANGO_SUPERUSER_PASSWORD:-}" ]; then
   echo "=== Ensuring Django superuser ==="
-  python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); username='${DJANGO_SUPERUSER_USERNAME}'; email='${DJANGO_SUPERUSER_EMAIL:-admin@example.com}'; password='${DJANGO_SUPERUSER_PASSWORD}'; user, created = User.objects.get_or_create(username=username, defaults={'email': email, 'is_staff': True, 'is_superuser': True}); user.is_staff = True; user.is_superuser = True; user.email = email; (user.set_password(password), user.save()) if created else user.save(); print('Superuser created:' if created else 'Superuser already exists:', username)"
+  python manage.py reset_crm_password "$DJANGO_SUPERUSER_USERNAME" \
+    --create \
+    --staff \
+    --superuser \
+    --email "${DJANGO_SUPERUSER_EMAIL:-admin@example.com}" \
+    --password "$DJANGO_SUPERUSER_PASSWORD" \
+    --no-crm-request \
+    --hide-password
 fi
 
 echo "=== Starting Gunicorn ==="

@@ -126,6 +126,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "core.context_processors.site_links",
             ],
         },
     },
@@ -170,6 +171,8 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
+
+AUTHENTICATION_BACKENDS = ["core.auth_backends.UsernameOrEmailBackend"]
 
 
 # 🌎 Localização
@@ -218,9 +221,19 @@ EMAIL_USE_SSL = env_bool("EMAIL_USE_SSL", False)
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "fthec@fthec.com.br")
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "fthec@fthec.com.br")
 
+
+# 🔗 Instalador ERP
+ERP_TEST_INSTALLER_URL = os.getenv(
+    "ERP_TEST_INSTALLER_URL",
+    "https://1drv.ms/u/c/26933849f5022961/IQCsCdQi7CMAQ7YUaT52X_eFAfHS4y8JqHT61O2Fk77zNQM?e=r48XTd",
+)
+
 # 📄 Leads CSV
 LEADS_CSV_ENABLED = env_bool("LEADS_CSV_ENABLED", True)
 LEADS_CSV_PATH = os.getenv("LEADS_CSV_PATH", str(BASE_DIR / "leads.csv"))
+RECEITA_SYNC_CACHE_DIR = Path(
+    os.getenv("RECEITA_SYNC_CACHE_DIR", str(BASE_DIR / "var" / "receita_cache"))
+)
 
 
 # 🔐 Login

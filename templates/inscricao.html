@@ -1,35 +1,121 @@
 {% extends 'base.html' %}
 
+{% block title %}Solicitar Diagnostico - FTHEC{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <h2>Formulário de Inscrição</h2>
-    <form method="POST" action="{% url 'inscricao' %}">
-    {% csrf_token %}
-    
-    <input type="text" name="nome" placeholder="Nome completo" required>
-    <input type="email" name="email" placeholder="Seu melhor e-mail" required>
-    <input type="tel" name="telefone" placeholder="Telefone/WhatsApp">
-    <input type="text" name="empresa" placeholder="Empresa">
-    <input type="text" name="cargo" placeholder="Cargo">
-    <textarea name="mensagem" placeholder="Sua mensagem ou interesse"></textarea>
-    
-    <button type="submit">Enviar Inscrição</button>
-</form>
-    {% if messages %}
-    <div class="messages">
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">
-            {{ message }}
+<div class="container mt-5 pt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card p-4 p-lg-5">
+                <div class="mb-4">
+                    <span class="section-kicker">Diagnostico ERP</span>
+                    <h2 class="mt-2 mb-2">Conte rapidamente como sua empresa opera hoje.</h2>
+                    <p class="text-muted mb-0">Com essas respostas conseguimos indicar se faz sentido usar um ERP e por onde comecar.</p>
+                </div>
+
+                <form method="POST" action="{% url 'inscricao' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="origem_form" value="Pagina de inscricao">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Nome completo *</label>
+                            <input type="text" name="nome" class="form-control form-control-lg" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">E-mail *</label>
+                            <input type="email" name="email" class="form-control form-control-lg" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Telefone/WhatsApp</label>
+                            <input type="tel" name="telefone" class="form-control form-control-lg">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Empresa *</label>
+                            <input type="text" name="empresa" class="form-control form-control-lg" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Cargo</label>
+                            <input type="text" name="cargo" class="form-control form-control-lg">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Segmento</label>
+                            <select class="form-select form-select-lg" name="segmento">
+                                <option value="">Selecione</option>
+                                <option>Comercio e varejo</option>
+                                <option>Distribuicao e atacado</option>
+                                <option>Industria e fabricacao</option>
+                                <option>Servicos</option>
+                                <option>Oficina ou assistencia tecnica</option>
+                                <option>Clinica, escola ou negocio local</option>
+                                <option>Outro segmento</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Prioridade</label>
+                            <select class="form-select form-select-lg" name="area_interesse">
+                                <option value="">Selecione</option>
+                                <option>Direcao e indicadores</option>
+                                <option>Financeiro</option>
+                                <option>Operacao</option>
+                                <option>Comercial e CRM</option>
+                                <option>Estoque e compras</option>
+                                <option>Atendimento e ordem de servico</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Sistema atual</label>
+                            <select class="form-select form-select-lg" name="sistema_atual">
+                                <option value="">Selecione</option>
+                                <option>Planilhas</option>
+                                <option>Sistema pronto do mercado</option>
+                                <option>Sistema proprio antigo</option>
+                                <option>Processo manual</option>
+                                <option>Ainda nao usa sistema</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Tamanho da operacao</label>
+                            <select class="form-select form-select-lg" name="tamanho_empresa">
+                                <option value="">Selecione</option>
+                                <option>Ate 5 pessoas</option>
+                                <option>6 a 20 pessoas</option>
+                                <option>21 a 50 pessoas</option>
+                                <option>Mais de 50 pessoas</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Prazo desejado</label>
+                            <select class="form-select form-select-lg" name="urgencia">
+                                <option value="">Selecione</option>
+                                <option>O quanto antes</option>
+                                <option>Em ate 30 dias</option>
+                                <option>Em 1 a 3 meses</option>
+                                <option>Estou pesquisando</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Principal desafio</label>
+                            <select class="form-select form-select-lg" name="principal_desafio">
+                                <option value="">Selecione</option>
+                                <option>Falta de controle financeiro</option>
+                                <option>Estoque desorganizado</option>
+                                <option>Retrabalho e planilhas</option>
+                                <option>Dificuldade para vender/atender</option>
+                                <option>Falta de indicadores</option>
+                                <option>Integrar setores da empresa</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Mensagem complementar</label>
+                            <textarea name="mensagem" rows="4" class="form-control form-control-lg" placeholder="Descreva rapidamente a sua operacao atual."></textarea>
+                        </div>
+                        <div class="col-12 d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">Enviar diagnostico</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
-        {% endfor %}
     </div>
-    {% endif %}
-    
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Enviar Inscrição</button>
-        <a href="{% url 'home' %}" class="btn btn-secondary">Cancelar</a>
-    </form>
 </div>
 {% endblock %}

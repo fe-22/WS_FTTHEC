@@ -1,3 +1,4 @@
+import csv
 import datetime
 import json
 import os
@@ -5,18 +6,22 @@ from pathlib import Path
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import login
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.core.signing import BadSignature, SignatureExpired, dumps, loads
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
+from django.utils.crypto import get_random_string
 from django.views.decorators.http import require_http_methods
 
 from .forms import (
+    CRMAccessProvisionForm,
     CRMInviteCreateForm,
     CRMInviteSetPasswordForm,
     CRMPublicRegistrationForm,
@@ -33,6 +38,25 @@ try:
     from google.cloud import firestore
 except ImportError:
     firestore = None
+
+
+TEMP_PASSWORD_CHARS = (
+    "ABCDEFGHJKLMNPQRSTUVWXYZ"
+    "abcdefghijkmnopqrstuvwxyz"
+    "23456789"
+    "!@#$%*?"
+)
+
+
+def _generate_temporary_password(user=None, length=16):
+    for _ in range(30):
+        password = get_random_string(length, allowed_chars=TEMP_PASSWORD_CHARS)
+        try:
+            validate_password(password, user)
+        except ValidationError:
+            continue
+        return password
+    raise ValidationError("Nao foi possivel gerar uma senha valida.")
 
 
 def _get_firestore_client():
@@ -134,6 +158,122 @@ def crm_activate_account_view(request, uidb64, token):
 
 @login_required
 @user_passes_test(lambda user: user.is_staff)
+def crm_access_provision_view(request):
+    result = None
+    can_grant_staff = request.user.is_superuser
+
+    if request.method == "POST":
+        form = CRMAccessProvisionForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            email = form.cleaned_data["email"]
+            nome = form.cleaned_data["nome"].strip()
+            empresa = form.cleaned_data["empresa"].strip()
+            telefone = form.cleaned_data["telefone"].strip()
+            send_email = form.cleaned_data["send_email"]
+
+            user = (
+                User.objects.filter(Q(username__iexact=username) | Q(email__iexact=username))
+                .order_by("id")
+                .first()
+            )
+            created = False
+            if user is None:
+                user = User(username=username)
+                created = True
+
+            if email:
+                user.email = email
+            elif not user.email and "@" in username:
+                user.email = username
+            if nome:
+                user.first_name = nome
+            if form.cleaned_data["make_staff"] and can_grant_staff:
+                user.is_staff = True
+            elif form.cleaned_data["make_staff"]:
+                messages.warning(
+                    request,
+                    "Somente superusuarios podem liberar administracao de acessos.",
+                )
+
+            user.is_active = True
+            temporary_password = _generate_temporary_password(user)
+            user.set_password(temporary_password)
+            user.save()
+
+            try:
+                current_access = user.crm_access_request
+            except CRMAccessRequest.DoesNotExist:
+                current_access = None
+
+            CRMAccessRequest.objects.update_or_create(
+                user=user,
+                defaults={
+                    "empresa": empresa
+                    or (current_access.empresa if current_access else "")
+                    or "Acesso CRM",
+                    "telefone": telefone
+                    or (current_access.telefone if current_access else ""),
+                    "status": "active",
+                },
+            )
+
+            login_url = request.build_absolute_uri(settings.LOGIN_URL)
+            email_sent = False
+            email_error = ""
+            if send_email:
+                email_backend = getattr(settings, "EMAIL_BACKEND", "")
+                if email_backend == "django.core.mail.backends.console.EmailBackend":
+                    email_error = "Envio SMTP nao configurado; copie a senha exibida."
+                elif user.email:
+                    try:
+                        send_mail(
+                            subject="[FTHEC CRM] Acesso ao CRM",
+                            message=render_to_string(
+                                "registration/email_crm_access_password.txt",
+                                {
+                                    "nome": user.first_name or user.username,
+                                    "username": user.username,
+                                    "password": temporary_password,
+                                    "login_url": login_url,
+                                },
+                            ),
+                            from_email=getattr(
+                                settings,
+                                "DEFAULT_FROM_EMAIL",
+                                "fthec@fthec.com.br",
+                            ),
+                            recipient_list=[user.email],
+                            fail_silently=False,
+                        )
+                        email_sent = True
+                    except Exception as exc:
+                        email_error = str(exc)
+                else:
+                    email_error = "Usuario sem e-mail cadastrado."
+
+            result = {
+                "created": created,
+                "username": user.username,
+                "email": user.email,
+                "password": temporary_password,
+                "login_url": login_url,
+                "email_sent": email_sent,
+                "email_error": email_error,
+            }
+            messages.success(request, "Senha temporaria gerada com sucesso.")
+    else:
+        form = CRMAccessProvisionForm()
+
+    return render(
+        request,
+        "registration/access_provision.html",
+        {"form": form, "result": result, "can_grant_staff": can_grant_staff},
+    )
+
+
+@login_required
+@user_passes_test(lambda user: user.is_staff)
 def crm_invite_create_view(request):
     invite_url = None
     invite_username = None
@@ -203,6 +343,16 @@ def crm_register_invite_view(request, token):
     )
 
 
+def _build_diagnostico_message(mensagem, details):
+    lines = [f"{label}: {value}" for label, value in details if value]
+    if mensagem:
+        if lines:
+            lines.append("")
+        lines.append("Mensagem do cliente:")
+        lines.append(mensagem)
+    return "\n".join(lines).strip()
+
+
 def inscricao_view(request):
     """Processa formulario de contato/inscricao"""
     if request.method == "POST":
@@ -212,6 +362,25 @@ def inscricao_view(request):
         empresa = request.POST.get("empresa", "").strip()
         cargo = request.POST.get("cargo", "").strip()
         mensagem = request.POST.get("mensagem", "").strip()
+        area_interesse = request.POST.get("area_interesse", "").strip()
+        segmento = request.POST.get("segmento", "").strip()
+        tamanho_empresa = request.POST.get("tamanho_empresa", "").strip()
+        sistema_atual = request.POST.get("sistema_atual", "").strip()
+        urgencia = request.POST.get("urgencia", "").strip()
+        principal_desafio = request.POST.get("principal_desafio", "").strip()
+        origem_form = request.POST.get("origem_form", "").strip()
+        mensagem_qualificada = _build_diagnostico_message(
+            mensagem,
+            [
+                ("Origem do formulario", origem_form),
+                ("Prioridade", area_interesse),
+                ("Segmento", segmento),
+                ("Tamanho da empresa", tamanho_empresa),
+                ("Sistema atual", sistema_atual),
+                ("Urgencia", urgencia),
+                ("Principal desafio", principal_desafio),
+            ],
+        )
 
         if not nome:
             messages.error(request, "O nome e obrigatorio.")
@@ -224,9 +393,20 @@ def inscricao_view(request):
                 if getattr(settings, "LEADS_CSV_ENABLED", True):
                     leads_csv_path = Path(settings.LEADS_CSV_PATH)
                     leads_csv_path.parent.mkdir(parents=True, exist_ok=True)
-                    with leads_csv_path.open("a", encoding="utf-8") as csv_file:
-                        csv_file.write(
-                            f"{timestamp},{nome},{email},{telefone},{empresa},{cargo},{mensagem}\n"
+                    with leads_csv_path.open(
+                        "a", encoding="utf-8", newline=""
+                    ) as csv_file:
+                        writer = csv.writer(csv_file)
+                        writer.writerow(
+                            [
+                                timestamp,
+                                nome,
+                                email,
+                                telefone,
+                                empresa,
+                                cargo,
+                                mensagem_qualificada,
+                            ]
                         )
 
                 payload = {
@@ -235,7 +415,7 @@ def inscricao_view(request):
                     "telefone": telefone,
                     "empresa": empresa,
                     "cargo": cargo,
-                    "mensagem": mensagem,
+                    "mensagem": mensagem_qualificada,
                 }
                 if not _save_inscricao_firestore(payload):
                     Inscricao.objects.create(**payload)
@@ -258,7 +438,7 @@ def inscricao_view(request):
                             Telefone: {telefone}
                             Empresa: {empresa}
                             Cargo: {cargo}
-                            Mensagem: {mensagem}
+                            Mensagem: {mensagem_qualificada}
 
                             Data/Hora: {timestamp}
                             """,

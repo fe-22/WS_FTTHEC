@@ -4,7 +4,7 @@ services:
     name: erp-company-site
     env: python
     buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate
-    startCommand: gunicorn erp_site.wsgi:application
+    startCommand: bash start.sh
     envVars:
       - key: DATABASE_URL
       - key: OPENAI_API_KEY
@@ -15,3 +15,9 @@ services:
         value: erp-company-site.onrender.com
       - key: CSRF_TRUSTED_ORIGINS
         value: https://erp-company-site.onrender.com
+      - key: DJANGO_SUPERUSER_USERNAME
+        sync: false
+      - key: DJANGO_SUPERUSER_PASSWORD
+        sync: false
+      - key: DJANGO_SUPERUSER_EMAIL
+        sync: false

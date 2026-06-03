@@ -1,12 +1,16 @@
 import tempfile
+from io import StringIO
 from pathlib import Path
 from unittest.mock import patch
 
+from django.contrib.messages.storage.fallback import FallbackStorage
+from django.contrib.sessions.middleware import SessionMiddleware
+from django.core.management import call_command
 from django.contrib.auth.models import User
-from django.test import Client, TestCase
+from django.test import Client, RequestFactory, TestCase, override_settings
 from django.urls import reverse
 
-from .models import EmpresaReceita
+from .models import EmpresaReceita, Inscricao
 from .services import (
     _match_estabelecimento_row,
     build_empresa_queryset,
@@ -17,8 +21,111 @@ from .services import (
     parse_segmentos,
     parse_situacao_cadastral,
 )
+from .views import crm_access_provision_view
 
 
+class CrmAccessRecoveryTests(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+
+    @staticmethod
+    def _attach_session_and_messages(request):
+        SessionMiddleware(lambda req: None).process_request(request)
+        request.session.save()
+        request._messages = FallbackStorage(request)
+
+    def test_authentication_accepts_email_or_username(self):
+        User.objects.create_user(
+            username="crmadmin",
+            email="admin@fthec.com.br",
+            password="senha-forte-123",
+        )
+
+        self.assertTrue(
+            self.client.login(username="admin@fthec.com.br", password="senha-forte-123")
+        )
+
+    @patch("core.views._generate_temporary_password", return_value="SenhaForte123!")
+    def test_staff_can_generate_temporary_password(self, password_mock):
+        staff = User.objects.create_user(
+            username="staff",
+            password="senha-forte-123",
+            is_staff=True,
+        )
+
+        request = self.factory.post(
+            reverse("crm_access_provision"),
+            {
+                "username": "novo@fthec.com.br",
+                "email": "novo@fthec.com.br",
+                "nome": "Novo Usuario",
+                "empresa": "FTHEC",
+            },
+        )
+        request.user = staff
+        self._attach_session_and_messages(request)
+
+        response = crm_access_provision_view(request)
+
+        self.assertEqual(response.status_code, 200)
+        user = User.objects.get(username="novo@fthec.com.br")
+        self.assertTrue(user.check_password("SenhaForte123!"))
+        self.assertTrue(user.is_active)
+        password_mock.assert_called_once()
+
+    def test_reset_crm_password_command_creates_superuser(self):
+        output = StringIO()
+
+        call_command(
+            "reset_crm_password",
+            "admin",
+            create=True,
+            staff=True,
+            superuser=True,
+            email="admin@fthec.com.br",
+            stdout=output,
+        )
+
+        user = User.objects.get(username="admin")
+        self.assertTrue(user.is_staff)
+        self.assertTrue(user.is_superuser)
+        self.assertIn("Senha temporaria:", output.getvalue())
+
+
+@override_settings(LEADS_CSV_ENABLED=False)
+class InscricaoDiagnosticoTests(TestCase):
+    def test_inscricao_salva_campos_qualificados_na_mensagem(self):
+        response = self.client.post(
+            reverse("inscricao"),
+            {
+                "nome": "Cliente Teste",
+                "email": "cliente@empresa.com.br",
+                "telefone": "(11) 99999-9999",
+                "empresa": "Empresa Teste",
+                "cargo": "Diretor",
+                "area_interesse": "Financeiro",
+                "segmento": "Industria e fabricacao",
+                "tamanho_empresa": "21 a 50 pessoas",
+                "sistema_atual": "Planilhas",
+                "urgencia": "Em ate 30 dias",
+                "principal_desafio": "Falta de indicadores",
+                "origem_form": "Home - Solicitar diagnostico",
+                "mensagem": "Precisamos reduzir retrabalho.",
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        inscricao = Inscricao.objects.get(email="cliente@empresa.com.br")
+        self.assertIn("Prioridade: Financeiro", inscricao.mensagem)
+        self.assertIn("Segmento: Industria e fabricacao", inscricao.mensagem)
+        self.assertIn("Sistema atual: Planilhas", inscricao.mensagem)
+        self.assertIn("Precisamos reduzir retrabalho.", inscricao.mensagem)
+
+
+@override_settings(
+    CRM_RECEITA_ENABLED=True,
+    RECEITA_SYNC_CACHE_DIR=Path("C:/Users/Usuário/OneDrive/ws_fthec/var/receita_cache"),
+)
 class CrmEmpresasApiTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(

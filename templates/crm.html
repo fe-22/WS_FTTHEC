@@ -174,7 +174,10 @@
                 </div>
                 <div class="col-lg-5">
                     {% if can_manage_invites %}
-                    <div class="d-flex justify-content-end mb-3">
+                    <div class="d-flex justify-content-end gap-2 flex-wrap mb-3">
+                        <a href="{% url 'crm_access_provision' %}" class="btn btn-primary btn-sm">
+                            Gerar senha
+                        </a>
                         <a href="{% url 'crm_invite_create' %}" class="btn btn-outline-dark btn-sm">
                             Gerar convite de acesso
                         </a>

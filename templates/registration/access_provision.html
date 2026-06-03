@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}Gerar senha CRM - Fthec Sistemas e Automacao{% endblock %}
+
+{% block content %}
+<div class="container mt-5 pt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-4 p-lg-5">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+                        <div>
+                            <h3 class="card-title mb-2">Gerar ou redefinir senha do CRM</h3>
+                            <p class="text-muted mb-0">
+                                Use quando o link de redefinicao nao chegar. A senha temporaria aparece apenas nesta tela.
+                            </p>
+                        </div>
+                        <a href="{% url 'crm' %}" class="btn btn-outline-secondary">Voltar ao CRM</a>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for error in form.non_field_errors %}
+                            <div>{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.username.id_for_label }}" class="form-label">{{ form.username.label }}</label>
+                                {{ form.username }}
+                                {% if form.username.errors %}
+                                <small class="text-danger">{{ form.username.errors|join:", " }}</small>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.email.id_for_label }}" class="form-label">{{ form.email.label }}</label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                <small class="text-danger">{{ form.email.errors|join:", " }}</small>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.nome.id_for_label }}" class="form-label">{{ form.nome.label }}</label>
+                                {{ form.nome }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.empresa.id_for_label }}" class="form-label">{{ form.empresa.label }}</label>
+                                {{ form.empresa }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.telefone.id_for_label }}" class="form-label">{{ form.telefone.label }}</label>
+                                {{ form.telefone }}
+                            </div>
+                            <div class="col-md-6 d-flex flex-column justify-content-end gap-2">
+                                <div class="form-check">
+                                    {{ form.send_email }}
+                                    <label for="{{ form.send_email.id_for_label }}" class="form-check-label">{{ form.send_email.label }}</label>
+                                </div>
+                                {% if can_grant_staff %}
+                                <div class="form-check">
+                                    {{ form.make_staff }}
+                                    <label for="{{ form.make_staff.id_for_label }}" class="form-check-label">{{ form.make_staff.label }}</label>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-12 d-grid">
+                                <button type="submit" class="btn btn-primary">Gerar senha temporaria</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    {% if result %}
+                    <hr class="my-4">
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Guarde agora.</strong> Por seguranca, esta senha nao sera exibida novamente.
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Usuario</label>
+                            <input class="form-control" value="{{ result.username }}" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">E-mail</label>
+                            <input class="form-control" value="{{ result.email|default:'-' }}" readonly>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Senha temporaria</label>
+                            <div class="input-group">
+                                <input id="temporaryPassword" class="form-control fw-bold" value="{{ result.password }}" readonly>
+                                <button class="btn btn-outline-dark" type="button" onclick="navigator.clipboard.writeText(document.getElementById('temporaryPassword').value)">
+                                    Copiar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Link de login</label>
+                            <input class="form-control" value="{{ result.login_url }}" readonly>
+                        </div>
+                    </div>
+                    {% if result.email_sent %}
+                    <div class="alert alert-success mt-3 mb-0" role="alert">
+                        E-mail enviado para {{ result.email }}.
+                    </div>
+                    {% elif result.email_error %}
+                    <div class="alert alert-danger mt-3 mb-0" role="alert">
+                        Nao foi possivel enviar o e-mail: {{ result.email_error }}
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

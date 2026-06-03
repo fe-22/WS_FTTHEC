@@ -152,6 +152,13 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'chatbot_page' %}">Chatbot</a>
                     </li>
+                    {% if erp_test_installer_url %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ erp_test_installer_url }}" target="_blank" rel="noopener noreferrer">
+                            Teste gratis
+                        </a>
+                    </li>
+                    {% endif %}
                     {% if request.user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'crm' %}">CRM</a>

@@ -17,7 +17,7 @@
                     <form method="post" action="{% url 'login' %}">
                         {% csrf_token %}
                         <div class="mb-3">
-                            <label for="id_username" class="form-label">Usuário</label>
+                            <label for="id_username" class="form-label">Usuario ou e-mail</label>
                             <input type="text" name="username" autofocus required class="form-control" id="id_username">
                         </div>
                         <div class="mb-3">
@@ -38,6 +38,9 @@
                         <span class="mx-2">|</span>
                         <a href="{% url 'password_reset' %}">Esqueci minha senha</a>
                     </div>
+                    <p class="text-muted small text-center mt-3 mb-0">
+                        Se o e-mail nao chegar, peca a um administrador para gerar uma senha temporaria no CRM.
+                    </p>
                 </div>
             </div>
         </div>

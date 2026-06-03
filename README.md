@@ -115,6 +115,17 @@ gcloud run deploy ws-fthec \
 - **Chatbot:** `/ai_chat/`
 - **Analytics:** `/ai_chat/analytics/`
 - **Admin:** `/admin/`
+- **CRM:** `/crm/`
+- **Gerar senha CRM:** `/accounts/provision/` (requer usuario staff)
+
+### Recuperar acesso ao CRM no Render
+Se o link de redefinicao de senha nao chegar, use uma das opcoes abaixo:
+
+```bash
+python manage.py reset_crm_password admin --create --staff --superuser --email contato@seudominio.com
+```
+
+O comando imprime uma senha temporaria. Tambem e possivel configurar `DJANGO_SUPERUSER_USERNAME`, `DJANGO_SUPERUSER_EMAIL` e `DJANGO_SUPERUSER_PASSWORD` no Render; o `start.sh` garante esse superusuario a cada start.
 
 ## 🐛 Troubleshooting
 

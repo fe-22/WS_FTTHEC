@@ -223,6 +223,11 @@
                     </p>
                     <div class="d-flex flex-wrap gap-3 mt-4">
                         <a href="#contato" class="btn btn-light btn-lg px-4">Solicitar diagnóstico</a>
+                        {% if erp_test_installer_url %}
+                        <a href="{{ erp_test_installer_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-warning btn-lg px-4">
+                            Baixar teste gratis
+                        </a>
+                        {% endif %}
                         <a href="#vantagens" class="btn btn-outline-light btn-lg px-4">Ver vantagens</a>
                     </div>
                     <div class="metric-strip">
@@ -473,6 +478,11 @@
                     <p class="mb-0 text-white-50">Se a sua empresa cresceu mais do que o sistema atual consegue acompanhar, faz sentido avaliar um ERP construido para o seu processo.</p>
                 </div>
                 <div class="col-lg-5 text-lg-end">
+                    {% if erp_test_installer_url %}
+                    <a href="{{ erp_test_installer_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-warning btn-lg me-2 mb-2 mb-lg-0">
+                        Baixar instalador
+                    </a>
+                    {% endif %}
                     <a href="{% url 'chatbot_page' %}" class="btn btn-outline-light btn-lg me-2">Falar com chatbot</a>
                     <a href="{% url 'dashboard_demo' %}" class="btn btn-light btn-lg">Ver exemplo</a>
                 </div>
@@ -491,8 +501,10 @@
             <div class="col-lg-7">
                 <div class="card p-4 p-lg-5">
                     <h3 class="mb-3">Solicitar diagnostico</h3>
+                    <p class="text-muted mb-4">Preencha os pontos principais para retornarmos com uma avaliacao mais objetiva.</p>
                     <form method="POST" action="{% url 'inscricao' %}">
                         {% csrf_token %}
+                        <input type="hidden" name="origem_form" value="Home - Solicitar diagnostico">
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">Nome completo *</label>
@@ -507,28 +519,90 @@
                                 <input type="tel" name="telefone" class="form-control form-control-lg">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Empresa</label>
-                                <input type="text" name="empresa" class="form-control form-control-lg">
+                                <label class="form-label">Empresa *</label>
+                                <input type="text" name="empresa" class="form-control form-control-lg" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Cargo</label>
                                 <input type="text" name="cargo" class="form-control form-control-lg">
                             </div>
                             <div class="col-md-6">
+                                <label class="form-label">Segmento</label>
+                                <select class="form-select form-select-lg" name="segmento">
+                                    <option value="">Selecione</option>
+                                    <option>Comercio e varejo</option>
+                                    <option>Distribuicao e atacado</option>
+                                    <option>Industria e fabricacao</option>
+                                    <option>Servicos</option>
+                                    <option>Oficina ou assistencia tecnica</option>
+                                    <option>Clinica, escola ou negocio local</option>
+                                    <option>Outro segmento</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
                                 <label class="form-label">Prioridade da empresa</label>
                                 <select class="form-select form-select-lg" name="area_interesse">
+                                    <option value="">Selecione</option>
                                     <option>Direcao e indicadores</option>
                                     <option>Financeiro</option>
                                     <option>Operacao</option>
                                     <option>Comercial e CRM</option>
+                                    <option>Estoque e compras</option>
+                                    <option>Atendimento e ordem de servico</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Tamanho da operacao</label>
+                                <select class="form-select form-select-lg" name="tamanho_empresa">
+                                    <option value="">Selecione</option>
+                                    <option>Ate 5 pessoas</option>
+                                    <option>6 a 20 pessoas</option>
+                                    <option>21 a 50 pessoas</option>
+                                    <option>Mais de 50 pessoas</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Sistema atual</label>
+                                <select class="form-select form-select-lg" name="sistema_atual">
+                                    <option value="">Selecione</option>
+                                    <option>Planilhas</option>
+                                    <option>Sistema pronto do mercado</option>
+                                    <option>Sistema proprio antigo</option>
+                                    <option>Processo manual</option>
+                                    <option>Ainda nao usa sistema</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Prazo desejado</label>
+                                <select class="form-select form-select-lg" name="urgencia">
+                                    <option value="">Selecione</option>
+                                    <option>O quanto antes</option>
+                                    <option>Em ate 30 dias</option>
+                                    <option>Em 1 a 3 meses</option>
+                                    <option>Estou pesquisando</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Principal desafio</label>
+                                <select class="form-select form-select-lg" name="principal_desafio">
+                                    <option value="">Selecione</option>
+                                    <option>Falta de controle financeiro</option>
+                                    <option>Estoque desorganizado</option>
+                                    <option>Retrabalho e planilhas</option>
+                                    <option>Dificuldade para vender/atender</option>
+                                    <option>Falta de indicadores</option>
+                                    <option>Integrar setores da empresa</option>
                                 </select>
                             </div>
                             <div class="col-12">
-                                <label class="form-label">Mensagem</label>
-                                <textarea name="mensagem" rows="4" class="form-control form-control-lg"></textarea>
+                                <label class="form-label">Mensagem complementar</label>
+                                <textarea name="mensagem" rows="4" class="form-control form-control-lg" placeholder="Conte rapidamente o que hoje esta travando a operacao."></textarea>
                             </div>
                             <div class="col-12 d-grid">
-                                <button type="submit" class="btn btn-primary btn-lg">Solicitar contato</button>
+                                <button type="submit" class="btn btn-primary btn-lg">Enviar diagnostico</button>
+                            </div>
+                            <div class="col-12">
+                                <p class="text-muted small mb-0">Usaremos estes dados apenas para entender sua necessidade e retornar o contato.</p>
                             </div>
                         </div>
                     </form>

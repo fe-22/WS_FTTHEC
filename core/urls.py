@@ -2,6 +2,7 @@ from django.urls import path
 
 from .views import (
     crm_activate_account_view,
+    crm_access_provision_view,
     crm_empresa_enriquecer_api,
     crm_invite_create_view,
     crm_register_invite_view,
@@ -20,6 +21,11 @@ urlpatterns = [
     path('', home, name='home'),
     path('inscricao/', inscricao_view, name='inscricao'),
     path('accounts/register/', crm_register_view, name='crm_register'),
+    path(
+        'accounts/provision/',
+        crm_access_provision_view,
+        name='crm_access_provision',
+    ),
     path(
         'accounts/activate/<uidb64>/<token>/',
         crm_activate_account_view,
