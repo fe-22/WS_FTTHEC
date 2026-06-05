@@ -225,7 +225,12 @@ ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "fthec@fthec.com.br")
 # 🔗 Instalador ERP
 ERP_TEST_INSTALLER_URL = os.getenv(
     "ERP_TEST_INSTALLER_URL",
-    "https://1drv.ms/u/c/26933849f5022961/IQCsCdQi7CMAQ7YUaT52X_eFAfHS4y8JqHT61O2Fk77zNQM?e=r48XTd",
+    "https://1drv.ms/u/c/26933849f5022961/IQCsCdQi7CMAQ7YUaT52X_eFAfHS4y8JqHT61O2Fk77zNQM?e=r48XTd&download=1",
+)
+GOOGLE_ANALYTICS_ID = os.getenv("GOOGLE_ANALYTICS_ID", "")
+WHATSAPP_URL = os.getenv(
+    "WHATSAPP_URL",
+    "https://wa.me/5511982170425?text=Ol%C3%A1%2C%20quero%20testar%20o%20ERP%20da%20FTHEC.",
 )
 
 # 📄 Leads CSV

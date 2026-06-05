@@ -50,6 +50,55 @@
         color: rgba(255,255,255,0.84);
     }
 
+    .hero-feature-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px 16px;
+        max-width: 560px;
+        padding: 0;
+        margin: 26px 0 0;
+        list-style: none;
+    }
+
+    .hero-feature-list li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: rgba(255,255,255,0.9);
+        font-weight: 600;
+    }
+
+    .hero-feature-list i {
+        color: #fbbf24;
+    }
+
+    .hero-actions {
+        align-items: center;
+    }
+
+    .download-cta {
+        border: 0;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #fbbf24, #f97316);
+        color: #111827;
+        box-shadow: 0 18px 34px rgba(249, 115, 22, 0.32);
+        letter-spacing: 0.02em;
+    }
+
+    .download-cta:hover,
+    .download-cta:focus {
+        color: #111827;
+        transform: translateY(-2px);
+        box-shadow: 0 22px 42px rgba(249, 115, 22, 0.38);
+    }
+
+    .cta-proof {
+        margin-top: 12px;
+        color: rgba(255,255,255,0.82);
+        font-size: 0.96rem;
+        font-weight: 600;
+    }
+
     .metric-strip {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -72,6 +121,106 @@
     .hero-visual {
         min-height: 100%;
         padding: 40px;
+    }
+
+    .system-window {
+        background: rgba(255,255,255,0.96);
+        border-radius: 28px;
+        padding: 18px;
+        color: #12202e;
+        box-shadow: 0 24px 40px rgba(0,0,0,0.18);
+    }
+
+    .window-dots {
+        display: flex;
+        gap: 7px;
+    }
+
+    .window-dots span {
+        width: 10px;
+        height: 10px;
+        display: block;
+        border-radius: 50%;
+        background: #d8ded7;
+    }
+
+    .screen-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 18px 0;
+    }
+
+    .screen-tabs span {
+        border-radius: 999px;
+        padding: 8px 12px;
+        background: #eef2ef;
+        color: #43515f;
+        font-size: 0.78rem;
+        font-weight: 700;
+    }
+
+    .screen-tabs .active {
+        background: #0f766e;
+        color: #fff;
+    }
+
+    .pos-preview {
+        display: grid;
+        grid-template-columns: 1.18fr 0.82fr;
+        gap: 14px;
+    }
+
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .product-tile,
+    .cart-preview,
+    .module-chip {
+        border-radius: 18px;
+        background: #f6f7f4;
+        padding: 14px;
+    }
+
+    .product-tile strong,
+    .cart-preview strong {
+        display: block;
+    }
+
+    .product-tile small,
+    .cart-preview small,
+    .module-chip small {
+        color: #64748b;
+    }
+
+    .cart-total {
+        margin-top: 12px;
+        border-radius: 16px;
+        padding: 14px;
+        background: #dcfce7;
+        color: #166534;
+        font-weight: 800;
+        text-align: center;
+    }
+
+    .module-rail {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 14px;
+    }
+
+    .module-chip {
+        min-height: 86px;
+    }
+
+    .module-chip i {
+        display: block;
+        color: #0f766e;
+        margin-bottom: 8px;
     }
 
     .dashboard-window {
@@ -124,6 +273,7 @@
 
     .gallery-card,
     .model-card,
+    .screen-card,
     .story-card,
     .sector-card {
         overflow: hidden;
@@ -146,6 +296,83 @@
         background: rgba(255,255,255,0.12);
         font-size: 0.9rem;
         margin-bottom: 22px;
+    }
+
+    .screen-card {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .screen-mockup {
+        min-height: 210px;
+        border-radius: 22px;
+        padding: 16px;
+        background:
+            linear-gradient(135deg, rgba(15,118,110,0.13), rgba(217,119,6,0.08)),
+            #f8faf7;
+        border: 1px solid rgba(24, 36, 50, 0.08);
+    }
+
+    .mock-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+        font-size: 0.8rem;
+        color: #64748b;
+        font-weight: 700;
+    }
+
+    .mock-table-row,
+    .mock-list-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        align-items: center;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.82);
+        padding: 10px 12px;
+        margin-bottom: 8px;
+        font-size: 0.86rem;
+    }
+
+    .mock-total {
+        border-radius: 16px;
+        padding: 14px;
+        background: #0f766e;
+        color: #fff;
+        font-weight: 800;
+        text-align: center;
+    }
+
+    .mock-bars {
+        display: flex;
+        align-items: end;
+        gap: 10px;
+        height: 118px;
+        padding-top: 10px;
+    }
+
+    .mock-bars span {
+        flex: 1;
+        display: block;
+        border-radius: 12px 12px 4px 4px;
+        background: linear-gradient(180deg, #0f766e, #99f6e4);
+    }
+
+    .mock-chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .mock-chip-row span {
+        border-radius: 999px;
+        background: rgba(15,118,110,0.1);
+        color: #0f766e;
+        padding: 8px 10px;
+        font-size: 0.82rem;
+        font-weight: 700;
     }
 
     .process-line {
@@ -203,6 +430,12 @@
         .metric-strip {
             grid-template-columns: 1fr;
         }
+
+        .hero-feature-list,
+        .pos-preview,
+        .module-rail {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 {% endblock %}
@@ -214,74 +447,124 @@
             <div class="row g-0 align-items-center">
                 <div class="col-lg-7 hero-copy">
                     <div class="showcase-badge">
-                        <span class="section-kicker mb-0" style="color:#ffd8a8;">ERP PRÓPRIO</span>
-                        <span>Mais controle, menos dependência e evolução no seu ritmo</span>
+                        <span class="section-kicker mb-0" style="color:#ffd8a8;">ERP COMPLETO PARA COMÉRCIO E SERVIÇOS</span>
+                        <span>Teste agora no seu computador</span>
                     </div>
-                    <h1 class="hero-title">Sua empresa não precisa caber no sistema dos outros.</h1>
+                    <h1 class="hero-title">Controle estoque, vendas e financeiro em um único ERP.</h1>
                     <p class="hero-lead mt-4">
-                        Desenvolvemos um ERP próprio para a rotina da sua operação, com regras, telas e indicadores ajustados ao que o seu time realmente precisa usar no dia a dia.
+                        Baixe o teste grátis do ERP FTHEC e veja na prática como organizar PDV, estoque, clientes, contas e relatórios sem depender de planilhas espalhadas.
                     </p>
-                    <div class="d-flex flex-wrap gap-3 mt-4">
-                        <a href="#contato" class="btn btn-light btn-lg px-4">Solicitar diagnóstico</a>
+                    <ul class="hero-feature-list">
+                        <li><i class="fas fa-check-circle"></i>Vendas e PDV</li>
+                        <li><i class="fas fa-check-circle"></i>Controle de estoque</li>
+                        <li><i class="fas fa-check-circle"></i>Financeiro</li>
+                        <li><i class="fas fa-check-circle"></i>Clientes</li>
+                        <li><i class="fas fa-check-circle"></i>Relatórios gerenciais</li>
+                        <li><i class="fas fa-check-circle"></i>Rotina mais organizada</li>
+                    </ul>
+                    <div class="hero-actions d-flex flex-wrap gap-3 mt-4">
                         {% if erp_test_installer_url %}
-                        <a href="{{ erp_test_installer_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-warning btn-lg px-4">
-                            Baixar teste gratis
+                        <a href="{{ erp_test_installer_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-lg px-4 fw-bold text-uppercase download-cta" data-track="erp_download_click" data-track-label="hero">
+                            <i class="fas fa-rocket me-2"></i>Testar ERP gratuitamente
                         </a>
                         {% endif %}
-                        <a href="#vantagens" class="btn btn-outline-light btn-lg px-4">Ver vantagens</a>
+                        <a href="#telas" class="btn btn-outline-light btn-lg px-4" data-track="view_screens_click" data-track-label="hero">Ver telas do sistema</a>
+                        {% if whatsapp_url %}
+                        <a href="{{ whatsapp_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-link btn-lg px-2 text-white" data-track="whatsapp_click" data-track-label="hero">Falar no WhatsApp</a>
+                        {% endif %}
+                    </div>
+                    <div class="cta-proof">
+                        Download imediato &bull; Sem cartão &bull; Sem compromisso
                     </div>
                     <div class="metric-strip">
                         <div class="metric-box">
-                            <small>Mais autonomia</small>
-                            <strong>100%</strong>
-                            <span class="small">de visibilidade sobre regras e evolucao</span>
+                            <small>Ideal para</small>
+                            <strong>lojas e serviços</strong>
+                            <span class="small">que precisam sair das planilhas</span>
                         </div>
                         <div class="metric-box">
-                            <small>Menos adaptação forçada</small>
-                            <strong>1 fluxo</strong>
-                            <span class="small">desenhado para o seu processo</span>
+                            <small>Comece por</small>
+                            <strong>PDV + estoque</strong>
+                            <span class="small">e acompanhe tudo no financeiro</span>
                         </div>
                         <div class="metric-box">
-                            <small>Evolução contínua</small>
-                            <strong>FTHEC</strong>
-                            <span class="small">ajustando o ERP junto com sua empresa</span>
+                            <small>Teste grátis</small>
+                            <strong>sem cartão</strong>
+                            <span class="small">baixe e valide no seu computador</span>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-5 hero-visual">
-                    <div class="dashboard-window">
+                    <div class="system-window">
                         <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="window-dots" aria-hidden="true"><span></span><span></span><span></span></div>
                             <div>
-                                <small class="text-muted d-block">Painel executivo</small>
-                                <strong>Visão do negócio</strong>
-                            </div>
-                            <span class="badge bg-success">ERP próprio</span>
-                        </div>
-                        <div class="mini-grid">
-                            <div class="mini-stat">
-                                <small class="text-muted">MRR</small>
-                                <h4 class="mb-1">R$ 126k</h4>
-                                <span class="text-success small">+8,4% no mes</span>
-                            </div>
-                            <div class="mini-stat">
-                                <small class="text-muted">SLA atendimento</small>
-                                <h4 class="mb-1">96%</h4>
-                                <span class="text-success small">dentro da meta</span>
+                                <small class="text-muted d-block">Prévia do ERP</small>
+                                <strong>Frente de caixa</strong>
                             </div>
                         </div>
-                        <div class="mini-chart mb-3"></div>
-                        <div class="mini-list">
-                            <div class="d-flex justify-content-between py-2 border-bottom">
-                                <span>Comercial</span>
-                                <strong>64 propostas</strong>
+                        <div class="screen-tabs">
+                            <span class="active">PDV</span>
+                            <span>Estoque</span>
+                            <span>Financeiro</span>
+                            <span>Clientes</span>
+                        </div>
+                        <div class="pos-preview">
+                            <div class="product-grid">
+                                <div class="product-tile">
+                                    <small>Cód. 001</small>
+                                    <strong>Camiseta básica</strong>
+                                    <span>R$ 49,90</span>
+                                </div>
+                                <div class="product-tile">
+                                    <small>Cód. 018</small>
+                                    <strong>Calça jeans</strong>
+                                    <span>R$ 129,90</span>
+                                </div>
+                                <div class="product-tile">
+                                    <small>Cód. 044</small>
+                                    <strong>Tênis casual</strong>
+                                    <span>R$ 189,90</span>
+                                </div>
+                                <div class="product-tile">
+                                    <small>Cód. 052</small>
+                                    <strong>Boné premium</strong>
+                                    <span>R$ 39,90</span>
+                                </div>
                             </div>
-                            <div class="d-flex justify-content-between py-2 border-bottom">
-                                <span>Financeiro</span>
-                                <strong>2,8% inadimplencia</strong>
+                            <div class="cart-preview">
+                                <small>Venda em andamento</small>
+                                <div class="d-flex justify-content-between py-2 border-bottom">
+                                    <span>2 itens</span>
+                                    <strong>R$ 179,80</strong>
+                                </div>
+                                <div class="d-flex justify-content-between py-2 border-bottom">
+                                    <span>Cliente</span>
+                                    <strong>Maria S.</strong>
+                                </div>
+                                <div class="cart-total">Finalizar venda</div>
                             </div>
-                            <div class="d-flex justify-content-between pt-2">
-                                <span>Operacoes</span>
-                                <strong>97,2% OTIF</strong>
+                        </div>
+                        <div class="module-rail">
+                            <div class="module-chip">
+                                <i class="fas fa-boxes-stacked"></i>
+                                <strong>Estoque</strong>
+                                <small>baixo estoque</small>
+                            </div>
+                            <div class="module-chip">
+                                <i class="fas fa-wallet"></i>
+                                <strong>Financeiro</strong>
+                                <small>caixa do dia</small>
+                            </div>
+                            <div class="module-chip">
+                                <i class="fas fa-user-group"></i>
+                                <strong>Clientes</strong>
+                                <small>histórico</small>
+                            </div>
+                            <div class="module-chip">
+                                <i class="fas fa-chart-line"></i>
+                                <strong>Relatórios</strong>
+                                <small>decisão rápida</small>
                             </div>
                         </div>
                     </div>
@@ -291,42 +574,150 @@
     </div>
 </section>
 
+<section id="telas" class="py-5">
+    <div class="container">
+        <div class="row align-items-end mb-4">
+            <div class="col-lg-7">
+                <div class="section-kicker mb-2">Telas do ERP</div>
+                <h2 class="display-6 fw-bold">Veja o que você consegue testar no sistema</h2>
+            </div>
+            <div class="col-lg-5">
+                <p class="text-muted mb-0">
+                    Quem vem do Instagram precisa entender rápido se o ERP resolve a rotina. Estas são as áreas que o teste apresenta de forma direta.
+                </p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-xl-4">
+                <div class="card screen-card p-4">
+                    <div class="screen-mockup mb-4">
+                        <div class="mock-bar">
+                            <span>PDV</span>
+                            <span>Caixa #01</span>
+                        </div>
+                        <div class="mock-table-row"><span>Leitor / busca de produto</span><strong>F2</strong></div>
+                        <div class="mock-table-row"><span>3 itens no carrinho</span><strong>R$ 219,70</strong></div>
+                        <div class="mock-total">Finalizar venda</div>
+                    </div>
+                    <h4>PDV e vendas</h4>
+                    <p class="text-muted">Frente de caixa com produtos, carrinho, formas de pagamento e fechamento rápido.</p>
+                    <a href="{% url 'pdv_demo' %}" class="btn btn-outline-dark mt-auto" data-track="demo_screen_click" data-track-label="pdv">Abrir tela de PDV</a>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-4">
+                <div class="card screen-card p-4">
+                    <div class="screen-mockup mb-4">
+                        <div class="mock-bar">
+                            <span>Estoque</span>
+                            <span>Alertas</span>
+                        </div>
+                        <div class="mock-list-row"><span>Camiseta P</span><strong>12 un.</strong></div>
+                        <div class="mock-list-row"><span>Tênis casual</span><strong>4 un.</strong></div>
+                        <div class="mock-list-row"><span>Boné premium</span><strong>28 un.</strong></div>
+                    </div>
+                    <h4>Controle de estoque</h4>
+                    <p class="text-muted">Acompanhe saldo, produtos com baixa quantidade e movimentação ligada às vendas.</p>
+                    <a href="{% url 'operacoes_demo' %}" class="btn btn-outline-dark mt-auto" data-track="demo_screen_click" data-track-label="estoque">Ver controle operacional</a>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-4">
+                <div class="card screen-card p-4">
+                    <div class="screen-mockup mb-4">
+                        <div class="mock-bar">
+                            <span>Financeiro</span>
+                            <span>Hoje</span>
+                        </div>
+                        <div class="mock-bars">
+                            <span style="height: 42%;"></span>
+                            <span style="height: 70%;"></span>
+                            <span style="height: 56%;"></span>
+                            <span style="height: 88%;"></span>
+                            <span style="height: 62%;"></span>
+                        </div>
+                    </div>
+                    <h4>Financeiro</h4>
+                    <p class="text-muted">Veja entradas, saídas, contas críticas e fluxo de caixa em uma visão simples.</p>
+                    <a href="{% url 'financeiro_demo' %}" class="btn btn-outline-dark mt-auto" data-track="demo_screen_click" data-track-label="financeiro">Abrir financeiro</a>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="card screen-card p-4">
+                    <div class="screen-mockup mb-4">
+                        <div class="mock-bar">
+                            <span>Clientes</span>
+                            <span>Cadastro</span>
+                        </div>
+                        <div class="mock-table-row"><span>Maria Santos</span><strong>VIP</strong></div>
+                        <div class="mock-table-row"><span>João Pereira</span><strong>Ativo</strong></div>
+                        <div class="mock-chip-row mt-3">
+                            <span>Histórico de compras</span>
+                            <span>Telefone</span>
+                            <span>Observações</span>
+                        </div>
+                    </div>
+                    <h4>Cadastro de clientes</h4>
+                    <p class="text-muted">Centralize contato, histórico e atendimento para vender melhor e acompanhar relacionamento.</p>
+                    {% if erp_test_installer_url %}
+                    <a href="{{ erp_test_installer_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-dark mt-auto" data-track="erp_download_click" data-track-label="clientes-card">Testar cadastro no ERP</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-6">
+                <div class="card screen-card p-4">
+                    <div class="screen-mockup mb-4">
+                        <div class="mock-bar">
+                            <span>Relatórios</span>
+                            <span>Gestão</span>
+                        </div>
+                        <div class="mock-list-row"><span>Vendas por período</span><strong>+18%</strong></div>
+                        <div class="mock-list-row"><span>Produtos mais vendidos</span><strong>Top 10</strong></div>
+                        <div class="mock-list-row"><span>Resultado do caixa</span><strong>OK</strong></div>
+                    </div>
+                    <h4>Relatórios gerenciais</h4>
+                    <p class="text-muted">Transforme vendas, estoque e financeiro em indicadores para decidir com mais segurança.</p>
+                    <a href="{% url 'dashboard_demo' %}" class="btn btn-outline-dark mt-auto" data-track="demo_screen_click" data-track-label="relatorios">Ver relatórios</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section id="vantagens" class="py-5">
     <div class="container">
-            <div class="text-center mb-5">
-                <div class="section-kicker mb-2">Vantagens</div>
-            <h2 class="display-6 fw-bold">Por que faz sentido ter um ERP proprio na sua empresa</h2>
+        <div class="text-center mb-5">
+            <div class="section-kicker mb-2">Vantagens</div>
+            <h2 class="display-6 fw-bold">O que o ERP resolve no dia a dia da empresa</h2>
             <p class="text-muted mx-auto" style="max-width: 760px;">
-                Quando o sistema acompanha a operacao real, a empresa ganha velocidade, clareza e poder de decisao sem depender de gambiarra ou de processos paralelos.
+                A proposta é tirar a operação do improviso: venda registrada, estoque atualizado, financeiro acompanhado e relatórios disponíveis sem retrabalho manual.
             </p>
         </div>
         <div class="row g-4">
             <div class="col-md-6 col-xl-3">
                 <div class="card p-4 h-100">
-                    <div class="model-icon"><i class="fas fa-chart-pie"></i></div>
-                    <h4>Controle do seu jeito</h4>
-                    <p class="text-muted mb-0">Indicadores, cadastros e regras alinhados ao modo como sua empresa vende, atende e opera.</p>
+                    <div class="model-icon"><i class="fas fa-cash-register"></i></div>
+                    <h4>Vendas sem bagunça</h4>
+                    <p class="text-muted mb-0">Registre vendas no PDV, acompanhe carrinho, pagamentos e fechamento de caixa com mais controle.</p>
                 </div>
             </div>
             <div class="col-md-6 col-xl-3">
                 <div class="card p-4 h-100">
-                    <div class="model-icon"><i class="fas fa-users-cog"></i></div>
-                    <h4>Menos dependencia externa</h4>
-                    <p class="text-muted mb-0">Sua empresa deixa de ficar presa a plataformas engessadas, pacotes fechados e mudancas impostas por terceiros.</p>
+                    <div class="model-icon"><i class="fas fa-boxes-stacked"></i></div>
+                    <h4>Estoque atualizado</h4>
+                    <p class="text-muted mb-0">Produtos, saldos e alertas ficam conectados às vendas para reduzir falta, sobra e conferência manual.</p>
                 </div>
             </div>
             <div class="col-md-6 col-xl-3">
                 <div class="card p-4 h-100">
-                    <div class="model-icon"><i class="fas fa-bolt"></i></div>
-                    <h4>Processo mais limpo</h4>
-                    <p class="text-muted mb-0">Menos planilha, menos retrabalho e menos ajuste manual entre areas que hoje trabalham desconectadas.</p>
+                    <div class="model-icon"><i class="fas fa-wallet"></i></div>
+                    <h4>Financeiro visível</h4>
+                    <p class="text-muted mb-0">Entradas, saídas, contas e caixa aparecem em uma visão mais clara para acompanhar o resultado.</p>
                 </div>
             </div>
             <div class="col-md-6 col-xl-3">
                 <div class="card p-4 h-100">
-                    <div class="model-icon"><i class="fas fa-mobile-screen-button"></i></div>
-                    <h4>Evolucao com acompanhamento</h4>
-                    <p class="text-muted mb-0">O ERP cresce junto com a empresa, com ajustes praticos conforme o negocio amadurece.</p>
+                    <div class="model-icon"><i class="fas fa-chart-line"></i></div>
+                    <h4>Relatórios para decidir</h4>
+                    <p class="text-muted mb-0">Vendas, produtos, clientes e desempenho viram indicadores simples para agir com mais segurança.</p>
                 </div>
             </div>
         </div>
@@ -381,8 +772,8 @@
 <section id="modelos" class="py-5">
     <div class="container">
         <div class="text-center mb-5">
-            <div class="section-kicker mb-2">Frentes do ERP</div>
-            <h2 class="display-6 fw-bold">O ERP proprio pode atender as areas que mais pesam no resultado</h2>
+            <div class="section-kicker mb-2">Recursos principais</div>
+            <h2 class="display-6 fw-bold">Módulos para controlar a rotina sem trocar de ferramenta toda hora</h2>
         </div>
         <div class="row g-4">
             <div class="col-lg-4">
@@ -448,20 +839,20 @@
         <div class="row g-4">
             <div class="col-lg-4">
                 <div class="card sector-card p-4 h-100">
-                    <h4>Industria</h4>
-                    <p class="text-muted mb-0">Controle de producao, produtividade, retrabalho, abastecimento e visao gerencial do chao de fabrica.</p>
+                    <h4>Comércio e varejo</h4>
+                    <p class="text-muted mb-0">PDV, cadastro de produtos, estoque, clientes e relatórios para acompanhar a loja com mais clareza.</p>
                 </div>
             </div>
             <div class="col-lg-4">
                 <div class="card sector-card p-4 h-100">
-                    <h4>Distribuicao</h4>
-                    <p class="text-muted mb-0">Pedidos, expedicao, embarque, carteira, entrega e indicadores para reduzir perda operacional.</p>
+                    <h4>Serviços</h4>
+                    <p class="text-muted mb-0">Clientes, agenda, atendimento, financeiro e acompanhamento de solicitações em um só lugar.</p>
                 </div>
             </div>
             <div class="col-lg-4">
                 <div class="card sector-card p-4 h-100">
-                    <h4>Servicos</h4>
-                    <p class="text-muted mb-0">Comercial, agenda, atendimento, faturamento recorrente e acompanhamento de SLA com mais disciplina.</p>
+                    <h4>Distribuição</h4>
+                    <p class="text-muted mb-0">Pedidos, movimentação de estoque, entregas e indicadores para reduzir perda operacional.</p>
                 </div>
             </div>
         </div>
@@ -473,18 +864,20 @@
         <div class="cta-band mb-4">
             <div class="row align-items-center g-4">
                 <div class="col-lg-7">
-                    <div class="section-kicker mb-2" style="color:#ffd8a8;">Contato</div>
-                    <h2 class="fw-bold mb-3">Converse com a FTHEC sobre um ERP proprio para a sua operacao.</h2>
-                    <p class="mb-0 text-white-50">Se a sua empresa cresceu mais do que o sistema atual consegue acompanhar, faz sentido avaliar um ERP construido para o seu processo.</p>
+                    <div class="section-kicker mb-2" style="color:#ffd8a8;">Teste grátis</div>
+                    <h2 class="fw-bold mb-3">Baixe o ERP e valide antes de conversar com a FTHEC.</h2>
+                    <p class="mb-0 text-white-50">Clique para testar o sistema. Se preferir ajuda, chame no WhatsApp ou envie o diagnóstico com os dados da sua empresa.</p>
                 </div>
                 <div class="col-lg-5 text-lg-end">
                     {% if erp_test_installer_url %}
-                    <a href="{{ erp_test_installer_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-warning btn-lg me-2 mb-2 mb-lg-0">
-                        Baixar instalador
+                    <a href="{{ erp_test_installer_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-lg me-2 mb-2 mb-lg-0 download-cta" data-track="erp_download_click" data-track-label="contact-band">
+                        Testar ERP gratuitamente
                     </a>
                     {% endif %}
-                    <a href="{% url 'chatbot_page' %}" class="btn btn-outline-light btn-lg me-2">Falar com chatbot</a>
-                    <a href="{% url 'dashboard_demo' %}" class="btn btn-light btn-lg">Ver exemplo</a>
+                    {% if whatsapp_url %}
+                    <a href="{{ whatsapp_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-light btn-lg me-2 mb-2 mb-lg-0" data-track="whatsapp_click" data-track-label="contact-band">WhatsApp</a>
+                    {% endif %}
+                    <a href="#diagnostico-form" class="btn btn-light btn-lg mb-2 mb-lg-0">Enviar diagnóstico</a>
                 </div>
             </div>
         </div>
@@ -499,7 +892,7 @@
                 </div>
             </div>
             <div class="col-lg-7">
-                <div class="card p-4 p-lg-5">
+                <div class="card p-4 p-lg-5" id="diagnostico-form">
                     <h3 class="mb-3">Solicitar diagnostico</h3>
                     <p class="text-muted mb-4">Preencha os pontos principais para retornarmos com uma avaliacao mais objetiva.</p>
                     <form method="POST" action="{% url 'inscricao' %}">
