@@ -230,7 +230,7 @@ ERP_TEST_INSTALLER_URL = os.getenv(
 GOOGLE_ANALYTICS_ID = os.getenv("GOOGLE_ANALYTICS_ID", "")
 WHATSAPP_URL = os.getenv(
     "WHATSAPP_URL",
-    "https://wa.me/5511982170425?text=Ol%C3%A1%2C%20quero%20testar%20o%20ERP%20da%20FTHEC.",
+    "https://wa.me/5511976406169?text=Ol%C3%A1%2C%20quero%20falar%20com%20a%20FTHEC.",
 )
 
 # 📄 Leads CSV

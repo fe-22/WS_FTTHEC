@@ -859,6 +859,73 @@
     </div>
 </section>
 
+<section id="conciliacao-cartoes" class="py-5">
+    <div class="container">
+        <div class="card p-4 p-lg-5">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-4">
+                    <div class="model-icon"><i class="fas fa-receipt"></i></div>
+                    <div class="section-kicker mb-2">Gestão financeira</div>
+                    <h2 class="fw-bold">Cansado de acumular papéis e perder horas conferindo slips de cartão?</h2>
+                </div>
+                <div class="col-lg-8">
+                    <p class="text-muted">Com o módulo de <strong>Conciliação de Cartões</strong> do nosso ERP, você ganha controle e automação para a gestão financeira do seu negócio. O sistema ajuda a simplificar as conferências:</p>
+                    <ul class="list-unstyled d-grid gap-3 mb-4">
+                        <li><i class="fas fa-check-circle text-success me-2"></i><strong>Verificação automatizada de taxas:</strong> confira se a credenciadora está cobrando o percentual contratado.</li>
+                        <li><i class="fas fa-check-circle text-success me-2"></i><strong>Conferência de valores:</strong> compare valores brutos, taxas aplicadas e valores líquidos a receber.</li>
+                        <li><i class="fas fa-check-circle text-success me-2"></i><strong>Menos papelada:</strong> reduza a dependência de comprovantes de maquininha e baixas manuais venda por venda.</li>
+                    </ul>
+                    <p class="text-muted">Simplifique a rotina, identifique cobranças indevidas e tenha mais previsibilidade do fluxo de caixa, sem perder tempo com conferências manuais.</p>
+                    {% if whatsapp_url %}
+                    <a href="{{ whatsapp_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" data-track="whatsapp_click" data-track-label="conciliacao-cartoes">Fale conosco e conheça o ERP</a>
+                    {% else %}
+                    <a href="#contato" class="btn btn-primary">Fale conosco e conheça o ERP</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="parcerias" class="py-5">
+    <div class="container">
+        <div class="text-center mb-4">
+            <div class="section-kicker mb-2">Soluções e parcerias</div>
+            <h2 class="display-6 fw-bold">Tecnologia para conectar sua operação</h2>
+            <p class="text-muted mb-0">Conheça nossas soluções e parceiros para gestão comercial e vendas.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="card p-4 h-100">
+                    <a href="https://crmmenu.com.br/" target="_blank" rel="noopener noreferrer" aria-label="Conheça o CRMMenu">
+                        <img src="{% static 'images/crmmenu.png' %}" alt="CRMMenu: transforme clientes em clientes recorrentes" class="img-fluid rounded-3 mb-3">
+                    </a>
+                    <h4>Representação CRMMenu</h4>
+                    <p class="text-muted">Conheça a solução CRMMenu para apoiar o relacionamento com seus clientes.</p>
+                    <a href="https://crmmenu.com.br/" target="_blank" rel="noopener noreferrer" class="btn btn-outline-dark mt-auto">Acessar CRMMenu</a>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card p-4 h-100">
+                    <a href="https://fthec-crm.onrender.com/" target="_blank" rel="noopener noreferrer" aria-label="Conheça a Força de Vendas FTHEC">
+                        <img src="{% static 'images/forca-de-vendas.png' %}" alt="FTHEC Força de Vendas: mais oportunidades, mais vendas, mais resultados" class="img-fluid rounded-3 mb-3">
+                    </a>
+                    <h4>Força de Venda FTHEC</h4>
+                    <p class="text-muted">Nosso projeto de força de vendas para apoiar a rotina da sua equipe comercial.</p>
+                    <a href="https://fthec-crm.onrender.com/" target="_blank" rel="noopener noreferrer" class="btn btn-outline-dark mt-auto">Conhecer o projeto</a>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card p-4 h-100">
+                    <img src="{% static 'images/digist-logo.png' %}" alt="Digisat Tecnologia" class="img-fluid rounded-3 mb-3">
+                    <h4>Parceria Digist</h4>
+                    <p class="text-muted mb-0">Parceria para soluções Digist de ERP, PDV e autoatendimento.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section id="contato" class="py-5">
     <div class="container">
         <div class="cta-band mb-4">

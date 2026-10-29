@@ -48,7 +48,7 @@ async function sendMessage() {
             const data = await response.json();
             addMessage(data.response, 'bot');
         } else {
-            addMessage('Desculpe, estou com problemas para responder. Por favor, entre em contato pelo telefone (11) 99999-9999', 'bot');
+            addMessage('Desculpe, estou com problemas para responder. Por favor, entre em contato pelo telefone (11) 97640-6169', 'bot');
         }
     } catch (error) {
         typingIndicator.remove();
