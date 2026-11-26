@@ -1,0 +1,56 @@
+{% extends "admin/change_list.html" %}
+{% load i18n %}
+
+{% block content %}
+<div style="display:grid;grid-template-columns:repeat(3,minmax(160px,1fr));gap:16px;margin-bottom:20px;">
+  <div style="background:#fff;border:1px solid #ddd;border-radius:10px;padding:18px;">
+    <div style="color:#6b7280;font-size:13px;">Visitantes hoje</div>
+    <div style="font-size:28px;font-weight:700;">{{ analytics.visitors_today }}</div>
+  </div>
+  <div style="background:#fff;border:1px solid #ddd;border-radius:10px;padding:18px;">
+    <div style="color:#6b7280;font-size:13px;">Visualizações hoje</div>
+    <div style="font-size:28px;font-weight:700;">{{ analytics.visits_today }}</div>
+  </div>
+  <div style="background:#fff;border:1px solid #ddd;border-radius:10px;padding:18px;">
+    <div style="color:#6b7280;font-size:13px;">Visitantes - 30 dias</div>
+    <div style="font-size:28px;font-weight:700;">{{ analytics.visitors_30_days }}</div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(2,minmax(280px,1fr));gap:16px;margin-bottom:20px;">
+  <div style="background:#fff;border:1px solid #ddd;border-radius:10px;padding:18px;">
+    <h2>Páginas mais visitadas</h2>
+    {% for item in analytics.top_pages %}
+      <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #eee;">
+        <code>{{ item.path }}</code><strong>{{ item.total }}</strong>
+      </div>
+    {% empty %}<p>Nenhum registro.</p>{% endfor %}
+  </div>
+  <div style="background:#fff;border:1px solid #ddd;border-radius:10px;padding:18px;">
+    <h2>Regiões com mais visitantes</h2>
+    {% for item in analytics.top_regions %}
+      <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #eee;">
+        <span>{{ item.region }}</span><strong>{{ item.total }}</strong>
+      </div>
+    {% empty %}<p>Sem região identificada pelos provedores de hospedagem.</p>{% endfor %}
+  </div>
+  <div style="background:#fff;border:1px solid #ddd;border-radius:10px;padding:18px;">
+    <h2>Cidades</h2>
+    {% for item in analytics.top_cities %}
+      <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #eee;">
+        <span>{{ item.city }}{% if item.region %} - {{ item.region }}{% endif %}</span><strong>{{ item.total }}</strong>
+      </div>
+    {% empty %}<p>Sem cidade identificada.</p>{% endfor %}
+  </div>
+  <div style="background:#fff;border:1px solid #ddd;border-radius:10px;padding:18px;">
+    <h2>Origem principal</h2>
+    {% for item in analytics.top_referrers %}
+      <div style="display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid #eee;">
+        <span style="overflow:hidden;text-overflow:ellipsis;">{{ item.referrer }}</span><strong>{{ item.total }}</strong>
+      </div>
+    {% empty %}<p>A maioria das visitas chegou diretamente ou sem origem registrada.</p>{% endfor %}
+  </div>
+</div>
+
+{{ block.super }}
+{% endblock %}

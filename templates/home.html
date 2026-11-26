@@ -1,20 +1,23 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Fthec sistemas e automação comercial{% endblock %}
+{% block title %}FTHEC Sistemas e Automação Comercial{% endblock %}
 
 {% block extra_css %}
 <style>
     .hero-shell {
-        padding: 42px 0 64px;
+        padding: 28px 0 30px;
+        background: #eef3f2;
     }
 
     .hero-panel {
-        background: linear-gradient(135deg, rgba(15, 118, 110, 0.95), rgba(17, 24, 39, 0.96));
-        border-radius: 32px;
+        background: linear-gradient(135deg, #fdfefe 0%, #edf5f3 100%);
+        border-radius: 18px;
         overflow: hidden;
-        color: #fff;
+        color: #163d48;
         position: relative;
+        border: 1px solid rgba(15, 118, 110, 0.08);
+        box-shadow: 0 18px 42px rgba(24, 36, 50, 0.08);
     }
 
     .hero-panel::after {
@@ -22,8 +25,8 @@
         position: absolute;
         inset: 0;
         background:
-            radial-gradient(circle at 15% 20%, rgba(255,255,255,0.16), transparent 26%),
-            radial-gradient(circle at 85% 25%, rgba(217,119,6,0.22), transparent 22%);
+            radial-gradient(circle at 15% 20%, rgba(15,118,110,0.09), transparent 24%),
+            radial-gradient(circle at 85% 25%, rgba(217,119,6,0.08), transparent 22%);
         pointer-events: none;
     }
 
@@ -34,20 +37,22 @@
     }
 
     .hero-copy {
-        padding: 72px 54px;
+        padding: 56px 48px;
     }
 
     .hero-title {
-        font-size: clamp(2.5rem, 5vw, 4.9rem);
-        line-height: 0.95;
+        font-size: clamp(2.15rem, 4vw, 3.55rem);
+        line-height: 1.02;
         font-weight: 800;
         letter-spacing: -0.05em;
+        color: #164d5a;
+        max-width: 650px;
     }
 
     .hero-lead {
         max-width: 560px;
-        font-size: 1.1rem;
-        color: rgba(255,255,255,0.84);
+        font-size: 1.08rem;
+        color: #4f6069;
     }
 
     .hero-feature-list {
@@ -120,7 +125,7 @@
 
     .hero-visual {
         min-height: 100%;
-        padding: 40px;
+        padding: 34px 34px 34px 10px;
     }
 
     .system-window {
@@ -221,6 +226,111 @@
         display: block;
         color: #0f766e;
         margin-bottom: 8px;
+    }
+
+    .solution-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .solution-card {
+        min-height: 190px;
+        border: 1px solid rgba(24, 36, 50, 0.09);
+        border-radius: 14px;
+        background: #fff;
+        padding: 22px;
+        box-shadow: 0 10px 24px rgba(24, 36, 50, 0.07);
+    }
+
+    .solution-icon {
+        width: 44px;
+        height: 44px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: #edf4f2;
+        color: #3f9c90;
+        font-size: 1.15rem;
+        margin-bottom: 14px;
+    }
+
+    .solution-card h3 {
+        min-height: 48px;
+        font-size: 1.02rem;
+        line-height: 1.15;
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
+
+    .solution-card p {
+        min-height: 58px;
+        font-size: 0.88rem;
+        color: #5d6875;
+        margin-bottom: 10px;
+    }
+
+    .solution-card a {
+        color: #17695f;
+        text-decoration: none;
+        font-weight: 800;
+        font-size: 0.88rem;
+    }
+
+    .checkout-section {
+        padding: 48px 0 56px;
+        background: linear-gradient(135deg, #f8fbfa, #edf4f2);
+    }
+
+    .checkout-copy {
+        max-width: 650px;
+    }
+
+    .checkout-copy h2 {
+        color: #164d5a;
+        font-weight: 800;
+        letter-spacing: -0.035em;
+    }
+
+    .checkout-points {
+        display: grid;
+        gap: 14px;
+        margin: 24px 0;
+    }
+
+    .checkout-point {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .checkout-point i {
+        color: #0f766e;
+        margin-top: 4px;
+    }
+
+    .checkout-image-wrap {
+        min-height: 480px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+        border: 1px solid rgba(24, 36, 50, 0.08);
+        border-radius: 24px;
+        box-shadow: 0 18px 42px rgba(24, 36, 50, 0.09);
+        overflow: hidden;
+    }
+
+    .checkout-image {
+        display: block;
+        width: 100%;
+        max-height: 600px;
+        object-fit: contain;
+    }
+
+    .checkout-note {
+        color: #68758a;
+        font-size: 0.82rem;
     }
 
     .dashboard-window {
@@ -436,6 +546,28 @@
         .module-rail {
             grid-template-columns: 1fr;
         }
+
+        .solution-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .solution-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .checkout-section {
+            padding: 34px 0;
+        }
+
+        .checkout-image-wrap {
+            min-height: 320px;
+        }
+
+        .checkout-image {
+            max-height: 420px;
+        }
     }
 </style>
 {% endblock %}
@@ -446,52 +578,20 @@
         <div class="hero-panel">
             <div class="row g-0 align-items-center">
                 <div class="col-lg-7 hero-copy">
-                    <div class="showcase-badge">
-                        <span class="section-kicker mb-0" style="color:#ffd8a8;">ERP COMPLETO PARA COMÉRCIO E SERVIÇOS</span>
-                        <span>Teste agora no seu computador</span>
-                    </div>
                     <h1 class="hero-title">Controle estoque, vendas e financeiro em um único ERP.</h1>
                     <p class="hero-lead mt-4">
-                        Baixe o teste grátis do ERP FTHEC e veja na prática como organizar PDV, estoque, clientes, contas e relatórios sem depender de planilhas espalhadas.
+                        Organize seu negócio de ponta a ponta — do PDV à gestão financeira — sem depender de planilhas manuais. Escolha seu foco e comece a testar grátis.
                     </p>
-                    <ul class="hero-feature-list">
-                        <li><i class="fas fa-check-circle"></i>Vendas e PDV</li>
-                        <li><i class="fas fa-check-circle"></i>Controle de estoque</li>
-                        <li><i class="fas fa-check-circle"></i>Financeiro</li>
-                        <li><i class="fas fa-check-circle"></i>Clientes</li>
-                        <li><i class="fas fa-check-circle"></i>Relatórios gerenciais</li>
-                        <li><i class="fas fa-check-circle"></i>Rotina mais organizada</li>
-                    </ul>
                     <div class="hero-actions d-flex flex-wrap gap-3 mt-4">
                         {% if erp_test_installer_url %}
-                        <a href="{{ erp_test_installer_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-lg px-4 fw-bold text-uppercase download-cta" data-track="erp_download_click" data-track-label="hero">
-                            <i class="fas fa-rocket me-2"></i>Testar ERP gratuitamente
+                        <a href="{{ erp_test_installer_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-lg px-4 fw-bold download-cta" data-track="erp_download_click" data-track-label="hero">
+                            Testar ERP gratuitamente
                         </a>
                         {% endif %}
-                        <a href="#telas" class="btn btn-outline-light btn-lg px-4" data-track="view_screens_click" data-track-label="hero">Ver telas do sistema</a>
+                        <a href="#solucoes" class="btn btn-lg px-4 text-white" style="background:#2f9aa0;border-radius:999px;">Ver tour guiado</a>
                         {% if whatsapp_url %}
-                        <a href="{{ whatsapp_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-link btn-lg px-2 text-white" data-track="whatsapp_click" data-track-label="hero">Falar no WhatsApp</a>
+                        <a href="{{ whatsapp_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-lg w-100 mt-1 text-start text-white" style="width:230px!important;max-width:230px;background:#163d57;border-radius:999px;" data-track="whatsapp_click" data-track-label="hero"><i class="fab fa-whatsapp me-2"></i>Consultor no WhatsApp</a>
                         {% endif %}
-                    </div>
-                    <div class="cta-proof">
-                        Download imediato &bull; Sem cartão &bull; Sem compromisso
-                    </div>
-                    <div class="metric-strip">
-                        <div class="metric-box">
-                            <small>Ideal para</small>
-                            <strong>lojas e serviços</strong>
-                            <span class="small">que precisam sair das planilhas</span>
-                        </div>
-                        <div class="metric-box">
-                            <small>Comece por</small>
-                            <strong>PDV + estoque</strong>
-                            <span class="small">e acompanhe tudo no financeiro</span>
-                        </div>
-                        <div class="metric-box">
-                            <small>Teste grátis</small>
-                            <strong>sem cartão</strong>
-                            <span class="small">baixe e valide no seu computador</span>
-                        </div>
                     </div>
                 </div>
                 <div class="col-lg-5 hero-visual">
@@ -574,7 +674,76 @@
     </div>
 </section>
 
-<section id="telas" class="py-5">
+<section id="solucoes" class="pb-4" style="margin-top:-10px;">
+    <div class="container">
+        <h2 class="h2 fw-bold mb-4">Explore Nossas Soluções</h2>
+        <div class="solution-grid">
+            <article class="solution-card">
+                <div class="solution-icon"><i class="fas fa-cash-register"></i></div>
+                <h3>Gestão Completa<br>(ERP/PDV)</h3>
+                <p>Vendas rápidas, estoque integrado, controle financeiro e relatórios visuais.</p>
+                <a href="{% url 'pdv_demo' %}">Saiba mais <i class="fas fa-arrow-right ms-1"></i></a>
+            </article>
+            <article class="solution-card">
+                <div class="solution-icon"><i class="fas fa-boxes-stacked"></i></div>
+                <h3>Fidelidade e CRM</h3>
+                <p>Crie campanhas, acompanhe clientes e estimule a recompra.</p>
+                <a href="{% url 'crm' %}">Saiba mais <i class="fas fa-arrow-right ms-1"></i></a>
+            </article>
+            <article class="solution-card">
+                <div class="solution-icon"><i class="fas fa-mobile-screen-button"></i></div>
+                <h3>Autoatendimento<br>(Totens/PDV)</h3>
+                <p>Permita que clientes montem seus pedidos em uma estação de checkout intuitiva.</p>
+                <a href="#totem">Ver como funciona <i class="fas fa-arrow-right ms-1"></i></a>
+            </article>
+            <article class="solution-card">
+                <div class="solution-icon"><i class="fas fa-chart-line"></i></div>
+                <h3>Onboarding Consultivo</h3>
+                <p>Teste grátis com orientação de um especialista para configurar seu cenário.</p>
+                <a href="#diagnostico-form">Saiba mais <i class="fas fa-arrow-right ms-1"></i></a>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section id="totem" class="checkout-section">
+    <div class="container">
+        <div class="row align-items-center g-4 g-lg-5">
+            <div class="col-lg-6">
+                <div class="checkout-copy">
+                    <div class="section-kicker mb-2">Autoatendimento e automação</div>
+                    <h2 class="display-6 mb-3">Um checkout mais ágil, com tecnologia que trabalha junto com sua equipe.</h2>
+                    <p class="text-muted">
+                        Totens de autoatendimento ajudam o cliente a consultar produtos, montar o pedido e seguir para o pagamento com mais autonomia. São uma alternativa para agilizar filas e liberar a equipe para outras tarefas.
+                    </p>
+                    <div class="checkout-points">
+                        <div class="checkout-point">
+                            <i class="fas fa-check-circle"></i>
+                            <div><strong>Uma jornada simples</strong><br><span class="text-muted">Tela touch para navegar pelos itens, revisar o pedido e iniciar o checkout.</span></div>
+                        </div>
+                        <div class="checkout-point">
+                            <i class="fas fa-check-circle"></i>
+                            <div><strong>Equipamentos integrados</strong><br><span class="text-muted">O projeto pode incluir leitor, impressora, balança e terminal de pagamento compatíveis.</span></div>
+                        </div>
+                        <div class="checkout-point">
+                            <i class="fas fa-check-circle"></i>
+                            <div><strong>Operação conectada</strong><br><span class="text-muted">Com a integração adequada, pedidos e vendas podem conversar com o PDV e o ERP.</span></div>
+                        </div>
+                    </div>
+                    <p class="checkout-note">Os equipamentos e integrações dependem do modelo de operação e da compatibilidade técnica de cada projeto.</p>
+                    <a href="#contato" class="btn btn-primary btn-lg mt-2">Converse sobre seu checkout</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="checkout-image-wrap">
+                    <img class="checkout-image" src="{% static 'images/checkout-totem.jpg' %}" alt="Estação de checkout de autoatendimento com tela touch, leitor, impressora e terminal de pagamento" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="telas" class="py-5" style="display:none;">
     <div class="container">
         <div class="row align-items-end mb-4">
             <div class="col-lg-7">
@@ -682,7 +851,7 @@
     </div>
 </section>
 
-<section id="vantagens" class="py-5">
+<section id="vantagens" class="py-5" style="display:none;">
     <div class="container">
         <div class="text-center mb-5">
             <div class="section-kicker mb-2">Vantagens</div>
@@ -724,16 +893,41 @@
     </div>
 </section>
 
+<section class="py-4">
+    <div class="container">
+        <div class="row align-items-center g-4 p-4 rounded-4" style="background:#edf4f2;">
+            <div class="col-lg-8">
+                <div class="section-kicker mb-2">Diagnóstico rápido</div>
+                <h2 class="h3 fw-bold mb-2">Não sabe qual módulo sua operação precisa primeiro?</h2>
+                <p class="text-muted mb-0">Conte seu cenário e receba uma orientação prática antes de configurar ou testar o sistema.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="#diagnostico-form" class="btn btn-lg px-4" style="border-radius:999px;background:#163d57;color:#fff;">Solicitar diagnóstico</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-4">
+            <div class="section-kicker mb-2">Ecossistema</div>
+            <h2 class="display-6 fw-bold">Ecossistema completo para vender mais e atender melhor</h2>
+            <p class="text-muted mx-auto" style="max-width:820px;">Além do ERP FTHEC, conectamos sua operação a soluções de fidelidade, força de vendas e automação comercial/PDV com a Digisat.</p>
+        </div>
+    </div>
+</section>
+
 <section id="prova" class="py-5">
     <div class="container">
         <div class="row align-items-end mb-4">
             <div class="col-lg-7">
-                <div class="section-kicker mb-2">Na pratica</div>
-                <h2 class="display-6 fw-bold">O cliente percebe valor quando enxerga ganho operacional, nao so telas bonitas</h2>
+                <div class="section-kicker mb-2">Na prática</div>
+                <h2 class="display-6 fw-bold">O cliente percebe valor quando enxergue ganho operacional, não só telas bonitas</h2>
             </div>
             <div class="col-lg-5">
                 <p class="text-muted mb-0">
-                    A proposta da FTHEC e entregar um ERP que organize a rotina, de visibilidade de ponta a ponta e reduza a distancia entre gestao e execucao.
+                    A proposta da FTHEC é entregar um ERP que organize a rotina, dê visibilidade de ponta a ponta e reduza a distância entre gestão e execução.
                 </p>
             </div>
         </div>
@@ -743,7 +937,7 @@
                     <img src="{% static 'images/WhatsApp Image 2026-02-06 at 10.53.17.jpg' %}" alt="Equipe FTHEC em reuniao">
                     <div class="p-4">
                         <h4>Diagnostico com proximidade</h4>
-                        <p class="text-muted mb-0">O projeto comeca entendendo a operacao real, e nao tentando encaixar sua empresa em um modelo pronto.</p>
+                        <p class="text-muted mb-0">O projeto começa entendendo a operação real, não tentando encaixar sua empresa em um modelo pronto.</p>
                     </div>
                 </div>
             </div>
@@ -761,7 +955,7 @@
                     <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80" alt="Operacao e tecnologia">
                     <div class="p-4">
                         <h4>Operacao integrada</h4>
-                        <p class="text-muted mb-0">Comercial, financeiro e operacao passam a trabalhar sobre a mesma base, com menos ruida e mais previsibilidade.</p>
+                        <p class="text-muted mb-0">Comercial, financeiro e operação passam a trabalhar sobre a mesma base, com menos ruído e mais previsibilidade.</p>
                     </div>
                 </div>
             </div>
@@ -769,7 +963,7 @@
     </div>
 </section>
 
-<section id="modelos" class="py-5">
+<section id="modelos" class="py-5" style="display:none;">
     <div class="container">
         <div class="text-center mb-5">
             <div class="section-kicker mb-2">Recursos principais</div>
@@ -810,7 +1004,7 @@
             <div class="col-lg-5">
                 <div class="section-kicker mb-2">Processo</div>
                 <h2 class="display-6 fw-bold">Como construimos um ERP que acompanha a sua empresa</h2>
-                <p class="text-muted">O foco nao e vender modulo solto. O foco e estruturar uma operacao melhor com tecnologia propria.</p>
+                <p class="text-muted">O foco não é vender módulo solto. O foco é estruturar uma operação melhor com tecnologia própria.</p>
             </div>
             <div class="col-lg-7">
                 <div class="card p-4">
@@ -821,7 +1015,7 @@
                         </div>
                         <div class="process-item">
                             <h5>2. Desenho do fluxo ideal</h5>
-                            <p class="text-muted mb-0">Definimos telas, regras, indicadores e prioridades de acordo com o processo real do negocio.</p>
+                            <p class="text-muted mb-0">Definimos telas, regras, indicadores e prioridades de acordo com o processo real do negócio.</p>
                         </div>
                         <div class="process-item mb-0">
                             <h5>3. Entrega e evolucao continua</h5>
@@ -954,17 +1148,17 @@
                     <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80" alt="Reuniao de implantacao">
                     <div class="p-4">
                         <h4>Projeto com proximidade real</h4>
-                        <p class="text-muted mb-0">O relacionamento continua depois da entrega, com evolucoes e ajustes alinhados ao negocio.</p>
+                        <p class="text-muted mb-0">O relacionamento continua depois da entrega, com evoluções e ajustes alinhados ao negócio.</p>
                     </div>
                 </div>
             </div>
             <div class="col-lg-7">
                 <div class="card p-4 p-lg-5" id="diagnostico-form">
-                    <h3 class="mb-3">Solicitar diagnostico</h3>
+                    <h3 class="mb-3">Solicitar diagnóstico</h3>
                     <p class="text-muted mb-4">Preencha os pontos principais para retornarmos com uma avaliacao mais objetiva.</p>
                     <form method="POST" action="{% url 'inscricao' %}">
                         {% csrf_token %}
-                        <input type="hidden" name="origem_form" value="Home - Solicitar diagnostico">
+                        <input type="hidden" name="origem_form" value="Home - Solicitar diagnóstico">
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">Nome completo *</label>
@@ -995,7 +1189,7 @@
                                     <option>Industria e fabricacao</option>
                                     <option>Servicos</option>
                                     <option>Oficina ou assistencia tecnica</option>
-                                    <option>Clinica, escola ou negocio local</option>
+                                    <option>Clínica, escola ou negócio local</option>
                                     <option>Outro segmento</option>
                                 </select>
                             </div>
@@ -1029,7 +1223,7 @@
                                     <option>Sistema pronto do mercado</option>
                                     <option>Sistema proprio antigo</option>
                                     <option>Processo manual</option>
-                                    <option>Ainda nao usa sistema</option>
+                                    <option>Ainda não usa sistema</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -1059,7 +1253,7 @@
                                 <textarea name="mensagem" rows="4" class="form-control form-control-lg" placeholder="Conte rapidamente o que hoje esta travando a operacao."></textarea>
                             </div>
                             <div class="col-12 d-grid">
-                                <button type="submit" class="btn btn-primary btn-lg">Enviar diagnostico</button>
+                                <button type="submit" class="btn btn-primary btn-lg">Enviar diagnóstico</button>
                             </div>
                             <div class="col-12">
                                 <p class="text-muted small mb-0">Usaremos estes dados apenas para entender sua necessidade e retornar o contato.</p>

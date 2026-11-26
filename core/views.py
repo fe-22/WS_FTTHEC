@@ -720,11 +720,14 @@ def pdv_demo(request):
     """Pagina de demonstracao do PDV"""
     pdv_data = {
         "produtos": [
-            {"codigo": "001", "nome": "Produto A", "preco": 25.90, "estoque": 45},
-            {"codigo": "002", "nome": "Produto B", "preco": 15.50, "estoque": 32},
-            {"codigo": "003", "nome": "Produto C", "preco": 89.90, "estoque": 12},
-            {"codigo": "004", "nome": "Produto D", "preco": 45.00, "estoque": 28},
-            {"codigo": "005", "nome": "Produto E", "preco": 12.99, "estoque": 67},
+            {"codigo": "001", "nome": "Cafe torrado 500 g", "preco": 25.90, "estoque": 45, "categoria": "Alimentos"},
+            {"codigo": "002", "nome": "Agua mineral 1,5 L", "preco": 15.50, "estoque": 32, "categoria": "Bebidas"},
+            {"codigo": "003", "nome": "Cesta basica premium", "preco": 89.90, "estoque": 12, "categoria": "Alimentos"},
+            {"codigo": "004", "nome": "Detergente neutro", "preco": 45.00, "estoque": 28, "categoria": "Limpeza"},
+            {"codigo": "005", "nome": "Sabonete liquido", "preco": 12.99, "estoque": 67, "categoria": "Higiene"},
+            {"codigo": "006", "nome": "Suco natural 2 L", "preco": 18.50, "estoque": 24, "categoria": "Bebidas"},
+            {"codigo": "007", "nome": "Cesta basica essencial", "preco": 68.90, "estoque": 18, "categoria": "Alimentos"},
+            {"codigo": "008", "nome": "Desinfetante 500 ml", "preco": 9.90, "estoque": 41, "categoria": "Limpeza"},
         ],
         "carrinho": [
             {"produto": "Produto A", "qtd": 2, "preco_unit": 25.90, "total": 51.80},

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Fthec sistemas e automação comercial{% endblock %}</title>
+    <title>{% block title %}FTHEC Sistemas e Automação Comercial{% endblock %}</title>
     <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,21 +48,27 @@
         }
 
         .navbar {
-            padding: 18px 0;
+            padding: 14px 0;
             backdrop-filter: blur(10px);
-            background: rgba(24, 36, 50, 0.86) !important;
+            background: rgba(255, 255, 255, 0.96) !important;
             transition: all 0.25s ease;
+            border-bottom: 1px solid rgba(24, 36, 50, 0.08);
         }
 
         .navbar-scrolled {
             padding: 12px 0;
-            background: rgba(17, 24, 39, 0.94) !important;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.16);
+            background: rgba(255, 255, 255, 0.98) !important;
+            box-shadow: 0 12px 28px rgba(24, 36, 50, 0.10);
         }
 
         .navbar-brand strong {
             letter-spacing: 0.04em;
             font-size: 0.96rem;
+            color: #182432;
+        }
+
+        .navbar-dark .navbar-nav .nav-link {
+            color: #182432;
         }
 
         .nav-link,
@@ -148,7 +154,7 @@
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
                 <img src="{% static 'images/logo.png' %}" alt="FTHEC Logo" style="height:40px; margin-right:10px;">
-                <strong>Fthec sistemas e automação comercial</strong>
+                <strong>FTHEC Sistemas e Automação Comercial</strong>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -156,14 +162,11 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-lg-center">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}#telas">Telas do ERP</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}#vantagens">Recursos</a>
+                        <a class="nav-link" href="{% url 'home' %}#solucoes">Soluções</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="demoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-eye me-1"></i>Modelos
+                            <i class="fas fa-eye me-1"></i>Demonstração
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="demoDropdown">
                             <li><a class="dropdown-item" href="{% url 'dashboard_demo' %}">Dashboard executivo</a></li>
@@ -173,7 +176,7 @@
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'chatbot_page' %}">Chatbot</a>
+                        <a class="nav-link" href="{% url 'home' %}#contato">Fale conosco</a>
                     </li>
                     {% if request.user.is_authenticated %}
                     <li class="nav-item">
@@ -182,7 +185,8 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'logout' %}">Sair</a>
                     </li>
-                    {% else %}
+                    {% endif %}
+                    {% if not request.user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'login' %}">Entrar</a>
                     </li>
@@ -221,7 +225,7 @@
             <div class="row g-4">
                 <div class="col-md-4">
                     <h5 class="mb-3">FTHEC</h5>
-                    <p class="mb-0">ERP próprio para empresas que precisam controlar a operação com mais autonomia, menos adaptação forçada e mais resultado.</p>
+                    <p class="mb-0">FTHEC Sistemas &amp; Automação Comercial — tecnologia e proximidade para organizar vendas, estoque e gestão do seu negócio.</p>
                 </div>
                 <div class="col-md-4">
                     <h5 class="mb-3">O que entregamos</h5>
@@ -240,7 +244,7 @@
             </div>
             <hr class="my-4" style="border-color: rgba(255,255,255,0.15);">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
-                <p class="mb-0">&copy; {% now "Y" %} FTHEC Sistemas & Automacoes.</p>
+                <p class="mb-0">&copy; {% now "Y" %} FTHEC Sistemas &amp; Automação Comercial.</p>
                 <p class="mb-0 small fst-italic">"Consagre ao Senhor todas as suas obras." Provérbios 16:3</p>
             </div>
         </div>

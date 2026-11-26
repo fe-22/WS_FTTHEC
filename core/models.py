@@ -75,6 +75,27 @@ class EmpresaReceita(models.Model):
         super().save(*args, **kwargs)
 
 
+class SiteVisit(models.Model):
+    visitor_id = models.CharField(max_length=64, db_index=True)
+    ip_address = models.CharField(max_length=45, blank=True)
+    path = models.CharField(max_length=500)
+    referrer = models.CharField(max_length=500, blank=True)
+    user_agent = models.CharField(max_length=500, blank=True)
+    country = models.CharField(max_length=10, blank=True)
+    region = models.CharField(max_length=100, blank=True)
+    city = models.CharField(max_length=100, blank=True)
+    visited_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ["-visited_at"]
+        verbose_name = "Visita do site"
+        verbose_name_plural = "Visitas do site"
+
+    def __str__(self):
+        location = ", ".join(filter(None, [self.city, self.region, self.country]))
+        return f"{location or 'Região não informada'} - {self.path}"
+
+
 class CRMAccessRequest(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,

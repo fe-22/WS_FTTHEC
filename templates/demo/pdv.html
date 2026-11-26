@@ -4,310 +4,99 @@
 {% block title %}PDV - Ponto de Venda - FTHEC{% endblock %}
 
 {% block content %}
-<div class="container-fluid p-0">
-    <!-- Header -->
-    <div class="bg-primary text-white py-3 px-4">
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                <h2 class="h4 mb-0">
-                    <i class="fas fa-cash-register me-2"></i>
-                    Ponto de Venda
-                </h2>
-                <small>Caixa #01 - Operador: João Silva</small>
-            </div>
-            <div class="d-flex align-items-center gap-3">
-                <div class="text-end">
-                    <div class="small">Data/Hora</div>
-                    <div id="currentDateTime" class="fw-bold"></div>
+<div class="pdv-page">
+    <header class="pdv-header">
+        <div>
+            <span class="pdv-kicker">Ponto de venda</span>
+            <h1>Caixa #01 <small>Joao Silva</small></h1>
+        </div>
+        <div class="pdv-header-actions">
+            <div class="pdv-clock"><i class="far fa-clock"></i><span id="currentDateTime"></span></div>
+            <a href="{% url 'dashboard_demo' %}" class="pdv-back"><i class="fas fa-chart-line"></i> Dashboard</a>
+        </div>
+    </header>
+
+    <div class="pdv-layout">
+        <main class="pdv-products">
+            <div class="pdv-tools">
+                <label class="pdv-search">
+                    <i class="fas fa-search"></i>
+                    <input type="search" id="productSearch" placeholder="Buscar por nome ou codigo" autocomplete="off">
+                    <kbd>F2</kbd>
+                </label>
+                <div class="category-tabs" id="categoryTabs">
+                    <button class="active" data-category="Todos">Todos</button>
+                    <button data-category="Alimentos">Alimentos</button>
+                    <button data-category="Bebidas">Bebidas</button>
+                    <button data-category="Limpeza">Limpeza</button>
+                    <button data-category="Higiene">Higiene</button>
                 </div>
-                <button class="btn btn-light btn-sm">
-                    <i class="fas fa-sign-out-alt me-1"></i>Sair
+            </div>
+
+            <div class="products-grid" id="productsGrid">
+                {% for produto in produtos %}
+                <button type="button" class="product-card" data-codigo="{{ produto.codigo }}" data-nome="{{ produto.nome }}" data-preco="{{ produto.preco }}" data-estoque="{{ produto.estoque }}" data-categoria="{{ produto.categoria }}">
+                    <span class="product-category">{{ produto.categoria }}</span>
+                    <span class="product-icon"><i class="fas fa-box"></i></span>
+                    <strong>{{ produto.nome }}</strong>
+                    <small>Codigo {{ produto.codigo }} · Estoque {{ produto.estoque }}</small>
+                    <b>R$ {{ produto.preco|floatformat:2 }}</b>
                 </button>
+                {% endfor %}
             </div>
-        </div>
-    </div>
+        </main>
 
-    <div class="row g-0" style="min-height: calc(100vh - 80px);">
-        <!-- Área de Produtos -->
-        <div class="col-lg-8 bg-light">
-            <div class="p-4">
-                <!-- Barra de Pesquisa -->
-                <div class="mb-4">
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <i class="fas fa-search"></i>
-                        </span>
-                        <input type="text" class="form-control form-control-lg" placeholder="Buscar produto por código ou nome..." id="productSearch">
-                        <button class="btn btn-outline-secondary" type="button">
-                            <i class="fas fa-qrcode"></i>
-                        </button>
-                    </div>
+        <aside class="pdv-cart">
+            <div class="cart-heading">
+                <div><span>Venda atual</span><h2>Pedido #1048</h2></div>
+                <span class="cart-count" id="cartCount">0 itens</span>
+            </div>
+            <div class="cart-items" id="cartItems">
+                <div class="empty-cart"><i class="fas fa-basket-shopping"></i><strong>Nenhum item</strong><span>Selecione um produto para iniciar a venda.</span></div>
+            </div>
+            <div class="cart-summary">
+                <div><span>Subtotal</span><strong id="cartSubtotal">R$ 0,00</strong></div>
+                <div><span>Desconto</span><strong id="cartDiscount">R$ 0,00</strong></div>
+                <div class="cart-total"><span>Total</span><strong id="cartTotal">R$ 0,00</strong></div>
+            </div>
+            <div class="cart-checkout">
+                <label for="customerInput">Cliente</label>
+                <div class="customer-field"><i class="fas fa-user"></i><input id="customerInput" type="text" placeholder="Consumidor final"></div>
+                <label for="paymentMethod">Pagamento</label>
+                <select id="paymentMethod">{% for forma in formas_pagamento %}<option value="{{ forma }}">{{ forma }}</option>{% endfor %}</select>
+                <div id="cashFields" class="cash-fields">
+                    <label for="receivedAmount">Valor recebido</label>
+                    <input id="receivedAmount" type="number" min="0" step="0.01" placeholder="0,00">
+                    <div><span>Troco</span><strong id="changeAmount">R$ 0,00</strong></div>
                 </div>
-
-                <!-- Categorias -->
-                <div class="mb-4">
-                    <div class="d-flex gap-2 flex-wrap">
-                        <button class="btn btn-outline-primary btn-sm active">Todos</button>
-                        <button class="btn btn-outline-primary btn-sm">Alimentos</button>
-                        <button class="btn btn-outline-primary btn-sm">Bebidas</button>
-                        <button class="btn btn-outline-primary btn-sm">Limpeza</button>
-                        <button class="btn btn-outline-primary btn-sm">Higiene</button>
-                        <button class="btn btn-outline-primary btn-sm">Outros</button>
-                    </div>
-                </div>
-
-                <!-- Grid de Produtos -->
-                <div class="row g-3" id="productsGrid">
-                    {% for produto in produtos %}
-                    <div class="col-xl-3 col-lg-4 col-md-6">
-                        <div class="card h-100 product-card" data-codigo="{{ produto.codigo }}" data-nome="{{ produto.nome }}" data-preco="{{ produto.preco }}" data-estoque="{{ produto.estoque }}">
-                            <div class="card-body text-center p-3">
-                                <div class="bg-primary text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                    <i class="fas fa-box fa-lg"></i>
-                                </div>
-                                <h6 class="card-title mb-1">{{ produto.nome }}</h6>
-                                <p class="text-muted small mb-2">Cód: {{ produto.codigo }}</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="h5 text-primary mb-0">R$ {{ produto.preco|floatformat:2 }}</span>
-                                    <small class="text-muted">Est: {{ produto.estoque }}</small>
-                                </div>
-                            </div>
-                            <div class="card-footer p-2 bg-transparent">
-                                <button class="btn btn-primary btn-sm w-100 add-to-cart" data-codigo="{{ produto.codigo }}">
-                                    <i class="fas fa-plus me-1"></i>Adicionar
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
+                <button class="finalize-button" id="finalizeSale"><i class="fas fa-check"></i> Finalizar venda</button>
+                <div class="cart-actions">
+                    <button type="button" id="holdSale"><i class="fas fa-pause"></i> Aguardar</button>
+                    <button type="button" id="cancelSale" class="cancel"><i class="fas fa-times"></i> Cancelar</button>
                 </div>
             </div>
-        </div>
-
-        <!-- Carrinho Lateral -->
-        <div class="col-lg-4 bg-white border-start">
-            <div class="p-4">
-                <h5 class="mb-3">
-                    <i class="fas fa-shopping-cart me-2"></i>
-                    Carrinho
-                </h5>
-
-                <!-- Itens do Carrinho -->
-                <div class="cart-items mb-3" style="max-height: 400px; overflow-y: auto;">
-                    {% for item in carrinho %}
-                    <div class="cart-item d-flex justify-content-between align-items-center p-2 border-bottom">
-                        <div class="flex-grow-1">
-                            <div class="fw-bold">{{ item.produto }}</div>
-                            <small class="text-muted">{{ item.qtd }} x R$ {{ item.preco_unit|floatformat:2 }}</small>
-                        </div>
-                        <div class="text-end">
-                            <div class="fw-bold">R$ {{ item.total|floatformat:2 }}</div>
-                            <button class="btn btn-sm btn-outline-danger mt-1">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-
-                <!-- Total -->
-                <div class="border-top pt-3 mb-4">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="h5 mb-0">Total:</span>
-                        <span class="h4 text-success mb-0" id="cartTotal">R$ {{ total_carrinho|floatformat:2 }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between text-muted small">
-                        <span>Subtotal:</span>
-                        <span>R$ {{ total_carrinho|floatformat:2 }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between text-muted small">
-                        <span>Descontos:</span>
-                        <span>R$ 0,00</span>
-                    </div>
-                </div>
-
-                <!-- Cliente -->
-                <div class="mb-4">
-                    <label class="form-label">Cliente (Opcional)</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="CPF ou nome do cliente" readonly>
-                        <button class="btn btn-outline-secondary" type="button">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Formas de Pagamento -->
-                <div class="mb-4">
-                    <label class="form-label">Forma de Pagamento</label>
-                    <select class="form-select" id="paymentMethod">
-                        {% for forma in formas_pagamento %}
-                        <option value="{{ forma }}">{{ forma }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <!-- Valor Recebido (para dinheiro) -->
-                <div class="mb-4" id="receivedAmount" style="display: none;">
-                    <label class="form-label">Valor Recebido</label>
-                    <input type="number" class="form-control" step="0.01" placeholder="0,00">
-                </div>
-
-                <!-- Botões de Ação -->
-                <div class="d-grid gap-2">
-                    <button class="btn btn-success btn-lg" id="finalizeSale">
-                        <i class="fas fa-check me-2"></i>
-                        Finalizar Venda
-                    </button>
-                    <button class="btn btn-outline-secondary" id="holdSale">
-                        <i class="fas fa-pause me-2"></i>
-                        Aguardar
-                    </button>
-                    <button class="btn btn-outline-danger" id="cancelSale">
-                        <i class="fas fa-times me-2"></i>
-                        Cancelar Venda
-                    </button>
-                </div>
-
-                <!-- Atalhos -->
-                <div class="mt-4 pt-3 border-top">
-                    <h6 class="text-muted mb-2">Atalhos</h6>
-                    <div class="row g-2">
-                        <div class="col-6">
-                            <button class="btn btn-outline-primary btn-sm w-100">
-                                <i class="fas fa-percentage me-1"></i>Desconto
-                            </button>
-                        </div>
-                        <div class="col-6">
-                            <button class="btn btn-outline-primary btn-sm w-100">
-                                <i class="fas fa-gift me-1"></i>Brinde
-                            </button>
-                        </div>
-                        <div class="col-6">
-                            <button class="btn btn-outline-primary btn-sm w-100">
-                                <i class="fas fa-undo me-1"></i>Devolução
-                            </button>
-                        </div>
-                        <div class="col-6">
-                            <button class="btn btn-outline-primary btn-sm w-100">
-                                <i class="fas fa-print me-1"></i>Reimprimir
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </aside>
     </div>
 </div>
 
-<script>
-// Atualizar data/hora
-function updateDateTime() {
-    const now = new Date();
-    const options = {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-    };
-    document.getElementById('currentDateTime').textContent = now.toLocaleString('pt-BR', options);
-}
-
-updateDateTime();
-setInterval(updateDateTime, 1000);
-
-// Controle da forma de pagamento
-document.getElementById('paymentMethod').addEventListener('change', function() {
-    const receivedAmount = document.getElementById('receivedAmount');
-    if (this.value === 'Dinheiro') {
-        receivedAmount.style.display = 'block';
-    } else {
-        receivedAmount.style.display = 'none';
-    }
-});
-
-// Adicionar produto ao carrinho
-document.querySelectorAll('.add-to-cart').forEach(button => {
-    button.addEventListener('click', function() {
-        const card = this.closest('.product-card');
-        const nome = card.dataset.nome;
-        const preco = parseFloat(card.dataset.preco);
-
-        // Animação de feedback
-        this.innerHTML = '<i class="fas fa-check me-1"></i>Adicionado';
-        this.classList.remove('btn-primary');
-        this.classList.add('btn-success');
-
-        setTimeout(() => {
-            this.innerHTML = '<i class="fas fa-plus me-1"></i>Adicionar';
-            this.classList.remove('btn-success');
-            this.classList.add('btn-primary');
-        }, 1000);
-
-        // Aqui seria implementada a lógica real do carrinho
-        console.log(`Produto adicionado: ${nome} - R$ ${preco}`);
-    });
-});
-
-// Busca de produtos
-document.getElementById('productSearch').addEventListener('input', function() {
-    const searchTerm = this.value.toLowerCase();
-    const products = document.querySelectorAll('.product-card');
-
-    products.forEach(product => {
-        const nome = product.dataset.nome.toLowerCase();
-        const codigo = product.dataset.codigo.toLowerCase();
-
-        if (nome.includes(searchTerm) || codigo.includes(searchTerm)) {
-            product.style.display = 'block';
-        } else {
-            product.style.display = 'none';
-        }
-    });
-});
-
-// Finalizar venda
-document.getElementById('finalizeSale').addEventListener('click', function() {
-    if (confirm('Confirmar finalização da venda?')) {
-        alert('Venda finalizada com sucesso!');
-        // Aqui seria implementada a lógica real de finalização
-    }
-});
-
-// Cancelar venda
-document.getElementById('cancelSale').addEventListener('click', function() {
-    if (confirm('Cancelar venda atual?')) {
-        alert('Venda cancelada!');
-        // Aqui seria implementada a lógica real de cancelamento
-    }
-});
-</script>
-
 <style>
-.product-card {
-    transition: transform 0.2s, box-shadow 0.2s;
-    cursor: pointer;
-}
-
-.product-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.cart-item {
-    transition: background-color 0.2s;
-}
-
-.cart-item:hover {
-    background-color: #f8f9fa;
-}
-
-@media (max-width: 991.98px) {
-    .col-lg-8, .col-lg-4 {
-        width: 100%;
-    }
-}
+:root{--pdv-green:#087b69;--pdv-green-dark:#095c50;--pdv-ink:#17222f;--pdv-muted:#68758a}.pdv-page{min-height:calc(100vh - 80px);background:#eef2f1;color:var(--pdv-ink)}.pdv-header{height:82px;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;background:#17222f;color:#fff}.pdv-kicker{color:#78d7c5;text-transform:uppercase;font-size:.72rem;letter-spacing:.16em;font-weight:800}.pdv-header h1{margin:2px 0 0;font-size:1.35rem}.pdv-header h1 small{margin-left:8px;color:#b8c2cf;font-size:.85rem}.pdv-header-actions,.pdv-clock{display:flex;align-items:center;gap:10px}.pdv-clock{color:#dce5e2;font-size:.88rem}.pdv-back{color:#fff;text-decoration:none;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:9px 12px}.pdv-layout{display:grid;grid-template-columns:minmax(0,1fr) 380px;min-height:calc(100vh - 162px)}.pdv-products{padding:24px;min-width:0}.pdv-tools{position:sticky;top:80px;z-index:5;margin-bottom:18px}.pdv-search{height:54px;display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #dde5e2;border-radius:14px;padding:0 14px;box-shadow:0 10px 24px rgba(23,34,47,.06)}.pdv-search i{color:var(--pdv-green)}.pdv-search input{flex:1;border:0;outline:0;font-size:1rem}.pdv-search kbd{background:#f1f5f4;color:#6b7785;border:1px solid #dde5e2;border-radius:6px;padding:3px 7px}.category-tabs{display:flex;gap:8px;overflow-x:auto;padding-top:12px}.category-tabs button{border:1px solid #dce5e2;background:#fff;color:#5d6977;border-radius:999px;padding:8px 14px;white-space:nowrap}.category-tabs button.active{background:var(--pdv-green);border-color:var(--pdv-green);color:#fff}.products-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.product-card{min-height:188px;position:relative;display:flex;flex-direction:column;align-items:flex-start;text-align:left;border:1px solid #dde5e2;border-radius:16px;background:#fff;padding:16px;color:var(--pdv-ink);box-shadow:0 8px 20px rgba(23,34,47,.05);transition:.18s ease}.product-card:hover{transform:translateY(-3px);border-color:#80bdb2;box-shadow:0 14px 28px rgba(23,34,47,.10)}.product-card[hidden]{display:none}.product-category{align-self:flex-end;color:#718096;background:#eef4f2;border-radius:999px;font-size:.68rem;padding:3px 8px}.product-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:12px;color:var(--pdv-green);background:#eaf4f1;margin:8px 0 12px}.product-card strong{min-height:38px;line-height:1.2}.product-card small{color:var(--pdv-muted);margin:5px 0 10px}.product-card b{color:var(--pdv-green-dark);font-size:1.12rem}.pdv-cart{position:sticky;top:80px;height:calc(100vh - 162px);display:flex;flex-direction:column;background:#fff;border-left:1px solid #dde5e2}.cart-heading{height:82px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #edf1ef}.cart-heading span{color:var(--pdv-muted);font-size:.75rem}.cart-heading h2{margin:2px 0 0;font-size:1.05rem}.cart-count{background:#edf5f3;border-radius:999px;padding:6px 9px!important}.cart-items{flex:1;min-height:100px;overflow-y:auto;padding:8px 18px}.empty-cart{height:100%;min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#98a3b2;text-align:center}.empty-cart i{font-size:2rem;margin-bottom:10px}.empty-cart strong{color:#667286}.empty-cart span{font-size:.78rem}.cart-line{display:grid;grid-template-columns:1fr auto;gap:8px;padding:12px 0;border-bottom:1px solid #edf1ef}.cart-line strong{font-size:.9rem}.cart-line small{color:var(--pdv-muted)}.cart-line-price{text-align:right}.quantity-controls{display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-top:5px}.quantity-controls button{width:26px;height:26px;border:1px solid #dce5e2;border-radius:7px;background:#fff}.quantity-controls span{min-width:18px;text-align:center}.remove-item{color:#dc2626;border:0!important;background:transparent!important}.cart-summary{padding:12px 18px;border-top:1px solid #edf1ef}.cart-summary div{display:flex;justify-content:space-between;padding:3px 0;color:var(--pdv-muted)}.cart-summary strong{color:var(--pdv-ink)}.cart-total{border-top:1px solid #edf1ef;margin-top:8px!important;padding-top:10px!important;align-items:center}.cart-total span{color:var(--pdv-ink);font-weight:700}.cart-total strong{color:var(--pdv-green-dark);font-size:1.45rem}.cart-checkout{padding:12px 18px 14px;border-top:1px solid #edf1ef}.cart-checkout label,.cash-fields label{display:block;margin:8px 0 5px;color:#69758a;font-size:.76rem;font-weight:700}.customer-field{display:flex;align-items:center;height:42px;border:1px solid #dce5e2;border-radius:9px;padding:0 10px}.customer-field i{color:#91a09a}.customer-field input{border:0;outline:0;width:100%;padding:0 8px}.cart-checkout select,.cash-fields input{width:100%;height:42px;border:1px solid #dce5e2;border-radius:9px;padding:0 10px;background:#fff}.cash-fields{display:none}.cash-fields div{display:flex;justify-content:space-between;margin-top:8px;color:var(--pdv-muted)}.cash-fields div strong{color:var(--pdv-green-dark)}.finalize-button{width:100%;height:48px;border:0;border-radius:10px;margin-top:12px;background:var(--pdv-green);color:#fff;font-weight:800}.finalize-button:hover{background:var(--pdv-green-dark)}.cart-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.cart-actions button{height:38px;border:1px solid #dce5e2;border-radius:9px;background:#fff;color:#69758a}.cart-actions .cancel{color:#b42318}@media(max-width:1100px){.pdv-layout{grid-template-columns:minmax(0,1fr) 340px}.products-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:800px){.pdv-header{height:auto;min-height:82px;padding:12px 16px}.pdv-clock{display:none}.pdv-layout{display:block}.pdv-products{padding:16px}.pdv-tools{top:70px}.products-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.pdv-cart{position:relative;top:auto;height:auto;min-height:520px;border-left:0}}@media(max-width:480px){.pdv-header-actions .pdv-back{font-size:0;padding:10px}.pdv-header-actions .pdv-back i{font-size:1rem}.products-grid{grid-template-columns:1fr}.pdv-search kbd{display:none}}
 </style>
+
+<script>
+const cart=new Map(),money=value=>value.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}),cartItems=document.getElementById('cartItems'),paymentMethod=document.getElementById('paymentMethod'),receivedAmount=document.getElementById('receivedAmount');
+function updateDateTime(){document.getElementById('currentDateTime').textContent=new Date().toLocaleString('pt-BR')}updateDateTime();setInterval(updateDateTime,1000);
+function cartTotal(){return [...cart.values()].reduce((sum,item)=>sum+item.preco*item.quantidade,0)}
+function updateChange(){if(paymentMethod.value!=='Dinheiro'){document.getElementById('changeAmount').textContent=money(0);return}const received=parseFloat(receivedAmount.value||0);document.getElementById('changeAmount').textContent=money(Math.max(0,received-cartTotal()))}
+function renderCart(){const items=[...cart.values()],total=cartTotal(),count=items.reduce((sum,item)=>sum+item.quantidade,0);document.getElementById('cartCount').textContent=`${count} ${count===1?'item':'itens'}`;document.getElementById('cartSubtotal').textContent=money(total);document.getElementById('cartTotal').textContent=money(total);updateChange();if(!items.length){cartItems.innerHTML='<div class="empty-cart"><i class="fas fa-basket-shopping"></i><strong>Nenhum item</strong><span>Selecione um produto para iniciar a venda.</span></div>';return}cartItems.innerHTML=items.map(item=>`<div class="cart-line" data-codigo="${item.codigo}"><div><strong>${item.nome}</strong><br><small>${item.quantidade} x ${money(item.preco)}</small></div><div class="cart-line-price"><strong>${money(item.preco*item.quantidade)}</strong><div class="quantity-controls"><button type="button" class="decrease-item">-</button><span>${item.quantidade}</span><button type="button" class="increase-item">+</button><button type="button" class="remove-item"><i class="fas fa-trash"></i></button></div></div></div>`).join('')}
+document.querySelectorAll('.product-card').forEach(card=>card.addEventListener('click',()=>{const codigo=card.dataset.codigo,existing=cart.get(codigo);if(existing)existing.quantidade++;else cart.set(codigo,{codigo,nome:card.dataset.nome,preco:parseFloat(card.dataset.preco),quantidade:1});renderCart()}));
+cartItems.addEventListener('click',event=>{const line=event.target.closest('.cart-line');if(!line)return;const item=cart.get(line.dataset.codigo);if(event.target.closest('.increase-item'))item.quantidade++;if(event.target.closest('.decrease-item'))item.quantidade--;if(event.target.closest('.remove-item')||item.quantidade<=0)cart.delete(line.dataset.codigo);renderCart()});
+function applyFilters(){const term=document.getElementById('productSearch').value.toLowerCase().trim(),category=document.querySelector('#categoryTabs button.active').dataset.category;document.querySelectorAll('.product-card').forEach(card=>{const matchesTerm=card.dataset.nome.toLowerCase().includes(term)||card.dataset.codigo.includes(term),matchesCategory=category==='Todos'||card.dataset.categoria===category;card.hidden=!(matchesTerm&&matchesCategory)})}
+document.getElementById('productSearch').addEventListener('input',applyFilters);document.querySelectorAll('#categoryTabs button').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('#categoryTabs button').forEach(item=>item.classList.remove('active'));button.classList.add('active');applyFilters()}));
+paymentMethod.addEventListener('change',()=>{document.getElementById('cashFields').style.display=paymentMethod.value==='Dinheiro'?'block':'none';updateChange()});receivedAmount.addEventListener('input',updateChange);
+document.getElementById('finalizeSale').addEventListener('click',()=>{if(!cart.size){alert('Adicione pelo menos um produto antes de finalizar.');return}if(paymentMethod.value==='Dinheiro'&&parseFloat(receivedAmount.value||0)<cartTotal()){alert('Informe um valor recebido suficiente.');receivedAmount.focus();return}alert(`Venda finalizada com sucesso!\nTotal: ${money(cartTotal())}`);cart.clear();receivedAmount.value='';renderCart()});
+document.getElementById('cancelSale').addEventListener('click',()=>{if(cart.size&&confirm('Cancelar os itens desta venda?')){cart.clear();renderCart()}});
+document.getElementById('holdSale').addEventListener('click',()=>{if(!cart.size){alert('Nenhum item para aguardar.');return}alert('Venda colocada em espera com sucesso.')});
+document.addEventListener('keydown',event=>{if(event.key==='F2'){event.preventDefault();document.getElementById('productSearch').focus()}});
+</script>
 {% endblock %}
