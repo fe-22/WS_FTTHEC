@@ -32,6 +32,19 @@
         color: var(--ink);
     }
 
+    .site-analytics {
+        margin-bottom: 1.5rem;
+    }
+
+    .site-analytics .crm-stat {
+        height: 100%;
+        border-left: 4px solid var(--brand);
+    }
+
+    .site-analytics .value {
+        font-size: 2rem;
+    }
+
     .crm-panel {
         border-radius: 28px;
         padding: 1.5rem;
@@ -200,6 +213,33 @@
                 </div>
             </div>
         </div>
+
+        <section class="site-analytics" aria-label="Acessos ao site">
+            <h2 class="h4 fw-bold mb-3">Acessos ao site</h2>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="crm-stat">
+                        <div class="text-muted small">Visitantes únicos hoje</div>
+                        <div class="value">{{ site_visitors_today }}</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="crm-stat">
+                        <div class="text-muted small">Páginas acessadas hoje</div>
+                        <div class="value">{{ site_pageviews_today }}</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="crm-stat">
+                        <div class="text-muted small">Visitantes nos últimos 30 dias</div>
+                        <div class="value">{{ site_visitors_30_days }}</div>
+                    </div>
+                </div>
+            </div>
+            {% if request.user.is_staff %}
+            <a class="small d-inline-block mt-2" href="{% url 'admin:core_sitevisit_changelist' %}">Ver registros detalhados e regiões no Admin</a>
+            {% endif %}
+        </section>
 
         <div class="crm-grid">
             {% if crm_receita_enabled %}

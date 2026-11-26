@@ -18,6 +18,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.utils.crypto import get_random_string
+from django.utils import timezone
 from django.views.decorators.http import require_http_methods
 
 from .forms import (
@@ -26,7 +27,7 @@ from .forms import (
     CRMInviteSetPasswordForm,
     CRMPublicRegistrationForm,
 )
-from .models import CRMAccessRequest, EmpresaReceita, Inscricao
+from .models import CRMAccessRequest, EmpresaReceita, Inscricao, SiteVisit
 from .services import (
     build_empresa_queryset,
     discover_public_contacts,
@@ -575,6 +576,15 @@ def crm_view(request):
         "leads": leads,
         "query": query,
         "empresas_count": EmpresaReceita.objects.count() if crm_receita_enabled else 0,
+        "site_visitors_today": SiteVisit.objects.filter(
+            visited_at__date=timezone.localdate()
+        ).values("visitor_id").distinct().count(),
+        "site_pageviews_today": SiteVisit.objects.filter(
+            visited_at__date=timezone.localdate()
+        ).count(),
+        "site_visitors_30_days": SiteVisit.objects.filter(
+            visited_at__gte=timezone.now() - datetime.timedelta(days=30)
+        ).values("visitor_id").distinct().count(),
         "crm_receita_enabled": crm_receita_enabled,
         "can_manage_invites": request.user.is_staff,
         "receita_sync_defaults": {
