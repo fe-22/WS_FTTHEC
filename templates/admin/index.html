@@ -1,0 +1,19 @@
+{% extends "admin/index.html" %}
+
+{% block content %}
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin:0 0 24px;">
+  <a href="{% url 'admin:core_sitevisit_changelist' %}" style="display:block;padding:18px;border:1px solid #d5d9dd;border-radius:8px;background:var(--body-bg);text-decoration:none;">
+    <span style="display:block;color:var(--body-quiet-color);font-size:13px;">Visitantes hoje</span>
+    <strong style="display:block;font-size:28px;color:var(--body-fg);">{{ site_visitors_today|default:"0" }}</strong>
+  </a>
+  <a href="{% url 'admin:core_sitevisit_changelist' %}" style="display:block;padding:18px;border:1px solid #d5d9dd;border-radius:8px;background:var(--body-bg);text-decoration:none;">
+    <span style="display:block;color:var(--body-quiet-color);font-size:13px;">Acessos hoje</span>
+    <strong style="display:block;font-size:28px;color:var(--body-fg);">{{ site_pageviews_today|default:"0" }}</strong>
+  </a>
+  <a href="{% url 'admin:core_sitevisit_changelist' %}" style="display:block;padding:18px;border:1px solid #d5d9dd;border-radius:8px;background:var(--body-bg);text-decoration:none;">
+    <span style="display:block;color:var(--body-quiet-color);font-size:13px;">Visitantes nos últimos 30 dias</span>
+    <strong style="display:block;font-size:28px;color:var(--body-fg);">{{ site_visitors_30_days|default:"0" }}</strong>
+  </a>
+</div>
+{{ block.super }}
+{% endblock %}
